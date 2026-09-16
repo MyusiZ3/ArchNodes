@@ -816,31 +816,64 @@
             </div>
 
             <!-- TAB 2: GMAIL DOT-TRICK GENERATOR (Scrollable Body) -->
-            <div id="modalTabDotTrick" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 12px; padding: 18px 22px;">
-                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
-                    Generate unlimited dot-trick aliases from your main Gmail. Confirmation emails go straight to your single Gmail inbox.
+            <div id="modalTabDotTrick" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 14px; padding: 18px 22px;">
+                <div style="padding: 12px 14px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); font-size: 12px; color: var(--text-heading); line-height: 1.45;">
+                    <div style="font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">
+                        <i class="fa-solid fa-bolt" style="margin-right: 4px;"></i> Gmail Dot-Trick Aliases
+                    </div>
+                    <div style="color: var(--text-muted); font-size: 11.5px;">
+                        Gmail ignores dots in usernames. All activation emails arrive in your <strong>single primary Gmail inbox</strong>, while Freepik recognizes each alias as a separate account.
+                    </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-heading);">Base Gmail Address</label>
-                    <input type="email" id="dotBaseEmail" class="modal-input" placeholder="username@gmail.com" />
-                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 180px;">
+                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Primary Gmail Address:</label>
+                            <input type="email" id="fpAliasBaseEmail" class="modal-input" placeholder="yourname@gmail.com" />
+                        </div>
+                        <div id="fpAliasPassContainer" style="flex: 1; min-width: 120px; display: none;">
+                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Custom Password:</label>
+                            <input type="text" id="fpAliasPassword" class="modal-input" placeholder="Password" />
+                        </div>
+                        <div style="width: 80px;">
+                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Quantity:</label>
+                            <input type="number" id="fpAliasCount" class="modal-input" min="1" max="10" value="5" />
+                        </div>
+                    </div>
 
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-heading);">Account Password</label>
-                    <input type="password" id="dotBasePassword" class="modal-input" placeholder="Password for aliases" />
-                </div>
+                    <!-- Password Option Checkbox -->
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-heading); cursor: pointer; user-select: none; margin-top: 2px;">
+                        <input type="checkbox" id="fpAliasSamePass" onchange="toggleAliasSamePass(this.checked)" checked style="cursor: pointer; accent-color: var(--btn-bg);" />
+                        <span>Use <strong>Email as Password</strong> (Password = each alias email)</span>
+                    </label>
 
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="generateDotAliases()" class="btn-secondary" style="flex: 1;">
-                        <i class="fa-solid fa-calculator"></i> Generate Aliases
-                    </button>
-                    <button onclick="addDotAliasesToPool()" id="btnAddDotAliases" class="btn-primary" style="flex: 1;" disabled>
-                        <i class="fa-solid fa-plus"></i> Add All to Pool
-                    </button>
-                </div>
+                    <div style="margin-top: 4px;">
+                        <button onclick="fpGenerateAliases()" class="btn-secondary" style="width: 100%;">
+                            <i class="fa-solid fa-calculator"></i> Generate Dot-Trick Account List
+                        </button>
+                    </div>
 
-                <textarea id="dotAliasesPreview" class="modal-input" style="height: 100px; font-family: monospace; font-size: 11.5px; resize: none;" placeholder="Generated aliases will appear here..." readonly></textarea>
+                    <!-- Generated Aliases Container -->
+                    <div id="fpAliasResultBox" style="display: none; flex-direction: column; gap: 8px; margin-top: 4px;">
+                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text-heading); display: flex; justify-content: space-between; align-items: center;">
+                            <span>Generated Aliases:</span>
+                            <span style="font-size: 11px; color: var(--text-muted);">Click Register &rarr; confirm in Gmail inbox</span>
+                        </div>
+
+                        <div id="fpAliasList" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto;">
+                            <!-- Dynamically Generated Alias Items with Register button -->
+                        </div>
+
+                        <div id="fpBatchProgress" style="display: none; padding: 10px 12px; border-radius: 8px; background: var(--card-subtle); border: 1px solid var(--border-color); font-size: 11.5px; line-height: 1.4;">
+                            <span id="fpBatchProgressText"></span>
+                        </div>
+
+                        <button id="btnFpBatchAdd" onclick="fpBatchVerifyAndAdd()" class="btn-primary" style="width: 100%; margin-top: 2px;">
+                            <i class="fa-solid fa-shield-halved"></i> Verify & Add All to Pool
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- TAB 3: ADD ACCOUNT & AUTO-REGISTER (Scrollable Body) -->
@@ -1045,7 +1078,7 @@
             if (accs.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 24px 0; color: var(--text-muted); font-size: 12.5px;">
-                        No accounts in browser pool yet. Use <strong>Auto Register</strong> or <strong>Add Account</strong>.
+                        No accounts in browser pool yet. Use <strong>Dot-Trick Generator</strong> or <strong>Add & Auto-Register</strong>.
                     </div>
                 `;
                 return;
@@ -1060,7 +1093,7 @@
                     if (match) {
                         statusText = match.status;
                         if (match.status.includes('Limit')) statusClass = 'status-limit';
-                        else if (match.status.includes('Invalid') || match.status.includes('Error')) statusClass = 'status-error';
+                        else if (match.status.includes('Invalid') || match.status.includes('Error') || match.status.includes('Unverified')) statusClass = 'status-error';
                     }
                 }
 
@@ -1076,7 +1109,7 @@
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 4px;">
-                            <button onclick="verifySingleAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Re-verify Account">
+                            <button onclick="verifySingleAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Verify Login">
                                 <i class="fa-solid fa-rotate-right"></i>
                             </button>
                             <button onclick="removeAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px; color: var(--badge-red-text);" title="Delete Account">
@@ -1239,58 +1272,145 @@
             }
         }
 
-        // Gmail Dot-Trick Generator
-        let generatedDotList = [];
+        // --- Gmail Dot-Trick Generator & Batch Verification ---
+        let generatedAliasesList = [];
 
-        function generateDotAliases() {
-            const baseEmail = document.getElementById('dotBaseEmail').value.trim();
-            const password = document.getElementById('dotBasePassword').value.trim();
-            const preview = document.getElementById('dotAliasesPreview');
-            const addBtn = document.getElementById('btnAddDotAliases');
-
-            if (!baseEmail.includes('@gmail.com')) {
-                showToast('Must be a valid @gmail.com address');
-                return;
+        function toggleAliasSamePass(checked) {
+            const passContainer = document.getElementById('fpAliasPassContainer');
+            if (passContainer) {
+                passContainer.style.display = checked ? 'none' : 'block';
             }
-            if (!password) {
-                showToast('Please specify a password for generated aliases');
-                return;
-            }
-
-            const username = baseEmail.split('@')[0].replace(/\./g, '');
-            const aliases = [];
-
-            // Generate variations
-            for (let i = 1; i < username.length; i++) {
-                const alias = username.slice(0, i) + '.' + username.slice(i) + '@gmail.com';
-                aliases.push(alias);
-                if (aliases.length >= 20) break;
-            }
-
-            generatedDotList = aliases.map(email => ({ email, password }));
-            preview.value = aliases.join('\n');
-            addBtn.disabled = false;
-            showToast(`Generated ${aliases.length} dot aliases`);
         }
 
-        function addDotAliasesToPool() {
-            if (generatedDotList.length === 0) return;
-            const current = getLocalFreepikAccounts();
-            const existingEmails = new Set(current.map(a => a.email.toLowerCase()));
-            let added = 0;
+        function fpGenerateAliases() {
+            const baseEmail = document.getElementById('fpAliasBaseEmail').value.trim();
+            const samePass = document.getElementById('fpAliasSamePass').checked;
+            const customPass = document.getElementById('fpAliasPassword') ? document.getElementById('fpAliasPassword').value.trim() : '';
+            const count = parseInt(document.getElementById('fpAliasCount').value) || 5;
 
-            generatedDotList.forEach(item => {
-                if (!existingEmails.has(item.email.toLowerCase())) {
-                    current.push({ email: item.email, password: item.password, status: 'READY' });
-                    existingEmails.add(item.email.toLowerCase());
-                    added++;
+            if (!baseEmail || !baseEmail.includes('@')) {
+                showToast('Please enter a valid Gmail address');
+                return;
+            }
+            if (!samePass && !customPass) {
+                showToast('Please specify a password');
+                return;
+            }
+
+            const parts = baseEmail.split('@');
+            const user = parts[0].replace(/\./g, '').split('+')[0];
+            const domain = parts[1] || 'gmail.com';
+
+            const candidates = [];
+            for (let i = 1; i < user.length; i++) {
+                candidates.push(`${user.slice(0, i)}.${user.slice(i)}@${domain}`);
+            }
+            for (let i = 1; i < user.length - 1; i++) {
+                for (let j = i + 2; j < user.length; j++) {
+                    candidates.push(`${user.slice(0, i)}.${user.slice(i, j)}.${user.slice(j)}@${domain}`);
                 }
+            }
+
+            generatedAliasesList = [];
+            const listEl = document.getElementById('fpAliasList');
+            const resultBox = document.getElementById('fpAliasResultBox');
+            listEl.innerHTML = '';
+
+            const selectedVariations = candidates.slice(0, count);
+
+            selectedVariations.forEach((aliasEmail, idx) => {
+                const passForAcc = samePass ? aliasEmail : customPass;
+                generatedAliasesList.push({ email: aliasEmail, password: passForAcc });
+
+                const item = document.createElement('div');
+                item.className = 'account-card';
+                item.style.padding = '8px 12px';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                        <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--border-color); color: var(--text-heading);">#${idx + 1}</span>
+                        <div style="min-width: 0; overflow: hidden;">
+                            <div style="font-size: 12px; font-weight: 700; color: var(--text-heading); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${escapeHtml(aliasEmail)}</div>
+                            <div style="font-size: 10.5px; color: var(--text-muted);">Pass: <span style="font-family: monospace;">${escapeHtml(passForAcc)}</span></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                        <button onclick="navigator.clipboard.writeText('${escapeHtml(aliasEmail)}'); showToast('Copied ${escapeHtml(aliasEmail)}');" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Copy Email">
+                            <i class="fa-solid fa-copy"></i> Copy
+                        </button>
+                        <a href="https://freepikdownloader.com/register" target="_blank" class="btn-secondary" style="padding: 4px 8px; font-size: 11px; text-decoration: none;" title="Open Freepik Registration">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Register
+                        </a>
+                    </div>
+                `;
+                listEl.appendChild(item);
             });
 
-            saveLocalFreepikAccounts(current);
-            showToast(`Added ${added} dot aliases to browser pool`);
-            renderPoolAccounts();
-            switchModalTab('pool');
+            resultBox.style.display = 'flex';
+            document.getElementById('btnFpBatchAdd').disabled = (generatedAliasesList.length === 0);
+            showToast(`Generated ${generatedAliasesList.length} dot aliases`);
+        }
+
+        async function fpBatchVerifyAndAdd() {
+            if (!generatedAliasesList || generatedAliasesList.length === 0) {
+                showToast('No generated aliases found');
+                return;
+            }
+
+            const btn = document.getElementById('btnFpBatchAdd');
+            const progress = document.getElementById('fpBatchProgress');
+            const progressText = document.getElementById('fpBatchProgressText');
+
+            btn.disabled = true;
+            progress.style.display = 'block';
+            progressText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying login on Freepik for ${generatedAliasesList.length} aliases...`;
+
+            try {
+                const res = await fetch('/api/freepik-batch-add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: generatedAliasesList })
+                });
+                const data = await res.json();
+
+                const current = getLocalFreepikAccounts();
+                const emailMap = new Map();
+                current.forEach(a => emailMap.set(a.email.toLowerCase(), a));
+
+                if (data.added && Array.isArray(data.added)) {
+                    data.added.forEach(em => {
+                        const original = generatedAliasesList.find(a => a.email.toLowerCase() === em.toLowerCase());
+                        if (original) {
+                            emailMap.set(em.toLowerCase(), { email: original.email, password: original.password, status: 'READY' });
+                        }
+                    });
+                }
+                saveLocalFreepikAccounts(Array.from(emailMap.values()));
+
+                let messages = [];
+                if (data.added_count && data.added_count > 0) {
+                    messages.push(`<b>${data.added_count} accounts</b> verified and added to active pool.`);
+                }
+                if (data.already_in_pool && data.already_in_pool.length > 0) {
+                    messages.push(`${data.already_in_pool.length} accounts already active in pool.`);
+                }
+                if (data.failed && data.failed.length > 0) {
+                    messages.push(`<b>${data.failed.length} accounts</b> not registered yet (please click Register & activate via Gmail).`);
+                }
+
+                progressText.innerHTML = messages.join('<br>');
+                if (data.added_count && data.added_count > 0) {
+                    showToast(`${data.added_count} accounts verified & saved to pool`);
+                    renderPoolAccounts();
+                    setTimeout(() => { switchModalTab('pool'); }, 1800);
+                } else {
+                    showToast('No new active accounts verified');
+                }
+            } catch (err) {
+                progressText.innerHTML = 'Verification request error';
+                showToast('Verification failed');
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         // Bulk Import Accounts
