@@ -1,5 +1,5 @@
 """
-ArchNodes - The Ultimate Creative Assets Downloader
+ArchNodes - Creative Asset Downloader
 Main Flask Web Application
 """
 
@@ -30,12 +30,15 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'archnodes-secret-2026'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/api/check", methods=["POST"])
+@app.route("/api/get-info", methods=["POST"])
 def api_check():
     data = request.json or {}
     url = data.get("url", "").strip()
@@ -83,6 +86,7 @@ def api_check():
     return jsonify({"status": "error", "message": "Unsupported platform"}), 400
 
 @app.route("/api/get-freepik-link", methods=["POST", "GET"])
+@app.route("/api/freepik-download", methods=["POST", "GET"])
 def api_get_freepik_link():
     data = (request.json if request.is_json else request.args) or {}
     url = data.get("url", "").strip()
@@ -125,7 +129,7 @@ def api_download_stream():
                 return jsonify({"success": True, "download_url": gdrive_link})
             return redirect(gdrive_link)
         except Exception as e:
-            return f"<h2>⚠️ Freepik Error</h2><p>{str(e)}</p>", 500
+            return f"<h2>Freepik Resolution Error</h2><p>{str(e)}</p>", 500
 
     if platform == "envato":
         info, err = get_envato_info(profile_url)
@@ -168,6 +172,42 @@ def api_freepik_batch_add():
     result = batch_add_accounts(accounts)
     return jsonify(result)
 
+
+@app.route("/api/freepik-auto-register", methods=["POST"])
+def api_freepik_auto_register():
+    result = auto_register_account()
+    if not result.get("account_status"):
+        result["account_status"] = FreepikScraper.get_account_status()
+    return jsonify(result)
+
+@app.route("/api/freepik-accounts", methods=["GET", "POST", "DELETE"])
+def api_freepik_accounts():
+    if request.method == "GET":
+        data = (request.json if request.is_json else request.args) or {}
+        custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+        return jsonify({"success": True, "status": FreepikScraper.get_account_status(custom_accounts)})
+    
+    if request.method == "POST":
+        data = request.json or {}
+        email = data.get("email", "").strip()
+        password = data.get("password", "").strip()
+        if not email or not password:
+            return jsonify({"success": False, "error": "Email and password are required"}), 400
+        result = add_account(email, password)
+        if result.get("success"):
+            result["account_status"] = FreepikScraper.get_account_status()
+        return jsonify(result)
+    
+    if request.method == "DELETE":
+        data = request.json or {}
+        email = data.get("email", "").strip()
+        if not email:
+            return jsonify({"success": False, "error": "Email is required"}), 400
+        result = remove_account(email)
+        if result.get("success"):
+            result["account_status"] = FreepikScraper.get_account_status()
+        return jsonify(result)
+
 @app.route("/api/bypass-settings", methods=["GET", "POST"])
 def api_bypass_settings():
     if request.method == "GET":
@@ -187,5 +227,5 @@ def api_stop():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
-    print(f"✨ ArchNodes running on http://127.0.0.1:{port}")
-    app.run(host="0.0.0.0", port=port, debug=False)
+    print(f"[ArchNodes] Engine running on http://127.0.0.1:{port}")
+    app.run(host="0.0.0.0", port=port, debug=True)

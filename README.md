@@ -1,45 +1,66 @@
-# ArchNodes
+﻿# ArchNodes
 
-> **The Ultimate Creative & Stock Assets Downloader**  
-> High-speed premium asset bypass and extractor for designers, video editors, and agencies.
-
----
-
-## ✨ Features
-
-- **Freepik & Magnific AI Bypass**: Direct Google Drive downloads with smart multi-account rotation and rate-limit cooldown handling.
-- **Envato Elements Resolver**: Extract stock video footage, template previews, audio tracks, and graphic elements.
-- **100% SFW & Hosting Ready**: Zero adult content, zero risk of hosting TOS bans (safe for Vercel, Render, Railway, HuggingFace, VPS).
-- **Client-Side Account Security**: Accounts are stored in the user's local browser cache (`localStorage`) with JSON backup/restore, ensuring zero credential leaks on public servers.
-- **Integrated DNS-over-HTTPS (DoH)**: Built-in Cloudflare, Google, AdGuard, and Quad9 anti-block bypass engine.
-- **Modern Glassmorphism UI**: High-end responsive interface with dark/light mode and download history.
+Creative asset extraction and downloader tool for digital designers, video editors, and production workflows.
 
 ---
 
-## 🚀 Quick Start (Local Run)
+## Overview
 
-1. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+ArchNodes provides a streamlined interface to extract, resolve, and download media assets from creative asset platforms (including Freepik and Envato Elements) with high-speed streaming and multi-account pool rotation.
 
-2. **Start ArchNodes:**
-   ```bash
-   python app.py
-   ```
+### Key Capabilities
 
-3. **Open Browser:**
-   Navigate to `http://127.0.0.1:5050`
+- **Freepik & Magnific Integration**: Multi-account pool rotation with automatic rate-limit cooldown handling.
+- **Envato Elements Resolver**: Metadata extraction, video footage streams, preview images, and audio tracks.
+- **Zero Server-Side Storage**: User accounts and credentials reside exclusively in the client browser (`localStorage`), eliminating credential exposure on public deployments.
+- **Integrated DNS-over-HTTPS (DoH)**: Built-in DNS resolution support (Cloudflare, Google, AdGuard, Quad9) and proxy routing.
+- **Modern Interface**: Clean, lightweight web interface with responsive layout, dark/light theme, and local history tracking.
 
 ---
 
-## ☁️ Deployment Guide
+## Quick Start
 
-### Deploy on Render / Railway / VPS:
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `gunicorn app:app --bind 0.0.0.0:$PORT`
+### Prerequisites
+- Python 3.9 or higher
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/ArchNodes.git
+cd ArchNodes
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Running Locally
+
+```bash
+python app.py
+```
+
+Open your browser and navigate to: `http://127.0.0.1:5050`
 
 ---
 
-## 📄 License
-MIT License © 2026 ArchNodes Team
+## Production Deployment
+
+### Standard WSGI (Gunicorn / Render / Railway / VPS)
+
+```bash
+gunicorn app:app --bind 0.0.0.0:$PORT --workers 4
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `PORT` | Web server listening port | `5050` |
+| `SECRET_KEY` | Flask session signing secret | `archnodes-default-secret` |
+
+---
+
+## License
+
+MIT License - see the LICENSE file for details.

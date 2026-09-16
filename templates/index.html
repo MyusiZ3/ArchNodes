@@ -1,56 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchNodes | The Ultimate Creative Assets Downloader</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" type="image/png">
-    <!-- Google Fonts: Inter & Outfit -->
+    <title>ArchNodes — Digital Asset Engine</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2309090b'/><path d='M8 22L16 10L24 22M11 18h10' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+    
+    <!-- Google Font: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary: #6366F1;
-            --primary-hover: #4F46E5;
-            --primary-glow: rgba(99, 102, 241, 0.25);
-            --accent-purple: #8B5CF6;
-            --accent-cyan: #06B6D4;
-            --accent-green: #10B981;
-            --bg-page: #F8FAFC;
-            --bg-card: #FFFFFF;
+            --bg-page: #f8f9fa;
+            --bg-card: #ffffff;
             --bg-nav: rgba(255, 255, 255, 0.85);
-            --border-color: #E2E8F0;
-            --text-heading: #0F172A;
-            --text-body: #475569;
-            --text-muted: #94A3B8;
-            --radius-card: 16px;
-            --radius-sub: 10px;
-            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
-            --shadow-float: 0 20px 35px -5px rgba(0, 0, 0, 0.08), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-color: #e2e2e7;
+            --border-hover: #a1a1aa;
+            --text-heading: #09090b;
+            --text-body: #52525b;
+            --text-muted: #a1a1aa;
+            --btn-bg: #09090b;
+            --btn-text: #ffffff;
+            --btn-hover: #27272a;
+            --pill-active-bg: #09090b;
+            --pill-active-text: #ffffff;
+            --input-bg: #ffffff;
+            --card-subtle: #f4f4f5;
+            --badge-green-bg: #ecfdf5;
+            --badge-green-text: #059669;
+            --badge-red-bg: #fef2f2;
+            --badge-red-text: #dc2626;
+            --badge-yellow-bg: #fffbeb;
+            --badge-yellow-text: #d97706;
+            --radius-card: 20px;
+            --radius-input: 12px;
+            --radius-btn: 10px;
+            --radius-pill: 10px;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+            --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        [data-theme="dark"] {
-            --bg-page: #0B0F19;
-            --bg-card: #131B2E;
-            --bg-nav: rgba(19, 27, 46, 0.85);
-            --border-color: #1E293B;
-            --text-heading: #F8FAFC;
-            --text-body: #94A3B8;
-            --text-muted: #64748B;
-            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-            --shadow-float: 0 20px 35px -5px rgba(0, 0, 0, 0.6);
+        html.dark {
+            --bg-page: #09090b;
+            --bg-card: #09090b;
+            --bg-nav: rgba(9, 9, 11, 0.8);
+            --border-color: #1f1f23;
+            --border-hover: #3f3f46;
+            --text-heading: #fafafa;
+            --text-body: #a1a1aa;
+            --text-muted: #71717a;
+            --btn-bg: #fafafa;
+            --btn-text: #09090b;
+            --btn-hover: #e4e4e7;
+            --pill-active-bg: #fafafa;
+            --pill-active-text: #09090b;
+            --input-bg: #121215;
+            --card-subtle: #121215;
+            --badge-green-bg: rgba(16, 185, 129, 0.15);
+            --badge-green-text: #34d399;
+            --badge-red-bg: rgba(239, 68, 68, 0.15);
+            --badge-red-text: #f87171;
+            --badge-yellow-bg: rgba(245, 158, 11, 0.15);
+            --badge-yellow-text: #fbbf24;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
         body {
@@ -59,45 +88,28 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            align-items: center;
+            padding: 0 16px 40px;
         }
 
-        /* Ambient Glow Effect */
-        .ambient-glow {
+        /* Navigation */
+        .nav-wrapper {
             position: fixed;
-            top: -120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.08) 45%, rgba(0,0,0,0) 70%);
-            filter: blur(50px);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Navbar Header */
-        .header-wrapper {
-            position: sticky;
-            top: 14px;
-            z-index: 100;
-            padding: 0 20px;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .navbar {
+            top: 16px;
+            width: calc(100% - 32px);
+            max-width: 1000px;
+            height: 56px;
             background: var(--bg-nav);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
-            border-radius: 999px;
-            padding: 10px 22px;
+            border-radius: var(--radius-card);
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-card);
+            padding: 0 16px;
+            box-shadow: var(--shadow-subtle);
         }
 
         .nav-brand {
@@ -106,45 +118,69 @@
             gap: 10px;
             text-decoration: none;
             color: var(--text-heading);
-            font-family: 'Outfit', sans-serif;
             font-weight: 800;
-            font-size: 20px;
-            letter-spacing: -0.5px;
+            font-size: 15px;
+            letter-spacing: -0.3px;
         }
 
-        .brand-logo {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
-            color: #fff;
+        .brand-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
-            box-shadow: 0 4px 12px var(--primary-glow);
+            font-size: 13px;
         }
 
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             list-style: none;
         }
 
         .nav-link {
-            padding: 7px 14px;
-            border-radius: 999px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
             color: var(--text-body);
             text-decoration: none;
-            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary);
-            background: rgba(99, 102, 241, 0.08);
+        .nav-link:hover {
+            color: var(--text-heading);
+            background: var(--card-subtle);
+        }
+
+        .nav-link.active {
+            color: var(--text-heading);
+            font-weight: 700;
+        }
+
+        .pool-badge {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 8px;
+            background: var(--card-subtle);
+            color: var(--text-heading);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .pool-badge:hover {
+            border-color: var(--border-hover);
         }
 
         .nav-actions {
@@ -153,100 +189,105 @@
             gap: 8px;
         }
 
-        .theme-toggle-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
-            color: var(--text-heading);
+            color: var(--text-body);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 13px;
-            transition: var(--transition);
         }
 
-        .theme-toggle-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+        .icon-btn:hover {
+            color: var(--text-heading);
+            border-color: var(--border-hover);
         }
 
-        /* Main Container */
+        /* Main Workspace */
         .main-container {
-            max-width: 1100px;
+            max-width: 1000px;
             width: 100%;
-            margin: 35px auto;
-            padding: 0 20px;
-            flex: 1;
-            z-index: 1;
+            margin-top: 96px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        /* Hero Section */
-        .hero-section {
-            text-align: center;
-            margin-bottom: 35px;
+        /* Bento Hero */
+        .bento-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 36px 32px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            color: var(--primary);
-            font-size: 11.5px;
-            font-weight: 700;
+        .hero-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .hero-meta {
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
         }
 
         .hero-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 38px;
+            font-size: 30px;
             font-weight: 800;
+            letter-spacing: -0.8px;
             color: var(--text-heading);
-            line-height: 1.2;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
+            line-height: 1.15;
         }
 
-        .hero-title .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-            font-size: 15px;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 28px;
+        .hero-desc {
+            font-size: 14px;
+            color: var(--text-body);
+            max-width: 580px;
             line-height: 1.5;
+            margin-top: 6px;
         }
 
-        /* Search Input Box */
-        .search-box-card {
-            background: var(--bg-card);
+        .build-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--card-subtle);
+            color: var(--text-body);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 8px 10px 8px 18px;
+            align-self: flex-start;
+        }
+
+        /* Search & Input Bar */
+        .search-container {
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-float);
-            max-width: 760px;
-            margin: 0 auto 28px;
-            transition: var(--transition);
+            gap: 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            padding: 8px 10px 8px 14px;
+            box-shadow: var(--shadow-subtle);
         }
 
-        .search-box-card:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-float);
+        .search-container:focus-within {
+            border-color: var(--text-heading);
         }
 
         .search-input {
@@ -255,127 +296,137 @@
             outline: none;
             background: transparent;
             color: var(--text-heading);
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 500;
         }
 
         .search-input::placeholder {
             color: var(--text-muted);
+            font-weight: 400;
         }
 
-        .btn-fetch {
-            padding: 11px 22px;
-            border-radius: 14px;
+        .btn-primary {
+            padding: 10px 20px;
+            border-radius: var(--radius-btn);
             border: none;
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: #ffffff;
-            font-size: 13.5px;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            transition: var(--transition);
-            box-shadow: 0 4px 14px var(--primary-glow);
-        }
-
-        .btn-fetch:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px var(--primary-glow);
-        }
-
-        .btn-fetch:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Creative Platform Pills */
-        .platform-pills {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
+            gap: 7px;
         }
 
-        .pill-item {
-            padding: 6px 14px;
-            border-radius: 999px;
+        .btn-primary:hover {
+            background: var(--btn-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            padding: 8px 14px;
+            border-radius: var(--radius-btn);
+            border: 1px solid var(--border-color);
             background: var(--bg-card);
+            color: var(--text-heading);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            background: var(--card-subtle);
+        }
+
+        /* Filter Tabs */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 7px 14px;
+            border-radius: var(--radius-pill);
+            background: var(--card-subtle);
             border: 1px solid var(--border-color);
             font-size: 12px;
             font-weight: 600;
             color: var(--text-body);
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: var(--transition);
         }
 
-        .pill-item:hover, .pill-item.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(99, 102, 241, 0.08);
+        .filter-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-heading);
         }
 
-        /* Results Card Container */
-        .result-container {
+        .filter-btn.active {
+            background: var(--pill-active-bg);
+            color: var(--pill-active-text);
+            border-color: var(--pill-active-bg);
+        }
+
+        /* Results Card */
+        .result-panel {
             display: none;
-            margin-top: 20px;
-        }
-
-        .result-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-card);
             padding: 24px;
             box-shadow: var(--shadow-card);
-            margin-bottom: 24px;
         }
 
         .result-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 18px;
-            padding-bottom: 14px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
 
         .result-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-heading);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 16px;
-            margin-bottom: 20px;
         }
 
         .media-card {
-            background: var(--bg-page);
+            background: var(--card-subtle);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-sub);
+            border-radius: 12px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: var(--transition);
         }
 
         .media-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-card);
+            border-color: var(--border-hover);
         }
 
         .media-thumb {
@@ -389,35 +440,60 @@
         .media-info {
             padding: 12px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             gap: 8px;
         }
 
-        .media-btn {
+        .btn-card {
             width: 100%;
             padding: 8px 12px;
             border-radius: 8px;
-            border: 1px solid var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-heading);
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: var(--transition);
             text-decoration: none;
         }
 
-        .media-btn:hover {
-            background: var(--primary);
-            color: #ffffff;
+        .btn-card:hover {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border-color: var(--btn-bg);
         }
 
-        /* Modal Styles */
+        /* History Section */
+        .history-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .history-card {
+            background: var(--card-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Modal Architecture */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -425,29 +501,30 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 16px;
         }
 
-        .modal-card {
+        .modal-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: var(--radius-card);
             width: 100%;
-            max-width: 540px;
-            box-shadow: var(--shadow-float);
+            max-width: 580px;
+            box-shadow: var(--shadow-modal);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            max-height: 90vh;
+            max-height: 88vh;
         }
 
         .modal-header {
-            padding: 16px 20px;
+            padding: 18px 24px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -455,9 +532,8 @@
         }
 
         .modal-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
             color: var(--text-heading);
             display: flex;
             align-items: center;
@@ -472,12 +548,95 @@
             cursor: pointer;
         }
 
+        .modal-close:hover {
+            color: var(--text-heading);
+        }
+
+        /* Modal Sub-Tabs */
+        .modal-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-subtle);
+            padding: 0 16px;
+            gap: 4px;
+        }
+
+        .modal-tab-btn {
+            padding: 10px 14px;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-tab-btn.active {
+            color: var(--text-heading);
+            border-bottom-color: var(--text-heading);
+        }
+
         .modal-body {
-            padding: 20px;
+            padding: 20px 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 16px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-heading);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: var(--text-heading);
+        }
+
+        /* Account Item Card */
+        .account-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--card-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            gap: 10px;
+        }
+
+        .status-pill {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-ready {
+            background: var(--badge-green-bg);
+            color: var(--badge-green-text);
+        }
+
+        .status-limit {
+            background: var(--badge-yellow-bg);
+            color: var(--badge-yellow-text);
+        }
+
+        .status-error {
+            background: var(--badge-red-bg);
+            color: var(--badge-red-text);
         }
 
         /* Toast */
@@ -485,17 +644,17 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            background: var(--text-heading);
-            color: var(--bg-card);
-            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            font-size: 12.5px;
             font-weight: 600;
-            box-shadow: var(--shadow-float);
+            box-shadow: var(--shadow-modal);
             z-index: 2000;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(12px);
+            transition: var(--transition);
             pointer-events: none;
         }
 
@@ -503,185 +662,250 @@
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* History Cards */
-        .history-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
-
-        .history-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sub);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: var(--shadow-card);
-        }
     </style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
 
-    <!-- Floating Navbar -->
-    <div class="header-wrapper">
-        <nav class="navbar">
-            <a href="/" class="nav-brand">
-                <div class="brand-logo">
-                    <i class="fa-solid fa-shapes"></i>
-                </div>
-                <span>ArchNodes</span>
-            </a>
-
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link active" id="navHome" onclick="switchView('home')">Studio</a></li>
-                <li><a href="#history" class="nav-link" id="navHistory" onclick="switchView('history')">History</a></li>
-                <li><a href="javascript:void(0)" class="nav-link" onclick="openBypassModal()"><i class="fa-solid fa-shield-halved" style="color: var(--accent-green);"></i> Bypass</a></li>
-                <li>
-                    <a href="javascript:void(0)" class="nav-link" id="btnFreepikStatusPill" onclick="openFreepikModal()" style="font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.3); display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-pen-nib"></i> <span id="freepikPillText">Freepik Pool: Checking...</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="nav-actions">
-                <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-                    <i class="fa-solid fa-sun" id="themeIcon"></i>
-                </button>
+    <!-- Navigation -->
+    <div class="nav-wrapper">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-shapes"></i>
             </div>
-        </nav>
+            <span>ArchNodes</span>
+        </a>
+
+        <ul class="nav-menu">
+            <li><a href="#studio" class="nav-link active" id="navStudio" onclick="switchView('studio')">Studio</a></li>
+            <li><a href="#history" class="nav-link" id="navHistory" onclick="switchView('history')">History</a></li>
+            <li><a href="javascript:void(0)" class="nav-link" onclick="openNetworkModal()"><i class="fa-solid fa-network-wired"></i> Network</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <div class="pool-badge" id="btnFreepikPool" onclick="openFreepikModal()">
+                <i class="fa-solid fa-server"></i>
+                <span id="freepikPillText">Freepik Pool: 0 Active</span>
+            </div>
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </button>
+        </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Workspace -->
     <main class="main-container">
-        <!-- View 1: Studio (Home) -->
-        <div id="homeView">
-            <section class="hero-section">
-                <div class="hero-badge">
-                    <i class="fa-solid fa-sparkles"></i> High-Speed Creative Downloader
+        <!-- View 1: Studio -->
+        <div id="studioView" style="display: flex; flex-direction: column; gap: 20px;">
+            <section class="bento-hero">
+                <div class="hero-head">
+                    <div>
+                        <div class="hero-meta">Digital Asset Resolver</div>
+                        <h1 class="hero-title">Creative Asset Pipeline</h1>
+                        <p class="hero-desc">Extract, resolve, and stream high-resolution creative assets directly to your local workspace.</p>
+                    </div>
+                    <div class="build-tag">Engine v1.0.0</div>
                 </div>
-                <h1 class="hero-title">Download <span class="gradient-text">Premium Assets</span> in Seconds</h1>
-                <p class="hero-subtitle">Bypass limits and download vectors, PSDs, stock footage, templates, and 3D models with direct high-speed cloud acceleration.</p>
 
-                <!-- Search Input Bar -->
-                <div class="search-box-card">
-                    <i class="fa-solid fa-link" style="color: var(--primary); font-size: 16px;"></i>
+                <!-- Input Box -->
+                <div class="search-container">
+                    <i class="fa-solid fa-link" style="color: var(--text-muted); font-size: 14px;"></i>
                     <input type="text" id="urlInput" class="search-input" placeholder="Paste Freepik or Envato Elements asset URL here..." />
-                    <button id="btnFetch" class="btn-fetch" onclick="fetchAsset()">
-                        <i class="fa-solid fa-bolt"></i> Extract
+                    <button id="btnFetch" class="btn-primary" onclick="fetchAsset()">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>Extract</span>
                     </button>
                 </div>
 
-                <!-- Platform Filters -->
-                <div class="platform-pills">
-                    <div class="pill-item active" onclick="filterPlatform('all')"><i class="fa-solid fa-wand-magic-sparkles"></i> All Supported</div>
-                    <div class="pill-item" onclick="filterPlatform('freepik')"><i class="fa-solid fa-vector-square" style="color: #0284C7;"></i> Freepik & Magnific</div>
-                    <div class="pill-item" onclick="filterPlatform('envato')"><i class="fa-solid fa-leaf" style="color: #10B981;"></i> Envato Elements</div>
-                    <div class="pill-item" onclick="filterPlatform('motionarray')"><i class="fa-solid fa-film" style="color: #8B5CF6;"></i> Motion Array</div>
-                    <div class="pill-item" onclick="filterPlatform('vecteezy')"><i class="fa-solid fa-shapes" style="color: #F59E0B;"></i> Vecteezy</div>
+                <!-- Platform Filter Chips -->
+                <div class="filter-row">
+                    <button class="filter-btn active" onclick="filterPlatform('all')"><i class="fa-solid fa-layer-group"></i> All Sources</button>
+                    <button class="filter-btn" onclick="filterPlatform('freepik')"><i class="fa-solid fa-vector-square"></i> Freepik</button>
+                    <button class="filter-btn" onclick="filterPlatform('envato')"><i class="fa-solid fa-leaf"></i> Envato Elements</button>
+                    <button class="filter-btn" onclick="filterPlatform('motionarray')"><i class="fa-solid fa-film"></i> Motion Array</button>
                 </div>
             </section>
 
-            <!-- Extraction Result Container -->
-            <div id="resultContainer" class="result-container">
-                <div class="result-card">
-                    <div class="result-header">
-                        <div class="result-title">
-                            <i class="fa-solid fa-box-open" style="color: var(--primary);"></i>
-                            <span id="assetTitle">Asset Details</span>
-                        </div>
-                        <span id="assetCountBadge" style="padding: 4px 10px; border-radius: 999px; background: rgba(99, 102, 241, 0.1); color: var(--primary); font-size: 12px; font-weight: 700;">1 Asset</span>
+            <!-- Results Section -->
+            <section id="resultContainer" class="result-panel">
+                <div class="result-header">
+                    <div class="result-title">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <span id="assetTitle">Resolved Media Assets</span>
                     </div>
-
-                    <div id="mediaGrid" class="media-grid">
-                        <!-- Dynamic Media Cards -->
-                    </div>
+                    <span id="assetCountBadge" style="padding: 3px 8px; border-radius: 6px; background: var(--card-subtle); border: 1px solid var(--border-color); font-size: 11px; font-weight: 700; color: var(--text-heading);">1 Asset</span>
                 </div>
-            </div>
+
+                <div id="mediaGrid" class="media-grid">
+                    <!-- Dynamic Media Cards -->
+                </div>
+            </section>
         </div>
 
         <!-- View 2: History -->
         <div id="historyView" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 24px; color: var(--text-heading);">Download History</h2>
-                <button onclick="clearHistory()" style="padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;">
-                    <i class="fa-solid fa-trash-can"></i> Clear All
-                </button>
-            </div>
-            <div id="historyGrid" class="history-grid">
-                <!-- Dynamic History Cards -->
-            </div>
+            <section class="history-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="hero-meta">Activity Records</div>
+                        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">Download History</h2>
+                    </div>
+                    <button onclick="clearHistory()" class="filter-btn" style="color: var(--text-muted);">
+                        <i class="fa-solid fa-trash-can"></i> Clear Records
+                    </button>
+                </div>
+                <div id="historyGrid" class="history-grid">
+                    <!-- Dynamic History Cards -->
+                </div>
+            </section>
         </div>
     </main>
 
-    <!-- Freepik Pool Modal -->
-    <div id="freepikModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-header">
+    <!-- Complete Freepik Pool Management Modal (Sleek, Stable, 1-Row Tabs) -->
+    <div id="freepikModal" class="modal-overlay" onclick="if(event.target===this) closeFreepikModal();">
+        <div class="modal-box" style="height: 540px; max-height: 90vh; width: 100%; max-width: 560px; display: flex; flex-direction: column; overflow: hidden;">
+            <!-- Modal Header (Fixed) -->
+            <div class="modal-header" style="flex-shrink: 0;">
                 <div class="modal-title">
-                    <i class="fa-solid fa-pen-nib" style="color: var(--primary);"></i> Freepik Account Pool
+                    <i class="fa-solid fa-server"></i>
+                    <span>Freepik Account Pool</span>
                 </div>
                 <button class="modal-close" onclick="closeFreepikModal()">&times;</button>
             </div>
-            <div class="modal-body">
-                <div style="padding: 12px 16px; border-radius: var(--radius-sub); background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 12px; color: var(--text-heading);">
-                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 2px;">⚡ Browser Cache Account Storage</div>
-                    <div style="color: var(--text-muted); font-size: 11.5px;">Accounts are securely stored in your local browser cache. Server deployments remain 100% zero-storage.</div>
+
+            <!-- Single Line Tabs (No Wrap) -->
+            <div class="modal-tabs" style="flex-shrink: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid var(--border-color); background: var(--card-subtle); padding: 0 16px;">
+                <button id="tabBtnPool" class="modal-tab-btn active" onclick="switchModalTab('pool')">
+                    <i class="fa-solid fa-list-check"></i> Pool Status
+                </button>
+                <button id="tabBtnDotTrick" class="modal-tab-btn" onclick="switchModalTab('dottrick')">
+                    <i class="fa-solid fa-network-wired"></i> Dot-Trick Generator
+                </button>
+                <button id="tabBtnAdd" class="modal-tab-btn" onclick="switchModalTab('add')">
+                    <i class="fa-solid fa-plus"></i> Add & Auto-Register
+                </button>
+            </div>
+
+            <!-- TAB 1: POOL STATUS (Scrollable Body) -->
+            <div id="modalTabPool" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 18px 22px;">
+                <!-- Summary Card -->
+                <div style="padding: 12px 16px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading);">Active Browser Pool</div>
+                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Stored in local client cache (zero-server storage)</div>
+                    </div>
+                    <span id="poolSummaryCount" style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-heading);">0 Accounts</span>
                 </div>
 
-                <!-- Status Summary -->
-                <div id="fpStatusText" style="font-size: 14px; font-weight: 700; color: var(--text-heading);">Checking pool status...</div>
-
-                <!-- Account List -->
-                <div id="fpAccountsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
-                    <!-- Dynamic Accounts -->
-                </div>
-
-                <!-- Add Account Inputs -->
+                <!-- Action Controls -->
                 <div style="display: flex; gap: 8px;">
-                    <input type="email" id="fpEmailInput" placeholder="Freepik Email" style="flex: 1; padding: 8px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12.5px; outline: none;" />
-                    <input type="password" id="fpPassInput" placeholder="Password" style="width: 130px; padding: 8px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12.5px; outline: none;" />
-                </div>
-
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="fpAddSingleAccount()" style="flex: 1; padding: 9px; border-radius: var(--radius-sub); border: none; background: var(--primary); color: #fff; font-weight: 700; font-size: 12.5px; cursor: pointer;">
-                        <i class="fa-solid fa-plus"></i> Add Account
+                    <button onclick="verifyAllPoolAccounts()" id="btnVerifyAll" class="btn-secondary" style="flex: 1;">
+                        <i class="fa-solid fa-shield-halved"></i> Verify All
                     </button>
-                    <button onclick="fpExportAccounts()" style="padding: 9px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12px; font-weight: 600; cursor: pointer;">
-                        <i class="fa-solid fa-download"></i> Backup JSON
+                    <button onclick="clearInvalidAccounts()" class="btn-secondary">
+                        <i class="fa-solid fa-filter"></i> Clear Inactive
+                    </button>
+                    <button onclick="exportAccountsJson()" class="btn-secondary" title="Export Backup JSON">
+                        <i class="fa-solid fa-download"></i> Backup
+                    </button>
+                </div>
+
+                <!-- Accounts Container -->
+                <div id="accountsListContainer" style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; overflow-y: auto; min-height: 160px;">
+                    <!-- Dynamically Rendered Accounts -->
+                </div>
+            </div>
+
+            <!-- TAB 2: GMAIL DOT-TRICK GENERATOR (Scrollable Body) -->
+            <div id="modalTabDotTrick" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 12px; padding: 18px 22px;">
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+                    Generate unlimited dot-trick aliases from your main Gmail. Confirmation emails go straight to your single Gmail inbox.
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-heading);">Base Gmail Address</label>
+                    <input type="email" id="dotBaseEmail" class="modal-input" placeholder="username@gmail.com" />
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-heading);">Account Password</label>
+                    <input type="password" id="dotBasePassword" class="modal-input" placeholder="Password for aliases" />
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="generateDotAliases()" class="btn-secondary" style="flex: 1;">
+                        <i class="fa-solid fa-calculator"></i> Generate Aliases
+                    </button>
+                    <button onclick="addDotAliasesToPool()" id="btnAddDotAliases" class="btn-primary" style="flex: 1;" disabled>
+                        <i class="fa-solid fa-plus"></i> Add All to Pool
+                    </button>
+                </div>
+
+                <textarea id="dotAliasesPreview" class="modal-input" style="height: 100px; font-family: monospace; font-size: 11.5px; resize: none;" placeholder="Generated aliases will appear here..." readonly></textarea>
+            </div>
+
+            <!-- TAB 3: ADD ACCOUNT & AUTO-REGISTER (Scrollable Body) -->
+            <div id="modalTabAdd" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 14px; padding: 18px 22px;">
+                <!-- 1-Click Auto Register Section -->
+                <div style="padding: 12px 14px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Instant 1-Click Auto Register</span>
+                        <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--badge-green-bg); color: var(--badge-green-text);">TEMPMAIL</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.35;">Auto-creates a temporary email, registers on Freepik, and adds to your active pool.</div>
+                    <button id="btnAutoRegister" onclick="runAutoRegister()" class="btn-primary" style="width: 100%; padding: 8px 14px;">
+                        <i class="fa-solid fa-bolt"></i> Generate & Add Account
+                    </button>
+                    <div id="autoRegResult" style="display: none; padding: 8px 10px; border-radius: 6px; font-size: 11.5px; border: 1px solid var(--border-color); background: var(--bg-card);"></div>
+                </div>
+
+                <!-- Single Account Manual Adder -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Add Single Account</span>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="email" id="fpSingleEmail" class="modal-input" placeholder="Email" />
+                        <input type="password" id="fpSinglePass" class="modal-input" placeholder="Password" style="width: 140px;" />
+                    </div>
+                    <button id="btnAddSingle" onclick="addSingleAccountVerified()" class="btn-secondary" style="width: 100%;">
+                        <i class="fa-solid fa-shield-halved"></i> Verify & Add
+                    </button>
+                </div>
+
+                <!-- Bulk Import Multi-Line -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Bulk Import (Multi-Line)</span>
+                    <textarea id="bulkImportText" class="modal-input" style="height: 70px; font-family: monospace; font-size: 11.5px; resize: none;" placeholder="email:password (one per line)"></textarea>
+                    <button onclick="importBulkAccounts()" class="btn-secondary" style="width: 100%;">
+                        <i class="fa-solid fa-file-import"></i> Parse & Import
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bypass Settings Modal -->
-    <div id="bypassModal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 440px;">
+    <!-- Network & Proxy Modal -->
+    <div id="networkModal" class="modal-overlay" onclick="if(event.target===this) closeNetworkModal();">
+        <div class="modal-box" style="max-width: 440px;">
             <div class="modal-header">
                 <div class="modal-title">
-                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-green);"></i> Anti-Block & DNS Bypass
+                    <i class="fa-solid fa-network-wired"></i>
+                    <span>Network & DNS Routing</span>
                 </div>
-                <button class="modal-close" onclick="closeBypassModal()">&times;</button>
+                <button class="modal-close" onclick="closeNetworkModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text-heading);">
-                    <span>Enable DoH / Proxy Bypass</span>
-                    <input type="checkbox" id="bypassToggle" checked style="accent-color: var(--primary);" />
+                    <span>Enable DNS-over-HTTPS (DoH)</span>
+                    <input type="checkbox" id="bypassToggle" checked style="accent-color: var(--btn-bg);" />
                 </label>
                 <div>
-                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">DNS-over-HTTPS Provider:</label>
-                    <select id="dohProviderSelect" style="width: 100%; padding: 8px 10px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 13px;">
-                        <option value="cloudflare">Cloudflare (1.1.1.1 - Fastest)</option>
-                        <option value="google">Google DNS (8.8.8.8)</option>
-                        <option value="adguard">AdGuard DNS</option>
+                    <label style="font-size: 11.5px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">Upstream DNS Provider</label>
+                    <select id="dohProviderSelect" class="modal-input">
+                        <option value="cloudflare">Cloudflare (1.1.1.1)</option>
+                        <option value="google">Google (8.8.8.8)</option>
                         <option value="quad9">Quad9 (9.9.9.9)</option>
                     </select>
                 </div>
-                <button onclick="saveBypassSettings()" style="padding: 9px; border-radius: var(--radius-sub); border: none; background: var(--primary); color: #fff; font-weight: 700; font-size: 13px; cursor: pointer;">
+                <button onclick="saveNetworkSettings()" class="btn-primary" style="justify-content: center; width: 100%;">
                     Save Settings
                 </button>
             </div>
@@ -689,138 +913,430 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast">Notification message</div>
+    <div id="toast" class="toast">Action completed</div>
 
+    <!-- Application Script Logic -->
     <script>
-        const FP_STORAGE_KEY = 'archnodes_freepik_pool_v1';
-        const HISTORY_STORAGE_KEY = 'archnodes_history_v1';
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
+        // --- Theme Engine ---
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcon(false);
+            }
         }
 
         function toggleTheme() {
-            const doc = document.documentElement;
-            const isDark = doc.getAttribute('data-theme') === 'dark';
-            doc.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                updateThemeIcon(false);
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                updateThemeIcon(true);
+            }
         }
 
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+
+        initTheme();
+
+        // --- Toast Notifications ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- View Switching ---
         function switchView(view) {
-            document.getElementById('homeView').style.display = view === 'home' ? 'block' : 'none';
-            document.getElementById('historyView').style.display = view === 'history' ? 'block' : 'none';
-            document.getElementById('navHome').classList.toggle('active', view === 'home');
-            document.getElementById('navHistory').classList.toggle('active', view === 'history');
-            if (view === 'history') renderHistory();
+            const studioView = document.getElementById('studioView');
+            const historyView = document.getElementById('historyView');
+            const navStudio = document.getElementById('navStudio');
+            const navHistory = document.getElementById('navHistory');
+
+            if (view === 'studio') {
+                studioView.style.display = 'flex';
+                historyView.style.display = 'none';
+                navStudio.classList.add('active');
+                navHistory.classList.remove('active');
+            } else {
+                studioView.style.display = 'none';
+                historyView.style.display = 'block';
+                navStudio.classList.remove('active');
+                navHistory.classList.add('active');
+                renderHistory();
+            }
         }
 
+        // --- Platform Filter Tabs ---
         function filterPlatform(platform) {
-            document.querySelectorAll('.pill-item').forEach(p => p.classList.remove('active'));
-            event.target.closest('.pill-item').classList.add('active');
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const input = document.getElementById('urlInput');
+            if (platform === 'freepik') input.placeholder = 'Paste Freepik URL (e.g. https://www.freepik.com/premium-psd/...)';
+            else if (platform === 'envato') input.placeholder = 'Paste Envato Elements URL (e.g. https://elements.envato.com/...)';
+            else input.placeholder = 'Paste Freepik or Envato Elements asset URL here...';
         }
 
-        // --- Freepik Browser Cache Storage ---
+        // --- Freepik Browser Pool Storage ---
+        const FREEPIK_STORAGE_KEY = 'archnodes_freepik_accounts';
+
         function getLocalFreepikAccounts() {
             try {
-                const raw = localStorage.getItem(FP_STORAGE_KEY);
-                return raw ? JSON.parse(raw) : [];
+                return JSON.parse(localStorage.getItem(FREEPIK_STORAGE_KEY) || '[]');
             } catch (e) {
                 return [];
             }
         }
 
         function saveLocalFreepikAccounts(accs) {
-            try {
-                localStorage.setItem(FP_STORAGE_KEY, JSON.stringify(accs || []));
-            } catch (e) {}
+            localStorage.setItem(FREEPIK_STORAGE_KEY, JSON.stringify(accs));
+            updateFreepikPill();
         }
 
-        async function fetchFreepikStatus() {
+        function openFreepikModal() {
+            document.getElementById('freepikModal').style.display = 'flex';
+            switchModalTab('pool');
+            renderPoolAccounts();
+        }
+
+        function closeFreepikModal() {
+            document.getElementById('freepikModal').style.display = 'none';
+        }
+
+        function switchModalTab(tab) {
+            const tabs = ['pool', 'dottrick', 'add'];
+            tabs.forEach(t => {
+                const btnId = t === 'pool' ? 'tabBtnPool' : t === 'dottrick' ? 'tabBtnDotTrick' : 'tabBtnAdd';
+                const bodyId = t === 'pool' ? 'modalTabPool' : t === 'dottrick' ? 'modalTabDotTrick' : 'modalTabAdd';
+                const btn = document.getElementById(btnId);
+                const body = document.getElementById(bodyId);
+                if (btn) btn.classList.toggle('active', t === tab);
+                if (body) body.style.display = (t === tab) ? 'flex' : 'none';
+            });
+        }
+
+        function capitalize(s) {
+            if (s === 'dottrick') return 'DotTrick';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        // Render Pool Status
+        function renderPoolAccounts(serverStatus) {
             const accs = getLocalFreepikAccounts();
-            const pillText = document.getElementById('freepikPillText');
+            const container = document.getElementById('accountsListContainer');
+            const summaryCount = document.getElementById('poolSummaryCount');
+
+            summaryCount.textContent = `${accs.length} Accounts`;
+
+            if (accs.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 24px 0; color: var(--text-muted); font-size: 12.5px;">
+                        No accounts in browser pool yet. Use <strong>Auto Register</strong> or <strong>Add Account</strong>.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = accs.map((acc, index) => {
+                let statusClass = 'status-ready';
+                let statusText = acc.status || 'READY';
+
+                if (serverStatus && serverStatus.accounts) {
+                    const match = serverStatus.accounts.find(a => a.email.toLowerCase() === acc.email.toLowerCase());
+                    if (match) {
+                        statusText = match.status;
+                        if (match.status.includes('Limit')) statusClass = 'status-limit';
+                        else if (match.status.includes('Invalid') || match.status.includes('Error')) statusClass = 'status-error';
+                    }
+                }
+
+                return `
+                    <div class="account-card">
+                        <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden;">
+                            <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                ${escapeHtml(acc.email)}
+                            </span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="status-pill ${statusClass}">${escapeHtml(statusText)}</span>
+                                <span style="font-size: 10.5px; color: var(--text-muted); font-family: monospace;">••••••••</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <button onclick="verifySingleAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Re-verify Account">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                            <button onclick="removeAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px; color: var(--badge-red-text);" title="Delete Account">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Add Single Account with Verification
+        async function addSingleAccountVerified() {
+            const email = document.getElementById('fpSingleEmail').value.trim();
+            const password = document.getElementById('fpSinglePass').value.trim();
+            const btn = document.getElementById('btnAddSingle');
+
+            if (!email || !password) {
+                showToast('Email and password required');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying credentials...`;
+
+            try {
+                const res = await fetch('/api/freepik-batch-add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: [{ email, password }] })
+                });
+                const data = await res.json();
+
+                if ((data.added_count && data.added_count > 0) || (data.already_in_pool && data.already_in_pool.length > 0)) {
+                    const accs = getLocalFreepikAccounts().filter(a => a.email.toLowerCase() !== email.toLowerCase());
+                    accs.push({ email, password, status: 'READY' });
+                    saveLocalFreepikAccounts(accs);
+                    document.getElementById('fpSingleEmail').value = '';
+                    document.getElementById('fpSinglePass').value = '';
+                    showToast('Account verified and added to pool');
+                    renderPoolAccounts();
+                    switchModalTab('pool');
+                } else {
+                    const reason = (data.failed && data.failed[0] && data.failed[0].reason) || 'Verification failed (Invalid login)';
+                    showToast(reason);
+                }
+            } catch (err) {
+                showToast('Verification failed');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-shield-check"></i> Verify & Add Account`;
+            }
+        }
+
+        // Verify Single Account
+        async function verifySingleAccount(index) {
+            const accs = getLocalFreepikAccounts();
+            const target = accs[index];
+            if (!target) return;
+
+            showToast(`Verifying ${target.email}...`);
+            try {
+                const res = await fetch('/api/freepik-batch-add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: [{ email: target.email, password: target.password }] })
+                });
+                const data = await res.json();
+                if (data.added_count > 0 || (data.already_in_pool && data.already_in_pool.length > 0)) {
+                    target.status = 'READY';
+                    showToast(`${target.email} is active`);
+                } else {
+                    target.status = 'INVALID';
+                    showToast(`${target.email} failed verification`);
+                }
+                saveLocalFreepikAccounts(accs);
+                renderPoolAccounts();
+            } catch (e) {
+                showToast('Verification request failed');
+            }
+        }
+
+        // Verify All Pool Accounts
+        async function verifyAllPoolAccounts() {
+            const accs = getLocalFreepikAccounts();
+            if (accs.length === 0) {
+                showToast('No accounts in pool');
+                return;
+            }
+
+            const btn = document.getElementById('btnVerifyAll');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking Health...`;
+
             try {
                 const res = await fetch('/api/freepik-status', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({accounts: accs})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: accs })
                 });
                 const data = await res.json();
-                if (data && data.status) {
-                    if (pillText) pillText.innerText = data.status.badge_text || data.status.summary_text;
-                    renderFreepikAccounts(data.status);
-                    return data.status;
+                if (data.success && data.status) {
+                    renderPoolAccounts(data.status);
+                    showToast(`Verified ${accs.length} accounts`);
                 }
-            } catch (e) {}
-
-            const fallback = {
-                badge_text: accs.length > 0 ? `Freepik Pool: ${accs.length} Ready` : "Freepik: Pool Empty",
-                summary_text: `${accs.length} Accounts in Browser Pool`,
-                accounts: accs.map(a => ({ email: a.email, status: 'Ready / Active' }))
-            };
-            if (pillText) pillText.innerText = fallback.badge_text;
-            renderFreepikAccounts(fallback);
-            return fallback;
+            } catch (e) {
+                showToast('Verification check error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Verify All Accounts`;
+            }
         }
 
-        function renderFreepikAccounts(st) {
-            const txt = document.getElementById('fpStatusText');
-            const list = document.getElementById('fpAccountsList');
-            if (txt) txt.innerText = st.summary_text;
-            if (list) {
-                list.innerHTML = '';
-                (st.accounts || []).forEach(a => {
-                    const item = document.createElement('div');
-                    item.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--bg-page);border:1px solid var(--border-color);font-size:12px;';
-                    item.innerHTML = `
-                        <span style="font-weight:600;color:var(--text-heading);">${a.email}</span>
-                        <button onclick="fpDeleteAccount('${a.email}')" style="background:transparent;border:none;color:#EF4444;cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+        // 1-Click Auto Register
+        async function runAutoRegister() {
+            const btn = document.getElementById('btnAutoRegister');
+            const resultBox = document.getElementById('autoRegResult');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Account...`;
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `<div style="color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Creating temporary email and registering on Freepik...</div>`;
+
+            try {
+                const res = await fetch('/api/freepik-auto-register', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success && data.account) {
+                    const accs = getLocalFreepikAccounts();
+                    accs.push({
+                        email: data.account.email,
+                        password: data.account.password,
+                        status: 'READY'
+                    });
+                    saveLocalFreepikAccounts(accs);
+
+                    resultBox.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 4px; color: var(--text-heading);">
+                            <span style="font-weight: 700; color: var(--badge-green-text);"><i class="fa-solid fa-check"></i> Account Generated Successfully</span>
+                            <span style="font-size: 11.5px;">Email: <code>${escapeHtml(data.account.email)}</code></span>
+                            <span style="font-size: 11.5px;">Password: <code>${escapeHtml(data.account.password)}</code></span>
+                        </div>
                     `;
-                    list.appendChild(item);
-                });
-                if (!st.accounts || st.accounts.length === 0) {
-                    list.innerHTML = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:12px;">No accounts in browser pool.</div>';
+                    showToast('Account auto-registered & saved to pool');
+                    renderPoolAccounts();
+                } else {
+                    resultBox.innerHTML = `
+                        <div style="color: var(--badge-red-text); font-weight: 600;">
+                            ${escapeHtml(data.error || 'Auto registration failed (CAPTCHA / Rate limit)')}
+                        </div>
+                    `;
+                    showToast(data.error || 'Auto registration failed');
                 }
+            } catch (err) {
+                resultBox.innerHTML = `<div style="color: var(--badge-red-text);">Network error during auto registration</div>`;
+                showToast('Registration error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Generate & Register Account`;
             }
         }
 
-        async function fpAddSingleAccount() {
-            const email = document.getElementById('fpEmailInput').value.trim();
-            const password = document.getElementById('fpPassInput').value.trim();
-            if (!email || !password) { showToast('Please enter email and password'); return; }
+        // Gmail Dot-Trick Generator
+        let generatedDotList = [];
 
-            const res = await fetch('/api/freepik-batch-add', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({accounts: [{email, password}]})
+        function generateDotAliases() {
+            const baseEmail = document.getElementById('dotBaseEmail').value.trim();
+            const password = document.getElementById('dotBasePassword').value.trim();
+            const preview = document.getElementById('dotAliasesPreview');
+            const addBtn = document.getElementById('btnAddDotAliases');
+
+            if (!baseEmail.includes('@gmail.com')) {
+                showToast('Must be a valid @gmail.com address');
+                return;
+            }
+            if (!password) {
+                showToast('Please specify a password for generated aliases');
+                return;
+            }
+
+            const username = baseEmail.split('@')[0].replace(/\./g, '');
+            const aliases = [];
+
+            // Generate variations
+            for (let i = 1; i < username.length; i++) {
+                const alias = username.slice(0, i) + '.' + username.slice(i) + '@gmail.com';
+                aliases.push(alias);
+                if (aliases.length >= 20) break;
+            }
+
+            generatedDotList = aliases.map(email => ({ email, password }));
+            preview.value = aliases.join('\n');
+            addBtn.disabled = false;
+            showToast(`Generated ${aliases.length} dot aliases`);
+        }
+
+        function addDotAliasesToPool() {
+            if (generatedDotList.length === 0) return;
+            const current = getLocalFreepikAccounts();
+            const existingEmails = new Set(current.map(a => a.email.toLowerCase()));
+            let added = 0;
+
+            generatedDotList.forEach(item => {
+                if (!existingEmails.has(item.email.toLowerCase())) {
+                    current.push({ email: item.email, password: item.password, status: 'READY' });
+                    existingEmails.add(item.email.toLowerCase());
+                    added++;
+                }
             });
-            const data = await res.json();
-            if (data.added_count > 0 || (data.already_in_pool && data.already_in_pool.length > 0)) {
-                const accs = getLocalFreepikAccounts().filter(a => a.email.toLowerCase() !== email.toLowerCase());
-                accs.push({email, password});
-                saveLocalFreepikAccounts(accs);
-                document.getElementById('fpEmailInput').value = '';
-                document.getElementById('fpPassInput').value = '';
-                showToast('✅ Account added to browser pool!');
-                fetchFreepikStatus();
-            } else {
-                showToast('❌ Account verification failed');
+
+            saveLocalFreepikAccounts(current);
+            showToast(`Added ${added} dot aliases to browser pool`);
+            renderPoolAccounts();
+            switchModalTab('pool');
+        }
+
+        // Bulk Import Accounts
+        function importBulkAccounts() {
+            const text = document.getElementById('bulkImportText').value.trim();
+            if (!text) {
+                showToast('Please paste accounts to import');
+                return;
             }
+
+            const lines = text.split('\n');
+            const current = getLocalFreepikAccounts();
+            const existingEmails = new Set(current.map(a => a.email.toLowerCase()));
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+                let parts = trimmed.split(':');
+                if (parts.length < 2) parts = trimmed.split(',');
+                if (parts.length >= 2) {
+                    const email = parts[0].trim();
+                    const password = parts.slice(1).join(':').trim();
+                    if (email && password && !existingEmails.has(email.toLowerCase())) {
+                        current.push({ email, password, status: 'READY' });
+                        existingEmails.add(email.toLowerCase());
+                        addedCount++;
+                    }
+                }
+            });
+
+            saveLocalFreepikAccounts(current);
+            document.getElementById('bulkImportText').value = '';
+            showToast(`Imported ${addedCount} accounts`);
+            renderPoolAccounts();
+            switchModalTab('pool');
         }
 
-        function fpDeleteAccount(email) {
-            const accs = getLocalFreepikAccounts().filter(a => a.email.toLowerCase() !== email.toLowerCase());
-            saveLocalFreepikAccounts(accs);
-            showToast('Account removed');
-            fetchFreepikStatus();
-        }
-
-        function fpExportAccounts() {
+        // Export Accounts JSON
+        function exportAccountsJson() {
             const accs = getLocalFreepikAccounts();
-            if (accs.length === 0) { showToast('No accounts to backup'); return; }
-            const blob = new Blob([JSON.stringify(accs, null, 2)], {type: 'application/json'});
+            if (accs.length === 0) {
+                showToast('No accounts to export');
+                return;
+            }
+            const blob = new Blob([JSON.stringify(accs, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `archnodes_freepik_backup_${Date.now()}.json`;
@@ -828,148 +1344,205 @@
             showToast('Backup downloaded');
         }
 
-        function openFreepikModal() {
-            document.getElementById('freepikModal').style.display = 'flex';
-            fetchFreepikStatus();
+        // Clear Invalid Accounts
+        function clearInvalidAccounts() {
+            const accs = getLocalFreepikAccounts().filter(a => a.status !== 'INVALID' && a.status !== 'ERROR');
+            saveLocalFreepikAccounts(accs);
+            showToast('Cleared inactive accounts');
+            renderPoolAccounts();
         }
 
-        function closeFreepikModal() {
-            document.getElementById('freepikModal').style.display = 'none';
+        function removeAccount(index) {
+            const accs = getLocalFreepikAccounts();
+            accs.splice(index, 1);
+            saveLocalFreepikAccounts(accs);
+            renderPoolAccounts();
+            showToast('Account removed');
         }
 
-        function openBypassModal() {
-            document.getElementById('bypassModal').style.display = 'flex';
+        function updateFreepikPill() {
+            const accs = getLocalFreepikAccounts();
+            const pillText = document.getElementById('freepikPillText');
+            if (pillText) {
+                pillText.textContent = `Freepik: ${accs.length} Ready`;
+            }
         }
 
-        function closeBypassModal() {
-            document.getElementById('bypassModal').style.display = 'none';
+        // --- Network / DNS Modal ---
+        function openNetworkModal() {
+            document.getElementById('networkModal').style.display = 'flex';
         }
 
-        async function saveBypassSettings() {
+        function closeNetworkModal() {
+            document.getElementById('networkModal').style.display = 'none';
+        }
+
+        async function saveNetworkSettings() {
             const enabled = document.getElementById('bypassToggle').checked;
             const doh_provider = document.getElementById('dohProviderSelect').value;
-            await fetch('/api/bypass-settings', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({enabled, mode: 'doh', doh_provider})
-            });
-            closeBypassModal();
-            showToast('Bypass settings updated');
+            try {
+                await fetch('/api/bypass-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled, mode: 'doh', doh_provider })
+                });
+                closeNetworkModal();
+                showToast('Network settings updated');
+            } catch (e) {
+                showToast('Failed to save settings');
+            }
         }
 
-        // --- Core Extraction Flow ---
+        // --- Asset Extraction ---
         async function fetchAsset() {
             const url = document.getElementById('urlInput').value.trim();
-            if (!url) { showToast('Please enter an asset link'); return; }
-
             const btn = document.getElementById('btnFetch');
+            if (!url) {
+                showToast('Please paste a valid asset URL');
+                return;
+            }
+
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Extracting...';
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Extracting...</span>`;
 
             try {
-                if (url.toLowerCase().includes('freepik.com') || url.toLowerCase().includes('magnific.')) {
-                    const res = await fetch('/api/get-freepik-link', {
+                if (url.includes('freepik.com') || url.includes('magnific.ai')) {
+                    const accs = getLocalFreepikAccounts();
+                    if (accs.length === 0) {
+                        showToast('Please add at least 1 Freepik account to pool');
+                        openFreepikModal();
+                        return;
+                    }
+
+                    const res = await fetch('/api/freepik-download', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({url, accounts: getLocalFreepikAccounts()})
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url, accounts: accs })
                     });
                     const data = await res.json();
                     if (data.success && data.download_url) {
-                        showToast('🎉 Direct GDrive Link Ready!');
+                        showToast('Direct download link ready');
                         saveHistoryItem('Freepik Asset', url, 1);
                         window.open(data.download_url, '_blank');
                     } else {
-                        showToast('❌ ' + (data.error || 'Account Limit Reached'));
+                        showToast(data.error || 'Account limit reached or resolution failed');
                         openFreepikModal();
                     }
                 } else {
-                    const res = await fetch('/api/check', {
+                    const res = await fetch('/api/get-info', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({url})
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url })
                     });
                     const data = await res.json();
-                    if (data.status === 'success') {
-                        document.getElementById('assetTitle').innerText = data.model_name;
-                        document.getElementById('assetCountBadge').innerText = `${data.count} Available`;
-                        const grid = document.getElementById('mediaGrid');
-                        grid.innerHTML = '';
-                        (data.media_items || []).forEach(item => {
-                            const card = document.createElement('div');
-                            card.className = 'media-card';
-                            card.innerHTML = `
-                                <img src="${item.poster || item.src}" class="media-thumb" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';" />
-                                <div class="media-info">
-                                    <span style="font-size:11px;font-weight:700;color:var(--text-muted);">#${item.index} (${item.type.toUpperCase()})</span>
-                                    <a href="/api/download-stream?url=${encodeURIComponent(url)}&index=${item.index}" class="media-btn" target="_blank">
-                                        <i class="fa-solid fa-download"></i> Download
-                                    </a>
-                                </div>
-                            `;
-                            grid.appendChild(card);
-                        });
-                        document.getElementById('resultContainer').style.display = 'block';
-                        saveHistoryItem(data.model_name, url, data.count);
-                        showToast(`Found ${data.count} media items`);
+                    if (data.status === 'success' || data.success) {
+                        renderResults(data);
+                        saveHistoryItem(data.model_name || 'Creative Asset', url, data.count || 1);
+                        showToast(`Found ${data.count || 1} asset items`);
                     } else {
-                        showToast('❌ ' + (data.message || 'Failed to extract asset'));
+                        showToast(data.message || 'Failed to extract asset');
                     }
                 }
             } catch (err) {
-                showToast('Connection error');
+                showToast('Network or extraction error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Extract';
+                btn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> <span>Extract</span>`;
             }
         }
 
-        // --- History Manager ---
-        function getHistory() {
-            try {
-                const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
-                return raw ? JSON.parse(raw) : [];
-            } catch (e) { return []; }
-        }
+        function renderResults(data) {
+            const container = document.getElementById('resultContainer');
+            const mediaGrid = document.getElementById('mediaGrid');
+            const assetTitle = document.getElementById('assetTitle');
+            const countBadge = document.getElementById('assetCountBadge');
+            const currentUrl = document.getElementById('urlInput').value.trim();
 
-        function saveHistoryItem(name, url, count) {
-            let hist = getHistory().filter(h => h.url !== url);
-            hist.unshift({ id: Date.now(), name, url, count, date: new Date().toLocaleDateString() });
-            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(hist.slice(0, 50)));
-        }
+            container.style.display = 'block';
+            assetTitle.textContent = data.model_name || 'Resolved Asset';
+            const items = data.media_items || data.media || [];
+            countBadge.textContent = `${items.length || data.count || 1} Assets`;
 
-        function renderHistory() {
-            const hist = getHistory();
-            const grid = document.getElementById('historyGrid');
-            if (!grid) return;
-            grid.innerHTML = '';
-            if (hist.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">No history recorded yet.</div>';
-                return;
-            }
-            hist.forEach(h => {
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                card.innerHTML = `
-                    <div style="font-weight:700;color:var(--text-heading);font-size:14px;">${h.name}</div>
-                    <div style="font-size:11.5px;color:var(--text-muted);word-break:break-all;">${h.url}</div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-                        <span style="font-size:11px;color:var(--text-muted);">${h.date}</span>
-                        <button onclick="document.getElementById('urlInput').value='${h.url}';switchView('home');fetchAsset();" style="padding:4px 10px;border-radius:6px;border:none;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Extract</button>
+            mediaGrid.innerHTML = items.map((m, idx) => {
+                const thumb = m.poster || m.thumb || m.src || '';
+                const itemIdx = m.index || (idx + 1);
+                const dlUrl = `/api/download-stream?url=${encodeURIComponent(currentUrl)}&index=${itemIdx}`;
+                const label = m.type ? m.type.toUpperCase() : 'ASSET';
+                return `
+                    <div class="media-card">
+                        <img src="${thumb}" class="media-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 70\'><rect width=\'100\' height=\'70\' fill=\'%2318181b\'/><text x=\'50%\' y=\'50%\' fill=\'white\' font-size=\'10\' text-anchor=\'middle\' dominant-baseline=\'middle\'>Preview</text></svg>'" />
+                        <div class="media-info">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 11px; font-weight: 700; color: var(--text-heading);">Item #${itemIdx}</span>
+                                <span style="font-size: 9.5px; font-weight: 800; color: var(--text-muted); background: var(--border-color); padding: 2px 6px; border-radius: 4px;">${label}</span>
+                            </div>
+                            <a href="${dlUrl}" target="_blank" class="btn-card">
+                                <i class="fa-solid fa-download"></i> Download
+                            </a>
+                        </div>
                     </div>
                 `;
-                grid.appendChild(card);
+            }).join('');
+        }
+
+        // --- History Management ---
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('archnodes_history') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistoryItem(title, url, count) {
+            const history = getHistory();
+            history.unshift({
+                title,
+                url,
+                count,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
             });
+            localStorage.setItem('archnodes_history', JSON.stringify(history.slice(0, 50)));
         }
 
         function clearHistory() {
-            localStorage.removeItem(HISTORY_STORAGE_KEY);
+            localStorage.removeItem('archnodes_history');
             renderHistory();
             showToast('History cleared');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchFreepikStatus();
-        });
+        function renderHistory() {
+            const history = getHistory();
+            const grid = document.getElementById('historyGrid');
+            if (history.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 13px;">No past extraction records found.</div>`;
+                return;
+            }
+
+            grid.innerHTML = history.map(item => `
+                <div class="history-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <span style="font-size: 13px; font-weight: 700; color: var(--text-heading);">${escapeHtml(item.title)}</span>
+                        <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600;">${item.date}</span>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${escapeHtml(item.url)}</span>
+                    <div style="margin-top: 4px;">
+                        <button onclick="document.getElementById('urlInput').value='${escapeHtml(item.url)}'; switchView('studio');" class="btn-card" style="padding: 5px 10px; font-size: 11.5px;">
+                            <i class="fa-solid fa-arrow-rotate-right"></i> Re-Extract
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        // Initialize state
+        updateFreepikPill();
     </script>
 </body>
 </html>
