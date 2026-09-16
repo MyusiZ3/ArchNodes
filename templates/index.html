@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchNodes | The Ultimate Creative Assets Downloader</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" type="image/png">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-hover: #4F46E5;
+            --primary-glow: rgba(99, 102, 241, 0.25);
+            --accent-purple: #8B5CF6;
+            --accent-cyan: #06B6D4;
+            --accent-green: #10B981;
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-nav: rgba(255, 255, 255, 0.85);
+            --border-color: #E2E8F0;
+            --text-heading: #0F172A;
+            --text-body: #475569;
+            --text-muted: #94A3B8;
+            --radius-card: 16px;
+            --radius-sub: 10px;
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+            --shadow-float: 0 20px 35px -5px rgba(0, 0, 0, 0.08), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0B0F19;
+            --bg-card: #131B2E;
+            --bg-nav: rgba(19, 27, 46, 0.85);
+            --border-color: #1E293B;
+            --text-heading: #F8FAFC;
+            --text-body: #94A3B8;
+            --text-muted: #64748B;
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+            --shadow-float: 0 20px 35px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Ambient Glow Effect */
+        .ambient-glow {
+            position: fixed;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.08) 45%, rgba(0,0,0,0) 70%);
+            filter: blur(50px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar Header */
+        .header-wrapper {
+            position: sticky;
+            top: 14px;
+            z-index: 100;
+            padding: 0 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: var(--bg-nav);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 10px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-card);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-heading);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-link {
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-body);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-heading);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 35px auto;
+            padding: 0 20px;
+            flex: 1;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            color: var(--primary);
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--text-heading);
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 28px;
+            line-height: 1.5;
+        }
+
+        /* Search Input Box */
+        .search-box-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 8px 10px 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-float);
+            max-width: 760px;
+            margin: 0 auto 28px;
+            transition: var(--transition);
+        }
+
+        .search-box-card:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-float);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-heading);
+            font-size: 14.5px;
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-fetch {
+            padding: 11px 22px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+
+        .btn-fetch:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+        }
+
+        .btn-fetch:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Creative Platform Pills */
+        .platform-pills {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .pill-item {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .pill-item:hover, .pill-item.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        /* Results Card Container */
+        .result-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 24px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-heading);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .media-card {
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sub);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .media-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-card);
+        }
+
+        .media-thumb {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: #000;
+            display: block;
+        }
+
+        .media-info {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .media-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .media-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 540px;
+            box-shadow: var(--shadow-float);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-heading);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: var(--text-heading);
+            color: var(--bg-card);
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: var(--shadow-float);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* History Cards */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .history-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sub);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: var(--shadow-card);
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+
+    <!-- Floating Navbar -->
+    <div class="header-wrapper">
+        <nav class="navbar">
+            <a href="/" class="nav-brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <span>ArchNodes</span>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active" id="navHome" onclick="switchView('home')">Studio</a></li>
+                <li><a href="#history" class="nav-link" id="navHistory" onclick="switchView('history')">History</a></li>
+                <li><a href="javascript:void(0)" class="nav-link" onclick="openBypassModal()"><i class="fa-solid fa-shield-halved" style="color: var(--accent-green);"></i> Bypass</a></li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" id="btnFreepikStatusPill" onclick="openFreepikModal()" style="font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.3); display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-pen-nib"></i> <span id="freepikPillText">Freepik Pool: Checking...</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="fa-solid fa-sun" id="themeIcon"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- View 1: Studio (Home) -->
+        <div id="homeView">
+            <section class="hero-section">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-sparkles"></i> High-Speed Creative Downloader
+                </div>
+                <h1 class="hero-title">Download <span class="gradient-text">Premium Assets</span> in Seconds</h1>
+                <p class="hero-subtitle">Bypass limits and download vectors, PSDs, stock footage, templates, and 3D models with direct high-speed cloud acceleration.</p>
+
+                <!-- Search Input Bar -->
+                <div class="search-box-card">
+                    <i class="fa-solid fa-link" style="color: var(--primary); font-size: 16px;"></i>
+                    <input type="text" id="urlInput" class="search-input" placeholder="Paste Freepik or Envato Elements asset URL here..." />
+                    <button id="btnFetch" class="btn-fetch" onclick="fetchAsset()">
+                        <i class="fa-solid fa-bolt"></i> Extract
+                    </button>
+                </div>
+
+                <!-- Platform Filters -->
+                <div class="platform-pills">
+                    <div class="pill-item active" onclick="filterPlatform('all')"><i class="fa-solid fa-wand-magic-sparkles"></i> All Supported</div>
+                    <div class="pill-item" onclick="filterPlatform('freepik')"><i class="fa-solid fa-vector-square" style="color: #0284C7;"></i> Freepik & Magnific</div>
+                    <div class="pill-item" onclick="filterPlatform('envato')"><i class="fa-solid fa-leaf" style="color: #10B981;"></i> Envato Elements</div>
+                    <div class="pill-item" onclick="filterPlatform('motionarray')"><i class="fa-solid fa-film" style="color: #8B5CF6;"></i> Motion Array</div>
+                    <div class="pill-item" onclick="filterPlatform('vecteezy')"><i class="fa-solid fa-shapes" style="color: #F59E0B;"></i> Vecteezy</div>
+                </div>
+            </section>
+
+            <!-- Extraction Result Container -->
+            <div id="resultContainer" class="result-container">
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <i class="fa-solid fa-box-open" style="color: var(--primary);"></i>
+                            <span id="assetTitle">Asset Details</span>
+                        </div>
+                        <span id="assetCountBadge" style="padding: 4px 10px; border-radius: 999px; background: rgba(99, 102, 241, 0.1); color: var(--primary); font-size: 12px; font-weight: 700;">1 Asset</span>
+                    </div>
+
+                    <div id="mediaGrid" class="media-grid">
+                        <!-- Dynamic Media Cards -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 2: History -->
+        <div id="historyView" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 24px; color: var(--text-heading);">Download History</h2>
+                <button onclick="clearHistory()" style="padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;">
+                    <i class="fa-solid fa-trash-can"></i> Clear All
+                </button>
+            </div>
+            <div id="historyGrid" class="history-grid">
+                <!-- Dynamic History Cards -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Freepik Pool Modal -->
+    <div id="freepikModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-pen-nib" style="color: var(--primary);"></i> Freepik Account Pool
+                </div>
+                <button class="modal-close" onclick="closeFreepikModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="padding: 12px 16px; border-radius: var(--radius-sub); background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 12px; color: var(--text-heading);">
+                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 2px;">⚡ Browser Cache Account Storage</div>
+                    <div style="color: var(--text-muted); font-size: 11.5px;">Accounts are securely stored in your local browser cache. Server deployments remain 100% zero-storage.</div>
+                </div>
+
+                <!-- Status Summary -->
+                <div id="fpStatusText" style="font-size: 14px; font-weight: 700; color: var(--text-heading);">Checking pool status...</div>
+
+                <!-- Account List -->
+                <div id="fpAccountsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
+                    <!-- Dynamic Accounts -->
+                </div>
+
+                <!-- Add Account Inputs -->
+                <div style="display: flex; gap: 8px;">
+                    <input type="email" id="fpEmailInput" placeholder="Freepik Email" style="flex: 1; padding: 8px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12.5px; outline: none;" />
+                    <input type="password" id="fpPassInput" placeholder="Password" style="width: 130px; padding: 8px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12.5px; outline: none;" />
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="fpAddSingleAccount()" style="flex: 1; padding: 9px; border-radius: var(--radius-sub); border: none; background: var(--primary); color: #fff; font-weight: 700; font-size: 12.5px; cursor: pointer;">
+                        <i class="fa-solid fa-plus"></i> Add Account
+                    </button>
+                    <button onclick="fpExportAccounts()" style="padding: 9px 12px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 12px; font-weight: 600; cursor: pointer;">
+                        <i class="fa-solid fa-download"></i> Backup JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bypass Settings Modal -->
+    <div id="bypassModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-green);"></i> Anti-Block & DNS Bypass
+                </div>
+                <button class="modal-close" onclick="closeBypassModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text-heading);">
+                    <span>Enable DoH / Proxy Bypass</span>
+                    <input type="checkbox" id="bypassToggle" checked style="accent-color: var(--primary);" />
+                </label>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">DNS-over-HTTPS Provider:</label>
+                    <select id="dohProviderSelect" style="width: 100%; padding: 8px 10px; border-radius: var(--radius-sub); border: 1px solid var(--border-color); background: var(--bg-page); color: var(--text-heading); font-size: 13px;">
+                        <option value="cloudflare">Cloudflare (1.1.1.1 - Fastest)</option>
+                        <option value="google">Google DNS (8.8.8.8)</option>
+                        <option value="adguard">AdGuard DNS</option>
+                        <option value="quad9">Quad9 (9.9.9.9)</option>
+                    </select>
+                </div>
+                <button onclick="saveBypassSettings()" style="padding: 9px; border-radius: var(--radius-sub); border: none; background: var(--primary); color: #fff; font-weight: 700; font-size: 13px; cursor: pointer;">
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Notification message</div>
+
+    <script>
+        const FP_STORAGE_KEY = 'archnodes_freepik_pool_v1';
+        const HISTORY_STORAGE_KEY = 'archnodes_history_v1';
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        function toggleTheme() {
+            const doc = document.documentElement;
+            const isDark = doc.getAttribute('data-theme') === 'dark';
+            doc.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        function switchView(view) {
+            document.getElementById('homeView').style.display = view === 'home' ? 'block' : 'none';
+            document.getElementById('historyView').style.display = view === 'history' ? 'block' : 'none';
+            document.getElementById('navHome').classList.toggle('active', view === 'home');
+            document.getElementById('navHistory').classList.toggle('active', view === 'history');
+            if (view === 'history') renderHistory();
+        }
+
+        function filterPlatform(platform) {
+            document.querySelectorAll('.pill-item').forEach(p => p.classList.remove('active'));
+            event.target.closest('.pill-item').classList.add('active');
+        }
+
+        // --- Freepik Browser Cache Storage ---
+        function getLocalFreepikAccounts() {
+            try {
+                const raw = localStorage.getItem(FP_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveLocalFreepikAccounts(accs) {
+            try {
+                localStorage.setItem(FP_STORAGE_KEY, JSON.stringify(accs || []));
+            } catch (e) {}
+        }
+
+        async function fetchFreepikStatus() {
+            const accs = getLocalFreepikAccounts();
+            const pillText = document.getElementById('freepikPillText');
+            try {
+                const res = await fetch('/api/freepik-status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({accounts: accs})
+                });
+                const data = await res.json();
+                if (data && data.status) {
+                    if (pillText) pillText.innerText = data.status.badge_text || data.status.summary_text;
+                    renderFreepikAccounts(data.status);
+                    return data.status;
+                }
+            } catch (e) {}
+
+            const fallback = {
+                badge_text: accs.length > 0 ? `Freepik Pool: ${accs.length} Ready` : "Freepik: Pool Empty",
+                summary_text: `${accs.length} Accounts in Browser Pool`,
+                accounts: accs.map(a => ({ email: a.email, status: 'Ready / Active' }))
+            };
+            if (pillText) pillText.innerText = fallback.badge_text;
+            renderFreepikAccounts(fallback);
+            return fallback;
+        }
+
+        function renderFreepikAccounts(st) {
+            const txt = document.getElementById('fpStatusText');
+            const list = document.getElementById('fpAccountsList');
+            if (txt) txt.innerText = st.summary_text;
+            if (list) {
+                list.innerHTML = '';
+                (st.accounts || []).forEach(a => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--bg-page);border:1px solid var(--border-color);font-size:12px;';
+                    item.innerHTML = `
+                        <span style="font-weight:600;color:var(--text-heading);">${a.email}</span>
+                        <button onclick="fpDeleteAccount('${a.email}')" style="background:transparent;border:none;color:#EF4444;cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                    `;
+                    list.appendChild(item);
+                });
+                if (!st.accounts || st.accounts.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:12px;">No accounts in browser pool.</div>';
+                }
+            }
+        }
+
+        async function fpAddSingleAccount() {
+            const email = document.getElementById('fpEmailInput').value.trim();
+            const password = document.getElementById('fpPassInput').value.trim();
+            if (!email || !password) { showToast('Please enter email and password'); return; }
+
+            const res = await fetch('/api/freepik-batch-add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({accounts: [{email, password}]})
+            });
+            const data = await res.json();
+            if (data.added_count > 0 || (data.already_in_pool && data.already_in_pool.length > 0)) {
+                const accs = getLocalFreepikAccounts().filter(a => a.email.toLowerCase() !== email.toLowerCase());
+                accs.push({email, password});
+                saveLocalFreepikAccounts(accs);
+                document.getElementById('fpEmailInput').value = '';
+                document.getElementById('fpPassInput').value = '';
+                showToast('✅ Account added to browser pool!');
+                fetchFreepikStatus();
+            } else {
+                showToast('❌ Account verification failed');
+            }
+        }
+
+        function fpDeleteAccount(email) {
+            const accs = getLocalFreepikAccounts().filter(a => a.email.toLowerCase() !== email.toLowerCase());
+            saveLocalFreepikAccounts(accs);
+            showToast('Account removed');
+            fetchFreepikStatus();
+        }
+
+        function fpExportAccounts() {
+            const accs = getLocalFreepikAccounts();
+            if (accs.length === 0) { showToast('No accounts to backup'); return; }
+            const blob = new Blob([JSON.stringify(accs, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `archnodes_freepik_backup_${Date.now()}.json`;
+            a.click();
+            showToast('Backup downloaded');
+        }
+
+        function openFreepikModal() {
+            document.getElementById('freepikModal').style.display = 'flex';
+            fetchFreepikStatus();
+        }
+
+        function closeFreepikModal() {
+            document.getElementById('freepikModal').style.display = 'none';
+        }
+
+        function openBypassModal() {
+            document.getElementById('bypassModal').style.display = 'flex';
+        }
+
+        function closeBypassModal() {
+            document.getElementById('bypassModal').style.display = 'none';
+        }
+
+        async function saveBypassSettings() {
+            const enabled = document.getElementById('bypassToggle').checked;
+            const doh_provider = document.getElementById('dohProviderSelect').value;
+            await fetch('/api/bypass-settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({enabled, mode: 'doh', doh_provider})
+            });
+            closeBypassModal();
+            showToast('Bypass settings updated');
+        }
+
+        // --- Core Extraction Flow ---
+        async function fetchAsset() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) { showToast('Please enter an asset link'); return; }
+
+            const btn = document.getElementById('btnFetch');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Extracting...';
+
+            try {
+                if (url.toLowerCase().includes('freepik.com') || url.toLowerCase().includes('magnific.')) {
+                    const res = await fetch('/api/get-freepik-link', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({url, accounts: getLocalFreepikAccounts()})
+                    });
+                    const data = await res.json();
+                    if (data.success && data.download_url) {
+                        showToast('🎉 Direct GDrive Link Ready!');
+                        saveHistoryItem('Freepik Asset', url, 1);
+                        window.open(data.download_url, '_blank');
+                    } else {
+                        showToast('❌ ' + (data.error || 'Account Limit Reached'));
+                        openFreepikModal();
+                    }
+                } else {
+                    const res = await fetch('/api/check', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({url})
+                    });
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        document.getElementById('assetTitle').innerText = data.model_name;
+                        document.getElementById('assetCountBadge').innerText = `${data.count} Available`;
+                        const grid = document.getElementById('mediaGrid');
+                        grid.innerHTML = '';
+                        (data.media_items || []).forEach(item => {
+                            const card = document.createElement('div');
+                            card.className = 'media-card';
+                            card.innerHTML = `
+                                <img src="${item.poster || item.src}" class="media-thumb" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';" />
+                                <div class="media-info">
+                                    <span style="font-size:11px;font-weight:700;color:var(--text-muted);">#${item.index} (${item.type.toUpperCase()})</span>
+                                    <a href="/api/download-stream?url=${encodeURIComponent(url)}&index=${item.index}" class="media-btn" target="_blank">
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </a>
+                                </div>
+                            `;
+                            grid.appendChild(card);
+                        });
+                        document.getElementById('resultContainer').style.display = 'block';
+                        saveHistoryItem(data.model_name, url, data.count);
+                        showToast(`Found ${data.count} media items`);
+                    } else {
+                        showToast('❌ ' + (data.message || 'Failed to extract asset'));
+                    }
+                }
+            } catch (err) {
+                showToast('Connection error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Extract';
+            }
+        }
+
+        // --- History Manager ---
+        function getHistory() {
+            try {
+                const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) { return []; }
+        }
+
+        function saveHistoryItem(name, url, count) {
+            let hist = getHistory().filter(h => h.url !== url);
+            hist.unshift({ id: Date.now(), name, url, count, date: new Date().toLocaleDateString() });
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(hist.slice(0, 50)));
+        }
+
+        function renderHistory() {
+            const hist = getHistory();
+            const grid = document.getElementById('historyGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            if (hist.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">No history recorded yet.</div>';
+                return;
+            }
+            hist.forEach(h => {
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                card.innerHTML = `
+                    <div style="font-weight:700;color:var(--text-heading);font-size:14px;">${h.name}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted);word-break:break-all;">${h.url}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                        <span style="font-size:11px;color:var(--text-muted);">${h.date}</span>
+                        <button onclick="document.getElementById('urlInput').value='${h.url}';switchView('home');fetchAsset();" style="padding:4px 10px;border-radius:6px;border:none;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Extract</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function clearHistory() {
+            localStorage.removeItem(HISTORY_STORAGE_KEY);
+            renderHistory();
+            showToast('History cleared');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchFreepikStatus();
+        });
+    </script>
+</body>
+</html>

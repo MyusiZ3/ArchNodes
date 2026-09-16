@@ -1,0 +1,191 @@
+"""
+ArchNodes - The Ultimate Creative Assets Downloader
+Main Flask Web Application
+"""
+
+import os
+import sys
+import json
+import logging
+from flask import Flask, render_template, request, jsonify, Response, redirect
+
+# Ensure project root in sys.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from core.normalizer import normalize_profile_url
+from core.bypass import get_bypass_settings, save_bypass_settings
+from core.downloader import get_download_progress, stop_download
+from scrapers.base import fetch_media_stream, HEADERS_FOR_REQUESTS
+from scrapers.freepik import (
+    FreepikScraper,
+    add_account,
+    remove_account,
+    batch_add_accounts,
+    auto_register_account,
+    FreepikRateLimitException
+)
+from scrapers.envato import get_envato_info
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'archnodes-secret-2026'
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/api/check", methods=["POST"])
+def api_check():
+    data = request.json or {}
+    url = data.get("url", "").strip()
+    if not url:
+        return jsonify({"status": "error", "message": "Please enter a valid link"}), 400
+
+    res_norm = normalize_profile_url(url)
+    profile_url, asset_name, platform = res_norm[0], res_norm[1], res_norm[2]
+    if not profile_url:
+        return jsonify({"status": "error", "message": "Invalid URL format"}), 400
+
+    if platform == "freepik":
+        return jsonify({
+            "status": "success",
+            "model_name": asset_name,
+            "platform": "freepik",
+            "count": 1,
+            "image_count": 1,
+            "video_count": 0,
+            "media_items": [{
+                "index": 1,
+                "type": "file",
+                "src": profile_url,
+                "poster": "https://freepik.cdnpk.net/img/favicons/favicon.ico"
+            }],
+            "account_status": FreepikScraper.get_account_status()
+        })
+
+    if platform == "envato":
+        info, err = get_envato_info(profile_url)
+        if err or not info:
+            return jsonify({"status": "error", "message": err or "Failed to load Envato Elements asset"}), 404
+            
+        items = info.get("items", [])
+        return jsonify({
+            "status": "success",
+            "model_name": info.get("title", asset_name),
+            "platform": "envato",
+            "count": len(items),
+            "image_count": sum(1 for i in items if i["type"] == "image"),
+            "video_count": sum(1 for i in items if i["type"] == "video"),
+            "media_items": items
+        })
+
+    return jsonify({"status": "error", "message": "Unsupported platform"}), 400
+
+@app.route("/api/get-freepik-link", methods=["POST", "GET"])
+def api_get_freepik_link():
+    data = (request.json if request.is_json else request.args) or {}
+    url = data.get("url", "").strip()
+    custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+
+    if not url:
+        return jsonify({"success": False, "error": "URL parameter is required"}), 400
+
+    try:
+        scraper_fp = FreepikScraper()
+        gdrive_link = scraper_fp.extract_gdrive_url(url, custom_accounts=custom_accounts)
+        return jsonify({
+            "success": True,
+            "download_url": gdrive_link,
+            "account_status": FreepikScraper.get_account_status(custom_accounts)
+        })
+    except FreepikRateLimitException as e:
+        status = FreepikScraper.get_account_status(custom_accounts)
+        return jsonify({"success": False, "error": str(e), "rate_limited": True, "account_status": status}), 429
+    except Exception as e:
+        status = FreepikScraper.get_account_status(custom_accounts)
+        return jsonify({"success": False, "error": str(e), "account_status": status}), 500
+
+@app.route("/api/download-stream")
+def api_download_stream():
+    url = request.args.get("url", "").strip()
+    index = int(request.args.get("index", 1))
+
+    if not url:
+        return "URL parameter is missing", 400
+
+    res_norm = normalize_profile_url(url)
+    profile_url, asset_name, platform = res_norm[0], res_norm[1], res_norm[2]
+
+    if platform == "freepik":
+        try:
+            scraper_fp = FreepikScraper()
+            gdrive_link = scraper_fp.extract_gdrive_url(profile_url)
+            if request.args.get("mode") == "json":
+                return jsonify({"success": True, "download_url": gdrive_link})
+            return redirect(gdrive_link)
+        except Exception as e:
+            return f"<h2>⚠️ Freepik Error</h2><p>{str(e)}</p>", 500
+
+    if platform == "envato":
+        info, err = get_envato_info(profile_url)
+        if not info or not info.get("items"):
+            return err or "Asset not found", 404
+        items = info["items"]
+        target_idx = (index - 1) if (0 <= index - 1 < len(items)) else 0
+        target_item = items[target_idx]
+        target_url = target_item["src"]
+        file_type = target_item["type"]
+        ext = "mp4" if file_type == "video" else "mp3" if file_type == "audio" else "jpg"
+        filename = f"{asset_name}_{index}.{ext}"
+        
+        req_headers = dict(HEADERS_FOR_REQUESTS)
+        req_headers["Referer"] = "https://elements.envato.com/"
+        r_stream = fetch_media_stream(target_url, req_headers)
+        if r_stream.status_code in [200, 206]:
+            res_headers = {
+                "Content-Type": r_stream.headers.get("Content-Type", "application/octet-stream"),
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "Access-Control-Allow-Origin": "*"
+            }
+            return Response(r_stream.iter_content(chunk_size=262144), status=r_stream.status_code, headers=res_headers)
+        return "Failed to stream media from Envato CDN", 502
+
+    return "Unsupported platform", 400
+
+@app.route("/api/freepik-status", methods=["GET", "POST"])
+def api_freepik_status():
+    data = (request.json if request.is_json else request.args) or {}
+    custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+    return jsonify({"success": True, "status": FreepikScraper.get_account_status(custom_accounts)})
+
+@app.route("/api/freepik-batch-add", methods=["POST"])
+def api_freepik_batch_add():
+    data = request.json or {}
+    accounts = data.get("accounts", [])
+    if not accounts:
+        return jsonify({"success": False, "error": "Account list is empty"}), 400
+    result = batch_add_accounts(accounts)
+    return jsonify(result)
+
+@app.route("/api/bypass-settings", methods=["GET", "POST"])
+def api_bypass_settings():
+    if request.method == "GET":
+        return jsonify({"success": True, "settings": get_bypass_settings()})
+    data = request.json or {}
+    success = save_bypass_settings(data)
+    return jsonify({"success": success, "settings": get_bypass_settings()})
+
+@app.route("/api/progress")
+def api_progress():
+    return jsonify(get_download_progress())
+
+@app.route("/api/stop", methods=["POST"])
+def api_stop():
+    stop_download()
+    return jsonify({"success": True})
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5050))
+    print(f"✨ ArchNodes running on http://127.0.0.1:{port}")
+    app.run(host="0.0.0.0", port=port, debug=False)
