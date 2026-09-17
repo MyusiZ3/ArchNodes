@@ -514,7 +514,9 @@ class FreepikScraper:
             except Exception as exc:
                 err_text = str(exc)
                 print(f"[FreepikScraper] Account {email} extraction error: {err_text}. Switching to next account...")
-                RATE_LIMITED_ACCOUNTS[email] = time.time() + 3600
+                err_low = err_text.lower()
+                if any(k in err_low for k in ["limit", "quota", "maximum", "exceeded", "too many"]):
+                    RATE_LIMITED_ACCOUNTS[email] = time.time() + 3600
                 last_error = err_text
                 continue
 
@@ -529,37 +531,8 @@ class FreepikScraper:
                 total_accounts=len(pool)
             )
 
-    def _process_extraction(self, freepik_url: str) -> str:
-        headers = {
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": self.base_url + "/",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        }
-        
-        # 1. Fetch homepage to get fresh CSRF
-        home_after = self.scraper.get(self.base_url + "/")
-        soup_after = BeautifulSoup(home_after.text, "html.parser")
-        csrf_inp = soup_after.find("input", {"name": "csrf_token"})
-        csrf_val = csrf_inp.get("value") if csrf_inp else self.csrf_token
-
-        # 2. Submit link generator AJAX
-        ajax_payload = {
-            "csrf_token": csrf_val,
-            "url": freepik_url.strip().split("#")[0].split("?")[0] if ".htm" in freepik_url else freepik_url.strip().split("#")[0],
-            "sys_lang_id": "1",
-            "g-recaptcha-response": ""
-        }
-        res = self.scraper.post(f"{self.base_url}/AjaxController/freepik_downloader", data=ajax_payload, headers=headers)
-        res_json = res.json()
-
-        if res_json.get("code") != 1:
-            msg = res_json.get("message", "Failed to generate link")
-            clean_msg = re.sub(r'<[^>]+>', ' ', msg).strip()
-            clean_msg = ' '.join(clean_msg.split())
-            raise Exception(clean_msg)
-
-        gen_url = res_json.get("token")
-        
+    def _resolve_gen_url_to_gdrive(self, gen_url: str, headers: dict, fallback_csrf: str = "") -> str:
+        """Resolve a generate-link token URL all the way to a direct Google Drive link"""
         # 3. Access generate-link page
         gen_resp = self.scraper.get(gen_url)
         soup_gen = BeautifulSoup(gen_resp.text, "html.parser")
@@ -567,7 +540,7 @@ class FreepikScraper:
         next_url = btn.get("href") if btn else None
         
         if not next_url:
-            raise Exception("Could not find btnCounter href")
+            raise Exception("Could not find btnCounter href on generate page")
             
         # 4. Access download-file page
         if "download-file" in next_url:
@@ -624,7 +597,7 @@ class FreepikScraper:
             
         # 8. Post to /aaaaaaaaa to authorize cookies
         csrf_learn = learn_soup.find("input", {"name": "csrf_token"})
-        csrf_learn_val = csrf_learn.get("value") if csrf_learn else csrf_val
+        csrf_learn_val = csrf_learn.get("value") if csrf_learn else fallback_csrf
         
         a_payload = {
             "csrf_token": csrf_learn_val,
@@ -645,7 +618,62 @@ class FreepikScraper:
             
         raise Exception("Google Drive URL regex match failed on final page")
 
+    def _check_downloads_history(self) -> Optional[str]:
+        """Check user's /downloads history page for newly generated download links"""
+        try:
+            dl_page = self.scraper.get(f"{self.base_url}/downloads", timeout=15)
+            soup_dl = BeautifulSoup(dl_page.text, "html.parser")
+            for a in soup_dl.find_all("a", href=re.compile(r"/generate-link/")):
+                href = a.get("href", "")
+                if href:
+                    return href
+        except Exception as e:
+            print(f"[FreepikScraper] History check error: {e}")
+        return None
+
+    def _process_extraction(self, freepik_url: str) -> str:
+        headers = {
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.base_url + "/",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        
+        # 1. Fetch homepage to get fresh CSRF
+        home_after = self.scraper.get(self.base_url + "/")
+        soup_after = BeautifulSoup(home_after.text, "html.parser")
+        csrf_inp = soup_after.find("input", {"name": "csrf_token"})
+        csrf_val = csrf_inp.get("value") if csrf_inp else self.csrf_token
+
+        # 2. Submit link generator AJAX
+        clean_req_url = freepik_url.strip().split("#")[0].split("?")[0] if ".htm" in freepik_url else freepik_url.strip().split("#")[0]
+        ajax_payload = {
+            "csrf_token": csrf_val,
+            "url": clean_req_url,
+            "sys_lang_id": "1",
+            "g-recaptcha-response": ""
+        }
+        res = self.scraper.post(f"{self.base_url}/AjaxController/freepik_downloader", data=ajax_payload, headers=headers)
+        try:
+            res_json = res.json()
+        except:
+            res_json = {}
+
+        gen_url = res_json.get("token")
+        if not gen_url:
+            # Smart Fallback: Check if the file was queued and is already available in /downloads history!
+            print("[FreepikScraper] Direct AJAX token not returned. Checking /downloads history for ready link...")
+            history_url = self._check_downloads_history()
+            if history_url:
+                print(f"[FreepikScraper] Found ready download link in account history: {history_url}")
+                gen_url = history_url
+
+        if not gen_url:
+            msg = res_json.get("message", "Failed to generate link")
+            clean_msg = re.sub(r'<[^>]+>', ' ', msg).strip()
+            clean_msg = ' '.join(clean_msg.split())
+            raise Exception(clean_msg)
+
+        return self._resolve_gen_url_to_gdrive(gen_url, headers, csrf_val)
+
 if __name__ == "__main__":
-    print("Testing FreepikScraper E2E...")
-    scraper = FreepikScraper()
-    print("Account Status:", scraper.get_account_status())
+    pass

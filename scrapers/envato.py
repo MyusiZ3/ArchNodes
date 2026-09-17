@@ -238,7 +238,9 @@ class EnvatoScraper:
             except Exception as exc:
                 err_text = str(exc)
                 print(f"[EnvatoScraper] Account {email} extraction error: {err_text}. Switching to next account...")
-                RATE_LIMITED_ENVATO_ACCOUNTS[email] = time.time() + 3600
+                err_low = err_text.lower()
+                if any(k in err_low for k in ["limit", "quota", "maximum", "exceeded", "too many", "hourly"]):
+                    RATE_LIMITED_ENVATO_ACCOUNTS[email] = time.time() + 3600
                 last_error = err_text
                 continue
 
@@ -247,37 +249,8 @@ class EnvatoScraper:
         else:
             raise Exception(f"All {len(pool)} Envato pool accounts are rate-limited or unverified.")
 
-    def _process_extraction(self, envato_url: str) -> str:
-        headers = {
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": self.base_url + "/",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        }
-        
-        home_after = self.scraper.get(self.base_url + "/", timeout=15)
-        soup_after = BeautifulSoup(home_after.text, "html.parser")
-        csrf_inp = soup_after.find("input", {"name": "csrf_token"})
-        csrf_val = csrf_inp.get("value") if csrf_inp else self.csrf_token
-
-        clean_url = envato_url.strip().split('#')[0].split('?')[0]
-
-        ajax_payload = {
-            "csrf_token": csrf_val,
-            "url": clean_url,
-            "sys_lang_id": "1",
-            "g-recaptcha-response": ""
-        }
-        res = self.scraper.post(f"{self.base_url}/AjaxController/envato_downloader", data=ajax_payload, headers=headers, timeout=20)
-        res_json = res.json()
-
-        if res_json.get("code") != 1:
-            msg = res_json.get("message", "Failed to generate link")
-            clean_msg = re.sub(r'<[^>]+>', ' ', str(msg)).strip()
-            clean_msg = ' '.join(clean_msg.split())
-            raise Exception(clean_msg)
-
-        gen_url = res_json.get("token")
-        
+    def _resolve_gen_url_to_gdrive(self, gen_url: str, headers: dict, fallback_csrf: str = "") -> str:
+        """Resolve a generate-link token URL all the way to a direct Google Drive link"""
         # 3. Access generate-link page
         gen_resp = self.scraper.get(gen_url, timeout=20)
         soup_gen = BeautifulSoup(gen_resp.text, "html.parser")
@@ -285,7 +258,7 @@ class EnvatoScraper:
         next_url = btn.get("href") if btn else None
         
         if not next_url:
-            raise Exception("Could not find btnCounter href")
+            raise Exception("Could not find btnCounter href on Envato generate page")
             
         # 4. Access download-file page
         if "download-file" in next_url:
@@ -340,9 +313,9 @@ class EnvatoScraper:
         if not gen_tok or not ddlink:
             raise Exception("Could not extract generatedownload token or ddlink")
             
-        # 8. Post to /aaaaaaaaa
+        # 8. Post to /aaaaaaaaa to authorize cookies
         csrf_learn = learn_soup.find("input", {"name": "csrf_token"})
-        csrf_learn_val = csrf_learn.get("value") if csrf_learn else csrf_val
+        csrf_learn_val = csrf_learn.get("value") if csrf_learn else fallback_csrf
         
         a_payload = {
             "csrf_token": csrf_learn_val,
@@ -358,112 +331,66 @@ class EnvatoScraper:
         # 10. Extract direct GDrive URL from the final page JS logic
         match = re.search(r"var\s+ddlink\s*=\s*'([^']+)'", f_resp.text)
         if match:
-            return match.group(1)
+            gdrive_url = match.group(1)
+            return gdrive_url
             
-        raise Exception("Google Drive URL regex match failed on final page")
+        raise Exception("Google Drive URL regex match failed on final Envato page")
 
-def get_envato_info(url: str) -> Tuple[Optional[Dict], Optional[str]]:
-    """Fetch info from elements.envato.com with robust offline fallback to avoid Cloudflare 403"""
-    title = "Envato Elements Asset"
-    try:
-        parts = [p for p in url.split('?')[0].split('#')[0].split('/') if p]
-        if parts:
-            slug = parts[-1]
-            slug = re.sub(r'-[A-Z0-9]{5,}$', '', slug)
-            cleaned_title = slug.replace('-', ' ').title()
-            if cleaned_title:
-                title = cleaned_title
-    except Exception:
-        pass
+    def _check_downloads_history(self) -> Optional[str]:
+        """Check user's /downloads history page for newly generated download links"""
+        try:
+            dl_page = self.scraper.get(f"{self.base_url}/downloads", timeout=15)
+            soup_dl = BeautifulSoup(dl_page.text, "html.parser")
+            for a in soup_dl.find_all("a", href=re.compile(r"/generate-link/")):
+                href = a.get("href", "")
+                if href:
+                    return href
+        except Exception as e:
+            print(f"[EnvatoScraper] History check error: {e}")
+        return None
 
-    try:
-        scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True})
+    def _process_extraction(self, envato_url: str) -> str:
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.base_url + "/",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-        r = scraper.get(url, headers=headers, timeout=8)
-        if r.status_code == 200:
-            soup = BeautifulSoup(r.text, "html.parser")
-            title_el = soup.find("h1") or soup.find("title")
-            if title_el:
-                t = title_el.get_text(strip=True)
-                title = re.sub(r'\s*\|\s*Envato Elements.*', '', t)
-            
-            items = []
-            video_tag = soup.find("video")
-            if video_tag:
-                src = video_tag.get("src") or (video_tag.find("source").get("src") if video_tag.find("source") else "")
-                poster = video_tag.get("poster", "")
-                if src:
-                    items.append({"index": 1, "type": "video", "src": src, "poster": poster})
-                    
-            audio_tag = soup.find("audio")
-            if audio_tag and not items:
-                src = audio_tag.get("src") or (audio_tag.find("source").get("src") if audio_tag.find("source") else "")
-                if src:
-                    items.append({"index": 1, "type": "audio", "src": src, "poster": ""})
-
-            if not items:
-                meta_img = soup.find("meta", property="og:image")
-                img_src = meta_img.get("content") if meta_img else ""
-                items.append({"index": 1, "type": "package", "src": url, "poster": img_src})
-
-            return {"title": title, "items": items}, None
-    except Exception:
-        pass
-
-    return {
-        "title": title,
-        "items": [{
-            "index": 1,
-            "type": "package",
-            "src": url,
-            "poster": ""
-        }]
-    }, None
-
-
-def _get_mailtm_domain() -> Optional[str]:
-    try:
-        r = requests.get("https://api.mail.tm/domains", timeout=8)
-        if r.status_code == 200:
-            domains = r.json().get("hydra:member", [])
-            if domains:
-                return domains[0].get("domain")
-    except Exception:
-        pass
-    return None
-
-def _create_mailtm_account(email: str, password: str) -> bool:
-    try:
-        r = requests.post(
-            "https://api.mail.tm/accounts",
-            json={"address": email, "password": password},
-            timeout=8
-        )
-        return r.status_code in [200, 201]
-    except Exception:
-        return False
-
-def auto_register_account() -> Dict:
-    import random
-    import string
-    domain = _get_mailtm_domain()
-    if not domain:
-        return {"success": False, "error": "Could not connect to tempmail domain service"}
         
-    username = "env_" + "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
-    email = f"{username}@{domain}"
-    password = "Env_" + "".join(random.choices(string.ascii_letters + string.digits, k=8)) + "!"
-    
-    if not _create_mailtm_account(email, password):
-        return {"success": False, "error": "Failed to provision temporary email"}
-        
-    return {
-        "success": True,
-        "email": email,
-        "password": password,
-        "register_url": "https://envato-downloader.com/register",
-        "message": "Temporary email generated! Complete registration on envato-downloader.com then click Verify & Add."
-    }
+        home_after = self.scraper.get(self.base_url + "/", timeout=15)
+        soup_after = BeautifulSoup(home_after.text, "html.parser")
+        csrf_inp = soup_after.find("input", {"name": "csrf_token"})
+        csrf_val = csrf_inp.get("value") if csrf_inp else self.csrf_token
+
+        clean_url = envato_url.strip().split('#')[0].split('?')[0]
+
+        ajax_payload = {
+            "csrf_token": csrf_val,
+            "url": clean_url,
+            "sys_lang_id": "1",
+            "g-recaptcha-response": ""
+        }
+        res = self.scraper.post(f"{self.base_url}/AjaxController/envato_downloader", data=ajax_payload, headers=headers, timeout=20)
+        try:
+            res_json = res.json()
+        except:
+            res_json = {}
+
+        gen_url = res_json.get("token")
+        if not gen_url:
+            # Smart Fallback: Check if the file was queued and is already available in /downloads history!
+            print("[EnvatoScraper] Direct AJAX token not returned. Checking /downloads history for ready link...")
+            history_url = self._check_downloads_history()
+            if history_url:
+                print(f"[EnvatoScraper] Found ready download link in account history: {history_url}")
+                gen_url = history_url
+
+        if not gen_url:
+            msg = res_json.get("message", "Failed to generate link")
+            clean_msg = re.sub(r'<[^>]+>', ' ', str(msg)).strip()
+            clean_msg = ' '.join(clean_msg.split())
+            raise Exception(clean_msg)
+
+        return self._resolve_gen_url_to_gdrive(gen_url, headers, csrf_val)
+
+if __name__ == "__main__":
+    pass
