@@ -1061,24 +1061,56 @@
             </section>
         </div>
 
-        <!-- View 2: History -->
-        <div id="historyView" style="display: none;">
-            <section class="history-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div class="hero-meta">Activity Records</div>
-                        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">Download History</h2>
-                    </div>
-                    <button onclick="clearHistory()" class="filter-btn" style="color: var(--text-muted);">
-                        <i class="fa-solid fa-trash-can"></i> Clear Records
-                    </button>
-                </div>
-                <div id="historyGrid" class="history-grid">
-                    <!-- Dynamic History Cards -->
-                </div>
-            </section>
-        </div>
-<!-- View 3: Network (Full Proper Tab View) -->
+                  <!-- View 2: History & Cloud Vault -->
+          <div id="historyView" style="display: none;">
+              <section class="history-panel">
+                  <!-- Header & Subtab Switcher -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+                      <div>
+                          <div class="hero-meta">Persistent Asset Storage</div>
+                          <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">History & Cloud Vault</h2>
+                      </div>
+                      <div style="display: flex; gap: 10px; align-items: center;">
+                          <div class="filter-bar" style="margin: 0; padding: 4px; background: var(--card-subtle);">
+                              <button id="historySubtabSessionBtn" onclick="switchHistorySubtab('session')" class="filter-btn active" style="font-size: 12px; padding: 6px 14px;">
+                                  <i class="fa-solid fa-clock-rotate-left"></i> Session History
+                              </button>
+                              <button id="historySubtabVaultBtn" onclick="switchHistorySubtab('vault')" class="filter-btn" style="font-size: 12px; padding: 6px 14px;">
+                                  <i class="fa-solid fa-cloud-arrow-down"></i> Cloud Pool Vault <span id="vaultCountBadge" style="background: var(--border-color); padding: 1px 6px; border-radius: 10px; font-size: 10px; margin-left: 4px;">0</span>
+                              </button>
+                          </div>
+                          <button id="clearHistoryBtn" onclick="clearHistory()" class="filter-btn" style="color: var(--text-muted); font-size: 12px; padding: 7px 12px;">
+                              <i class="fa-solid fa-trash-can"></i> Clear
+                          </button>
+                          <button id="syncVaultBtn" onclick="syncCloudVault()" class="filter-btn" style="display: none; background: var(--text-heading); color: var(--bg-card); font-size: 12px; padding: 7px 14px;">
+                              <i class="fa-solid fa-arrows-rotate"></i> Sync Cloud Vault
+                          </button>
+                      </div>
+                  </div>
+
+                  <!-- Subview 1: Session History -->
+                  <div id="sessionHistoryBox">
+                      <div id="historyGrid" class="history-grid">
+                          <!-- Dynamic History Cards -->
+                      </div>
+                  </div>
+
+                  <!-- Subview 2: Cloud Vault Grid -->
+                  <div id="cloudVaultBox" style="display: none;">
+                      <div style="margin-bottom: 16px; display: flex; gap: 10px;">
+                          <div style="flex: 1; position: relative;">
+                              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 12px; color: var(--text-muted); font-size: 13px;"></i>
+                              <input type="text" id="vaultSearchInput" oninput="filterVaultItems()" placeholder="Search cached assets by title or keyword..." style="width: 100%; height: 38px; padding-left: 36px; padding-right: 12px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); color: var(--text-heading); font-size: 13px; outline: none;" />
+                          </div>
+                      </div>
+                      <div id="vaultGrid" class="history-grid">
+                          <!-- Dynamic Vault Cards -->
+                      </div>
+                  </div>
+              </section>
+          </div>
+
+          <!-- View 3: Network (Full Proper Tab View) -->
         <div id="networkView" style="display: none;">
             <section class="history-panel" style="padding: 28px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
@@ -3028,6 +3060,7 @@
                     });
                     const data = await res.json();
                     if (data.success && data.download_url) {
+                        if (data.from_vault) { showToast('⚡ Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
                         showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Creative Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
@@ -3074,6 +3107,7 @@
                     });
                     const data = await res.json();
                     if (data.success && data.download_url) {
+                        if (data.from_vault) { showToast('⚡ Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
                         showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Envato Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -3344,7 +3378,153 @@
             controls.appendChild(nextBtn);
         }
 
-        function renderHistory() {
+        
+          // --- Cloud Vault Management ---
+          let currentHistorySubtab = 'session';
+          let cachedVaultItems = [];
+
+          function switchHistorySubtab(tab) {
+              currentHistorySubtab = tab;
+              const sessionBox = document.getElementById('sessionHistoryBox');
+              const vaultBox = document.getElementById('cloudVaultBox');
+              const sessionBtn = document.getElementById('historySubtabSessionBtn');
+              const vaultBtn = document.getElementById('historySubtabVaultBtn');
+              const clearBtn = document.getElementById('clearHistoryBtn');
+              const syncBtn = document.getElementById('syncVaultBtn');
+              const pagination = document.getElementById('historyPaginationContainer');
+
+              if (tab === 'session') {
+                  if (sessionBox) sessionBox.style.display = 'block';
+                  if (vaultBox) vaultBox.style.display = 'none';
+                  if (sessionBtn) sessionBtn.classList.add('active');
+                  if (vaultBtn) vaultBtn.classList.remove('active');
+                  if (clearBtn) clearBtn.style.display = 'inline-flex';
+                  if (syncBtn) syncBtn.style.display = 'none';
+                  renderHistory();
+              } else {
+                  if (sessionBox) sessionBox.style.display = 'none';
+                  if (vaultBox) vaultBox.style.display = 'block';
+                  if (sessionBtn) sessionBtn.classList.remove('active');
+                  if (vaultBtn) vaultBtn.classList.add('active');
+                  if (clearBtn) clearBtn.style.display = 'none';
+                  if (syncBtn) syncBtn.style.display = 'inline-flex';
+                  if (pagination) pagination.style.display = 'none';
+                  loadCloudVaultItems();
+              }
+          }
+
+          async function loadCloudVaultItems() {
+              try {
+                  const res = await fetch('/api/vault-items');
+                  const data = await res.json();
+                  if (data.success) {
+                      cachedVaultItems = data.items || [];
+                      const badge = document.getElementById('vaultCountBadge');
+                      if (badge) badge.textContent = cachedVaultItems.length;
+                      renderVaultGrid(cachedVaultItems);
+                  }
+              } catch (e) {
+                  console.error('Failed to load vault items:', e);
+              }
+          }
+
+          function renderVaultGrid(items) {
+              const grid = document.getElementById('vaultGrid');
+              if (!grid) return;
+              grid.innerHTML = '';
+
+              if (!items || items.length === 0) {
+                  grid.innerHTML = `
+                      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-card);">
+                          <i class="fa-solid fa-cloud-arrow-down" style="font-size: 44px; margin-bottom: 12px; opacity: 0.4;"></i>
+                          <h3 style="font-size: 16px; color: var(--text-heading); margin-bottom: 4px;">Cloud Vault Empty</h3>
+                          <p style="font-size: 13px;">Extracted assets and synced pool downloads will be backed up here with permanent Google Drive links.</p>
+                          <button onclick="syncCloudVault()" class="filter-btn" style="margin-top: 14px; background: var(--text-heading); color: var(--bg-card); padding: 8px 16px;">
+                              <i class="fa-solid fa-arrows-rotate"></i> Sync All Pool Accounts
+                          </button>
+                      </div>`;
+                  return;
+              }
+
+              items.forEach(item => {
+                  const card = document.createElement('div');
+                  card.className = 'history-card';
+                  const platformIcon = item.platform === 'envato' 
+                      ? '<img src="https://cdn.simpleicons.org/envato/87E64B" style="width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px;" />' 
+                      : '<img src="https://cdn.simpleicons.org/freepik/1273EB" style="width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px;" />';
+                  const platformName = item.platform === 'envato' ? 'Envato' : 'Freepik';
+                  const dateStr = item.created_at ? new Date(item.created_at * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Saved Asset';
+
+                  card.innerHTML = `
+                      <div class="history-card-header">
+                          <div class="history-card-header-left">
+                              <div class="history-card-icon" style="background: var(--border-color);"><i class="fa-solid fa-box-archive"></i></div>
+                              <div class="history-card-info">
+                                  <h3 class="history-card-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</h3>
+                                  <div class="history-card-meta">${platformIcon} ${platformName} &bull; <i class="fa-regular fa-clock"></i> ${dateStr}</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="history-card-url-box">
+                          <i class="fa-brands fa-google-drive" style="color: #4285F4; font-size: 13px; flex-shrink: 0;"></i>
+                          <span class="url-text" title="${escapeHtml(item.download_url)}">${escapeHtml(item.download_url)}</span>
+                          <button class="history-copy-btn" onclick="copyHistoryUrl('${escapeHtml(item.download_url)}', event)" title="Copy GDrive Link">
+                              <i class="fa-regular fa-copy"></i>
+                          </button>
+                      </div>
+                      <div class="history-card-footer" style="margin-top: 10px;">
+                          <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Ready</span>
+                          <a href="${escapeHtml(item.download_url)}" target="_blank" class="btn-card" style="padding: 6px 14px; text-decoration: none; font-size: 12px; font-weight: 700;">
+                              <i class="fa-solid fa-download"></i> Direct Download
+                          </a>
+                      </div>
+                  `;
+                  grid.appendChild(card);
+              });
+          }
+
+          function filterVaultItems() {
+              const query = (document.getElementById('vaultSearchInput')?.value || '').toLowerCase().trim();
+              if (!query) {
+                  renderVaultGrid(cachedVaultItems);
+                  return;
+              }
+              const filtered = cachedVaultItems.filter(i => 
+                  (i.title || '').toLowerCase().includes(query) || 
+                  (i.url || '').toLowerCase().includes(query) ||
+                  (i.slug || '').toLowerCase().includes(query)
+              );
+              renderVaultGrid(filtered);
+          }
+
+          async function syncCloudVault() {
+              const btn = document.getElementById('syncVaultBtn');
+              if (btn) {
+                  btn.disabled = true;
+                  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing Pool...';
+              }
+              showToast('Syncing download history from all pool accounts...');
+              try {
+                  const res = await fetch('/api/sync-pool-vault', { method: 'POST' });
+                  const data = await res.json();
+                  if (data.success) {
+                      showToast(`Sync complete: ${data.synced_count} new assets added to Vault`);
+                      loadCloudVaultItems();
+                  } else {
+                      showToast('Sync completed with warnings');
+                      loadCloudVaultItems();
+                  }
+              } catch (e) {
+                  showToast('Error syncing pool history');
+              } finally {
+                  if (btn) {
+                      btn.disabled = false;
+                      btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync Cloud Vault';
+                  }
+              }
+          }
+
+          function renderHistory() {
             const history = getHistory();
             const grid = document.getElementById('historyGrid');
             if (!grid) return;

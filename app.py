@@ -24,6 +24,7 @@ from scrapers.freepik import (
     auto_register_account,
     FreepikRateLimitException
 )
+from scrapers.vault import find_vault_item, add_vault_item, load_vault, sync_all_accounts_history
 from scrapers.envato import (
     get_envato_info,
     EnvatoScraper,
@@ -117,12 +118,28 @@ def api_get_freepik_link():
     if not url:
         return jsonify({"success": False, "error": "URL parameter is required"}), 400
 
+    # 1. Check Cloud Vault Cache First (Instant 0-Quota Resolution)
+    cached = find_vault_item(url)
+    if cached and cached.get("download_url"):
+        return jsonify({
+            "success": True,
+            "download_url": cached["download_url"],
+            "title": cached.get("title", ""),
+            "from_vault": True,
+            "account_status": FreepikScraper.get_account_status(custom_accounts)
+        })
+
     try:
         scraper_fp = FreepikScraper()
         gdrive_link = scraper_fp.extract_gdrive_url(url, custom_accounts=custom_accounts)
+        # Auto-persist to Cloud Vault
+        slug = url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
+        title = slug.replace('-', ' ').replace('_', ' ').replace('.htm', '').title()
+        add_vault_item(url, title, gdrive_link, "freepik")
         return jsonify({
             "success": True,
             "download_url": gdrive_link,
+            "from_vault": False,
             "account_status": FreepikScraper.get_account_status(custom_accounts)
         })
     except FreepikRateLimitException as e:
@@ -214,12 +231,26 @@ def api_get_envato_link():
     if not url:
         return jsonify({"success": False, "error": "URL parameter is required"}), 400
 
+    # Check Cloud Vault First
+    cached = find_vault_item(url)
+    if cached and cached.get("download_url"):
+        return jsonify({
+            "success": True,
+            "download_url": cached["download_url"],
+            "title": cached.get("title", ""),
+            "from_vault": True
+        })
+
     try:
         scraper_env = EnvatoScraper()
         gdrive_link = scraper_env.extract_gdrive_url(url, custom_accounts=custom_accounts)
+        slug = url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
+        title = slug.replace('-', ' ').replace('_', ' ').title()
+        add_vault_item(url, title, gdrive_link, "envato")
         return jsonify({
             "success": True,
-            "download_url": gdrive_link
+            "download_url": gdrive_link,
+            "from_vault": False
         })
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
@@ -344,6 +375,17 @@ def api_envato_verify_single():
         return jsonify({"success": False, "error": "Email and password are required"}), 400
     ok, msg = test_envato_login(email, password)
     return jsonify({"success": ok, "message": msg, "verified": ok})
+
+
+@app.route("/api/vault-items", methods=["GET"])
+def api_vault_items():
+    items = load_vault()
+    return jsonify({"success": True, "items": items, "count": len(items)})
+
+@app.route("/api/sync-pool-vault", methods=["POST"])
+def api_sync_pool_vault():
+    res = sync_all_accounts_history()
+    return jsonify(res)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
