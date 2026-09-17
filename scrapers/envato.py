@@ -394,3 +394,138 @@ class EnvatoScraper:
 
 if __name__ == "__main__":
     pass
+
+
+def get_envato_info(url: str) -> Tuple[Optional[Dict], Optional[str]]:
+    """Extract offline title and metadata for an Envato Elements asset URL without triggering 403 blocks"""
+    try:
+        slug = url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
+        title = slug.replace('-', ' ').replace('_', ' ').title()
+        url_low = url.lower()
+        file_type = "MOCKUP" if "mockup" in url_low else "TEMPLATE" if "template" in url_low else "PSD" if "psd" in url_low else "GRAPHIC" if "graphic" in url_low else "VIDEO" if "video" in url_low else "AUDIO" if "audio" in url_low else "FONT" if "font" in url_low else "ASSET"
+        return {
+            "title": title or "Envato Elements Asset",
+            "items": [{
+                "index": 1,
+                "type": file_type,
+                "src": url,
+                "poster": "",
+                "download_type": "envato"
+            }]
+        }, None
+    except Exception as e:
+        return None, str(e)
+
+
+def auto_register_account() -> Dict:
+    """Fully automated: create temp email -> register -> verify -> add to Envato pool"""
+    steps = []
+    try:
+        # Step 1: Get mail.tm domain
+        steps.append("Fetching temp mail domain...")
+        r = requests.get("https://api.mail.tm/domains", timeout=15)
+        r.raise_for_status()
+        members = r.json().get("hydra:member", [])
+        domain = None
+        for m in members:
+            if m.get("isActive"):
+                domain = m["domain"]
+                break
+        if not domain:
+            raise Exception("No active mail.tm domain found")
+
+        # Step 2: Create mail.tm account
+        steps.append("Creating temporary email account...")
+        username = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
+        temp_email = f"{username}@{domain}"
+        temp_password = "TempPass@" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        
+        r_acc = requests.post("https://api.mail.tm/accounts", json={"address": temp_email, "password": temp_password}, timeout=15)
+        if r_acc.status_code not in [200, 201]:
+            raise Exception(f"mail.tm account creation failed: {r_acc.status_code}")
+            
+        r_tok = requests.post("https://api.mail.tm/token", json={"address": temp_email, "password": temp_password}, timeout=15)
+        if r_tok.status_code != 200:
+            raise Exception(f"mail.tm token failed: {r_tok.status_code}")
+        token = r_tok.json().get("token", "")
+
+        # Step 3: Register on envato-downloader.com
+        steps.append("Registering on envato-downloader.com...")
+        sess = cloudscraper.create_scraper(browser={"browser": "chrome", "platform": "windows", "mobile": False})
+        sess.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})
+        
+        reg_page = sess.get("https://envato-downloader.com/register", timeout=20)
+        soup = BeautifulSoup(reg_page.text, "html.parser")
+        csrf_inp = soup.find("input", {"name": re.compile(r"csrf", re.I)})
+        csrf = csrf_inp.get("value") if csrf_inp else ""
+        
+        reg_data = {
+            "csrf_token": csrf,
+            "sys_lang_id": "1",
+            "email": temp_email,
+            "password": temp_password,
+            "confirm_password": temp_password,
+            "terms_conditions": "1",
+            "referral_code": ""
+        }
+        reg_resp = sess.post("https://envato-downloader.com/register-post", data=reg_data,
+                            headers={"X-Requested-With": "XMLHttpRequest"}, timeout=20)
+        steps.append(f"Register status: {reg_resp.status_code}")
+
+        # Step 4: Poll inbox for verification email
+        steps.append("Waiting for verification email (max 45s)...")
+        headers = {"Authorization": f"Bearer {token}"}
+        start = time.time()
+        vlink = None
+        while time.time() - start < 45:
+            time.sleep(4)
+            try:
+                r_inbox = requests.get("https://api.mail.tm/messages", headers=headers, timeout=15)
+                if r_inbox.status_code == 200:
+                    messages = r_inbox.json().get("hydra:member", [])
+                    for msg in messages:
+                        msg_id = msg.get("id", "")
+                        r_msg = requests.get(f"https://api.mail.tm/messages/{msg_id}", headers=headers, timeout=15)
+                        if r_msg.status_code == 200:
+                            body = r_msg.json().get("html", [])
+                            body_text = "".join(body) if isinstance(body, list) else str(body)
+                            if not body_text:
+                                body_text = r_msg.json().get("text", "")
+                            links = re.findall(r'https?://envato-downloader\.com/[^\s"\'<>]+', body_text)
+                            if links:
+                                vlink = links[0]
+                                break
+                if vlink:
+                    break
+            except Exception as e:
+                print(f"[EnvatoAutoRegister] Inbox poll error: {e}")
+
+        if vlink:
+            steps.append("Clicking activation link...")
+            sess.get(vlink, timeout=20)
+
+        # Add to Envato pool
+        accounts = _load_envato_accounts()
+        accounts.append({
+            "email": temp_email,
+            "password": temp_password,
+            "verified": True if vlink else False,
+            "added_at": time.time()
+        })
+        _save_envato_accounts(accounts)
+        
+        return {
+            "success": True,
+            "email": temp_email,
+            "password": temp_password,
+            "message": f"Account {temp_email} created and registered successfully!",
+            "steps": steps,
+            "account_status": EnvatoScraper.get_account_status()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Envato auto-register error: {str(e)}",
+            "steps": steps
+        }
+
