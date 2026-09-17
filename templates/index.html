@@ -1566,161 +1566,6 @@
 
     </main>
 
-    <!-- Complete Freepik Pool Management Modal (Sleek, Stable, 1-Row Tabs) -->
-    <div id="freepikModal" class="modal-overlay" onclick="if(event.target===this) closeFreepikModal();">
-        <div class="modal-box" style="height: 540px; max-height: 90vh; width: 100%; max-width: 560px; display: flex; flex-direction: column; overflow: hidden;">
-            <!-- Modal Header (Fixed) -->
-            <div class="modal-header" style="flex-shrink: 0;">
-                <div class="modal-title">
-                    <i class="fa-solid fa-server"></i>
-                    <span>Freepik Account Pool</span>
-                </div>
-                <button class="modal-close" onclick="closeFreepikModal()">&times;</button>
-            </div>
-
-            <!-- Single Line Tabs (No Wrap) -->
-            <div class="modal-tabs" style="flex-shrink: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid var(--border-color); background: var(--card-subtle); padding: 0 16px;">
-                <button id="tabBtnPool" class="modal-tab-btn active" onclick="switchModalTab('pool')">
-                    <i class="fa-solid fa-list-check"></i> Pool Status
-                </button>
-                <button id="tabBtnDotTrick" class="modal-tab-btn" onclick="switchModalTab('dottrick')">
-                    <i class="fa-solid fa-network-wired"></i> Dot-Trick Generator
-                </button>
-                <button id="tabBtnAdd" class="modal-tab-btn" onclick="switchModalTab('add')">
-                    <i class="fa-solid fa-plus"></i> Add & Auto-Register
-                </button>
-            </div>
-
-            <!-- TAB 1: POOL STATUS (Scrollable Body) -->
-            <div id="modalTabPool" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 18px 22px;">
-                <!-- Summary Card -->
-                <div style="padding: 12px 16px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading);">Active Browser Pool</div>
-                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Stored in local client cache (zero-server storage)</div>
-                    </div>
-                    <span id="poolSummaryCount" style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-heading);">0 Accounts</span>
-                </div>
-
-                <!-- Action Controls -->
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="verifyAllPoolAccounts()" id="btnVerifyAll" class="btn-secondary" style="flex: 1;">
-                        <i class="fa-solid fa-shield-halved"></i> Verify All
-                    </button>
-                    <button onclick="clearInvalidAccounts()" class="btn-secondary">
-                        <i class="fa-solid fa-filter"></i> Clear Inactive
-                    </button>
-                    <button onclick="exportAccountsJson()" class="btn-secondary" title="Export Backup JSON">
-                        <i class="fa-solid fa-download"></i> Backup
-                    </button>
-                </div>
-
-                <!-- Accounts Container -->
-                <div id="accountsListContainer" style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; overflow-y: auto; min-height: 160px;">
-                    <!-- Dynamically Rendered Accounts -->
-                </div>
-            </div>
-
-            <!-- TAB 2: GMAIL DOT-TRICK GENERATOR (Scrollable Body) -->
-            <div id="modalTabDotTrick" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 14px; padding: 18px 22px;">
-                <div style="padding: 12px 14px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); font-size: 12px; color: var(--text-heading); line-height: 1.45;">
-                    <div style="font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">
-                        <i class="fa-solid fa-bolt" style="margin-right: 4px;"></i> Gmail Dot-Trick Aliases
-                    </div>
-                    <div style="color: var(--text-muted); font-size: 11.5px;">
-                        Gmail ignores dots in usernames. All activation emails arrive in your <strong>single primary Gmail inbox</strong>, while Freepik recognizes each alias as a separate account.
-                    </div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <div style="flex: 2; min-width: 180px;">
-                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Primary Gmail Address:</label>
-                            <input type="email" id="fpAliasBaseEmail" class="modal-input" placeholder="yourname@gmail.com" />
-                        </div>
-                        <div id="fpAliasPassContainer" style="flex: 1; min-width: 120px; display: none;">
-                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Custom Password:</label>
-                            <input type="text" id="fpAliasPassword" class="modal-input" placeholder="Password" />
-                        </div>
-                        <div style="width: 80px;">
-                            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Quantity:</label>
-                            <input type="number" id="fpAliasCount" class="modal-input" min="1" max="10" value="5" />
-                        </div>
-                    </div>
-
-                    <!-- Password Option Checkbox -->
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-heading); cursor: pointer; user-select: none; margin-top: 2px;">
-                        <input type="checkbox" id="fpAliasSamePass" onchange="toggleAliasSamePass(this.checked)" checked style="cursor: pointer; accent-color: var(--btn-bg);" />
-                        <span>Use <strong>Email as Password</strong> (Password = each email)</span>
-                    </label>
-
-                    <div style="margin-top: 4px;">
-                        <button onclick="fpGenerateAliases()" class="btn-secondary" style="width: 100%;">
-                            <i class="fa-solid fa-calculator"></i> Generate Dot-Trick Account List
-                        </button>
-                    </div>
-
-                    <!-- Generated Aliases Container -->
-                    <div id="fpAliasResultBox" style="display: none; flex-direction: column; gap: 8px; margin-top: 4px;">
-                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text-heading); display: flex; justify-content: space-between; align-items: center;">
-                            <span>Generated Aliases:</span>
-                            <span style="font-size: 11px; color: var(--text-muted);">Click Register &rarr; confirm in Gmail inbox</span>
-                        </div>
-
-                        <div id="fpAliasList" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto;">
-                            <!-- Dynamically Generated Alias Items with Register button -->
-                        </div>
-
-                        <div id="fpBatchProgress" style="display: none; padding: 10px 12px; border-radius: 8px; background: var(--card-subtle); border: 1px solid var(--border-color); font-size: 11.5px; line-height: 1.4;">
-                            <span id="fpBatchProgressText"></span>
-                        </div>
-
-                        <button id="btnFpBatchAdd" onclick="fpBatchVerifyAndAdd()" class="btn-primary" style="width: 100%; margin-top: 2px;">
-                            <i class="fa-solid fa-shield-halved"></i> Verify & Add All to Pool
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: ADD ACCOUNT & AUTO-REGISTER (Scrollable Body) -->
-            <div id="modalTabAdd" class="modal-body" style="flex: 1 1 auto; overflow-y: auto; display: none; flex-direction: column; gap: 14px; padding: 18px 22px;">
-                <!-- 1-Click Auto Register Section -->
-                <div style="padding: 12px 14px; border-radius: 10px; background: var(--card-subtle); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Instant 1-Click Auto Register</span>
-                        <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--badge-green-bg); color: var(--badge-green-text);">TEMPMAIL</span>
-                    </div>
-                    <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.35;">Auto-creates a temporary email, registers on Freepik, and adds to your active pool.</div>
-                    <button id="btnAutoRegister" onclick="runAutoRegister()" class="btn-primary" style="width: 100%; padding: 8px 14px;">
-                        <i class="fa-solid fa-bolt"></i> Generate & Add Account
-                    </button>
-                    <div id="autoRegResult" style="display: none; padding: 8px 10px; border-radius: 6px; font-size: 11.5px; border: 1px solid var(--border-color); background: var(--bg-card);"></div>
-                </div>
-
-                <!-- Single Account Manual Adder -->
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Add Single Account</span>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="email" id="fpSingleEmail" class="modal-input" placeholder="Email" />
-                        <input type="password" id="fpSinglePass" class="modal-input" placeholder="Password" style="width: 140px;" />
-                    </div>
-                    <button id="btnAddSingle" onclick="addSingleAccountVerified()" class="btn-secondary" style="width: 100%;">
-                        <i class="fa-solid fa-shield-halved"></i> Verify & Add
-                    </button>
-                </div>
-
-                <!-- Bulk Import Multi-Line -->
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading);">Bulk Import (Multi-Line)</span>
-                    <textarea id="bulkImportText" class="modal-input" style="height: 70px; font-family: monospace; font-size: 11.5px; resize: none;" placeholder="email:password (one per line)"></textarea>
-                    <button onclick="importBulkAccounts()" class="btn-secondary" style="width: 100%;">
-                        <i class="fa-solid fa-file-import"></i> Parse & Import
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast Notification -->
     <div id="toast" class="toast">Action completed</div>
 
@@ -1909,13 +1754,12 @@
         }
 
         function openFreepikModal() {
-            document.getElementById('freepikModal').style.display = 'flex';
-            switchModalTab('pool');
-            renderPoolAccounts();
+            switchView('accounts');
+            switchPoolSubtab('freepik');
         }
 
         function closeFreepikModal() {
-            document.getElementById('freepikModal').style.display = 'none';
+            // Modal removed in favor of dedicated Accounts tab
         }
 
         function switchModalTab(tab) {
@@ -2671,7 +2515,7 @@
 
         // --- Gmail Dot Variation Algorithm ---
         function generateDotVariations(email, count) {
-            if (!email.includes('@')) return [];
+            if (!email || !email.includes('@')) return [];
             const parts = email.split('@');
             const user = parts[0].replace(/\./g, '');
             const domain = parts[1];
@@ -2682,20 +2526,25 @@
                 return [`${user}@${domain}`];
             }
 
-            const maxCombinations = 1 << (n - 1);
-            const limit = Math.min(count, maxCombinations);
+            const limit = Math.max(1, parseInt(count) || 5);
 
-            for (let i = 1; i < maxCombinations && results.length < limit; i++) {
-                let alias = '';
-                for (let j = 0; j < n; j++) {
-                    alias += user[j];
-                    if (j < n - 1 && (i & (1 << j))) {
-                        alias += '.';
-                    }
-                }
+            // Phase 1: Generate single-dot variations (1 dot strictly)
+            for (let i = 1; i < n && results.length < limit; i++) {
+                const alias = user.slice(0, i) + '.' + user.slice(i);
                 const full = `${alias}@${domain}`;
                 if (!results.includes(full)) {
                     results.push(full);
+                }
+            }
+
+            // Phase 2: Generate double-dot variations (max 2 dots strictly to prevent server regex block)
+            for (let i = 1; i < n && results.length < limit; i++) {
+                for (let j = i + 1; j < n && results.length < limit; j++) {
+                    const alias = user.slice(0, i) + '.' + user.slice(i, j) + '.' + user.slice(j);
+                    const full = `${alias}@${domain}`;
+                    if (!results.includes(full)) {
+                        results.push(full);
+                    }
                 }
             }
 
@@ -3166,8 +3015,9 @@
                 if (url.includes('freepik.com') || url.includes('magnific.ai') || url.includes('magnific.com')) {
                     const accs = getLocalFreepikAccounts();
                     if (accs.length === 0) {
-                        showToast('Please add at least 1 Freepik account to pool');
-                        openFreepikModal();
+                        showToast('Please add at least 1 Freepik account in Accounts tab');
+                        switchView('accounts');
+                        switchPoolSubtab('freepik');
                         return;
                     }
 
@@ -3179,11 +3029,34 @@
                     const data = await res.json();
                     if (data.success && data.download_url) {
                         showToast('Direct download link ready');
-                        saveHistoryItem('Freepik Asset', url, 1);
-                        window.open(data.download_url, '_blank');
+                        const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Creative Asset';
+                        const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
+                        const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('vector') ? 'VECTOR' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : 'PREMIUM';
+                        
+                        saveHistoryItem(assetTitleClean, url, 1);
+                        renderResults({
+                            model_name: assetTitleClean,
+                            count: 1,
+                            media_items: [{
+                                index: 1,
+                                type: fileType,
+                                poster: '',
+                                download_url: data.download_url
+                            }]
+                        });
+
+                        try {
+                            const tempLink = document.createElement('a');
+                            tempLink.href = data.download_url;
+                            tempLink.target = '_blank';
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                        } catch(e) {}
                     } else {
                         showToast(data.error || 'Account limit reached or resolution failed');
-                        openFreepikModal();
+                        switchView('accounts');
+                        switchPoolSubtab('freepik');
                     }
                 } else if (url.includes('elements.envato.com') || url.includes('envato.com')) {
                     const accs = getLocalEnvatoAccounts();
@@ -3202,8 +3075,30 @@
                     const data = await res.json();
                     if (data.success && data.download_url) {
                         showToast('Direct download link ready');
-                        saveHistoryItem('Envato Elements Asset', url, 1);
-                        window.open(data.download_url, '_blank');
+                        const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Envato Asset';
+                        const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : url.toLowerCase().includes('video') ? 'VIDEO' : 'ENVATO';
+                        
+                        saveHistoryItem(assetTitleClean, url, 1);
+                        renderResults({
+                            model_name: assetTitleClean,
+                            count: 1,
+                            media_items: [{
+                                index: 1,
+                                type: fileType,
+                                poster: '',
+                                download_url: data.download_url
+                            }]
+                        });
+
+                        try {
+                            const tempLink = document.createElement('a');
+                            tempLink.href = data.download_url;
+                            tempLink.target = '_blank';
+                            document.body.appendChild(tempLink);
+                            tempLink.click();
+                            document.body.removeChild(tempLink);
+                        } catch(e) {}
                     } else {
                         showToast(data.error || 'Envato resolution failed');
                         switchView('accounts');
@@ -3247,7 +3142,7 @@
             mediaGrid.innerHTML = items.map((m, idx) => {
                 const thumb = m.poster || m.thumb || m.src || '';
                 const itemIdx = m.index || (idx + 1);
-                const dlUrl = `/api/download-stream?url=${encodeURIComponent(currentUrl)}&index=${itemIdx}`;
+                const dlUrl = m.download_url || `/api/download-stream?url=${encodeURIComponent(currentUrl)}&index=${itemIdx}`;
                 const label = m.type ? m.type.toUpperCase() : 'ASSET';
                 return `
                     <div class="media-card">
