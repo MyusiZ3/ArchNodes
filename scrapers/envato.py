@@ -336,15 +336,31 @@ class EnvatoScraper:
             
         raise Exception("Google Drive URL regex match failed on final Envato page")
 
-    def _check_downloads_history(self) -> Optional[str]:
-        """Check user's /downloads history page for newly generated download links"""
+    def _check_downloads_history(self, target_url: str) -> Optional[str]:
+        """Check user's /downloads history page for newly generated download links matching the requested asset"""
         try:
             dl_page = self.scraper.get(f"{self.base_url}/downloads", timeout=15)
             soup_dl = BeautifulSoup(dl_page.text, "html.parser")
-            for a in soup_dl.find_all("a", href=re.compile(r"/generate-link/")):
-                href = a.get("href", "")
-                if href:
-                    return href
+            table = soup_dl.find("table")
+            if not table:
+                return None
+
+            slug = target_url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
+            slug_clean = re.sub(r'_\d+\.htm.*', '', slug).replace('-', ' ').replace('_', ' ').lower()
+            words = list(set([w for w in slug_clean.split() if len(w) > 3]))
+
+            for tr in table.find_all("tr"):
+                row_text = tr.get_text().lower()
+                links = [a.get("href") for a in tr.find_all("a") if "/generate-link/" in a.get("href", "")]
+                if not links:
+                    continue
+
+                matches = sum(1 for w in words if w in row_text)
+                is_fresh = any(t in row_text for t in ["just now", "second", "seconds ago", "1 minute ago", "2 minutes ago", "3 minutes ago", "4 minutes ago", "5 minutes ago"])
+                is_old = any(t in row_text for t in ["hour", "hours ago", "day", "days ago", "week", "month", "year"])
+
+                if matches >= min(2, len(words)) and is_fresh and not is_old:
+                    return links[0]
         except Exception as e:
             print(f"[EnvatoScraper] History check error: {e}")
         return None
@@ -379,7 +395,7 @@ class EnvatoScraper:
         if not gen_url:
             # Smart Fallback: Check if the file was queued and is already available in /downloads history!
             print("[EnvatoScraper] Direct AJAX token not returned. Checking /downloads history for ready link...")
-            history_url = self._check_downloads_history()
+            history_url = self._check_downloads_history(clean_req_url if 'clean_req_url' in locals() else clean_url)
             if history_url:
                 print(f"[EnvatoScraper] Found ready download link in account history: {history_url}")
                 gen_url = history_url

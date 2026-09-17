@@ -179,6 +179,15 @@ def api_download_stream():
 
     return "Unsupported platform", 400
 
+
+@app.route("/api/reset-cooldowns", methods=["POST"])
+def api_reset_cooldowns():
+    from scrapers.freepik import RATE_LIMITED_ACCOUNTS
+    from scrapers.envato import RATE_LIMITED_ENVATO_ACCOUNTS
+    RATE_LIMITED_ACCOUNTS.clear()
+    RATE_LIMITED_ENVATO_ACCOUNTS.clear()
+    return jsonify({"success": True, "message": "All account cooldowns have been reset."})
+
 @app.route("/api/freepik-status", methods=["GET", "POST"])
 def api_freepik_status():
     data = (request.json if request.is_json else request.args) or {}
