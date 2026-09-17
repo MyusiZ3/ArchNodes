@@ -1,5 +1,5 @@
 """
-ArchNodes - Creative Asset Downloader
+ArchNodes - Premium Asset Downloader
 Main Flask Web Application
 """
 
@@ -24,7 +24,16 @@ from scrapers.freepik import (
     auto_register_account,
     FreepikRateLimitException
 )
-from scrapers.envato import get_envato_info
+from scrapers.envato import (
+    get_envato_info,
+    EnvatoScraper,
+    add_account as add_envato_account,
+    remove_account as remove_envato_account,
+    batch_add_accounts as batch_add_envato_accounts,
+    verify_all_accounts as verify_all_envato_accounts,
+    auto_register_account as auto_register_envato_account,
+    test_envato_login
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -51,8 +60,11 @@ def api_check():
         return jsonify({"status": "error", "message": "Invalid URL format"}), 400
 
     if platform == "freepik":
+        url_low = profile_url.lower()
+        file_type = "PSD" if "psd" in url_low else "VECTOR" if "vector" in url_low else "PHOTO" if "photo" in url_low else "ZIP"
         return jsonify({
             "status": "success",
+            "success": True,
             "model_name": asset_name,
             "platform": "freepik",
             "count": 1,
@@ -60,27 +72,37 @@ def api_check():
             "video_count": 0,
             "media_items": [{
                 "index": 1,
-                "type": "file",
+                "type": file_type,
                 "src": profile_url,
-                "poster": "https://freepik.cdnpk.net/img/favicons/favicon.ico"
+                "poster": "",
+                "download_type": "freepik"
             }],
             "account_status": FreepikScraper.get_account_status()
         })
 
     if platform == "envato":
-        info, err = get_envato_info(profile_url)
-        if err or not info:
-            return jsonify({"status": "error", "message": err or "Failed to load Envato Elements asset"}), 404
-            
-        items = info.get("items", [])
+        url_low = profile_url.lower()
+        file_type = "MOCKUP" if "mockup" in url_low else "TEMPLATE" if "template" in url_low else "PSD" if "psd" in url_low else "GRAPHIC" if "graphic" in url_low else "VIDEO" if "video" in url_low else "AUDIO" if "audio" in url_low else "FONT" if "font" in url_low else "ASSET"
+        
+        # Parse clean title from URL slug without triggering 403 on elements.envato.com
+        slug = profile_url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
+        title = slug.replace('-', ' ').replace('_', ' ').title()
+        
         return jsonify({
             "status": "success",
-            "model_name": info.get("title", asset_name),
+            "success": True,
+            "model_name": title or asset_name,
             "platform": "envato",
-            "count": len(items),
-            "image_count": sum(1 for i in items if i["type"] == "image"),
-            "video_count": sum(1 for i in items if i["type"] == "video"),
-            "media_items": items
+            "count": 1,
+            "image_count": 1,
+            "video_count": 0,
+            "media_items": [{
+                "index": 1,
+                "type": file_type,
+                "src": profile_url,
+                "poster": "",
+                "download_type": "envato"
+            }]
         })
 
     return jsonify({"status": "error", "message": "Unsupported platform"}), 400
@@ -173,6 +195,26 @@ def api_freepik_batch_add():
     return jsonify(result)
 
 
+
+@app.route("/api/get-envato-link", methods=["POST", "GET"])
+def api_get_envato_link():
+    data = (request.json if request.is_json else request.args) or {}
+    url = data.get("url", "").strip()
+    custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+
+    if not url:
+        return jsonify({"success": False, "error": "URL parameter is required"}), 400
+
+    try:
+        scraper_env = EnvatoScraper()
+        gdrive_link = scraper_env.extract_gdrive_url(url, custom_accounts=custom_accounts)
+        return jsonify({
+            "success": True,
+            "download_url": gdrive_link
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route("/api/freepik-auto-register", methods=["POST"])
 def api_freepik_auto_register():
     result = auto_register_account()
@@ -224,6 +266,75 @@ def api_progress():
 def api_stop():
     stop_download()
     return jsonify({"success": True})
+
+
+@app.route("/api/envato-status", methods=["GET", "POST"])
+def api_envato_status():
+    data = (request.json if request.is_json else request.args) or {}
+    custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+    return jsonify({"success": True, "status": EnvatoScraper.get_account_status(custom_accounts)})
+
+
+@app.route("/api/envato-auto-register", methods=["POST"])
+def api_envato_auto_register():
+    result = auto_register_envato_account()
+    result["account_status"] = EnvatoScraper.get_account_status()
+    return jsonify(result)
+
+@app.route("/api/envato-accounts", methods=["GET", "POST", "DELETE"])
+def api_envato_accounts():
+    if request.method == "GET":
+        data = (request.json if request.is_json else request.args) or {}
+        custom_accounts = data.get("accounts") if isinstance(data.get("accounts"), list) else None
+        return jsonify({"success": True, "status": EnvatoScraper.get_account_status(custom_accounts)})
+    
+    if request.method == "POST":
+        data = request.json or {}
+        email = data.get("email", "").strip()
+        password = data.get("password", "").strip()
+        verify = data.get("verify", True)
+        if not email or not password:
+            return jsonify({"success": False, "error": "Email and password are required"}), 400
+        result = add_envato_account(email, password, verify=verify)
+        if result.get("success"):
+            result["account_status"] = EnvatoScraper.get_account_status()
+        return jsonify(result)
+        
+    if request.method == "DELETE":
+        data = request.json or {}
+        email = data.get("email", "").strip()
+        if not email:
+            return jsonify({"success": False, "error": "Email is required"}), 400
+        result = remove_envato_account(email)
+        if result.get("success"):
+            result["account_status"] = EnvatoScraper.get_account_status()
+        return jsonify(result)
+
+@app.route("/api/envato-batch-add", methods=["POST"])
+def api_envato_batch_add():
+    data = request.json or {}
+    accounts = data.get("accounts", [])
+    if not accounts:
+        return jsonify({"success": False, "error": "Account list is empty"}), 400
+    result = batch_add_envato_accounts(accounts)
+    result["account_status"] = EnvatoScraper.get_account_status()
+    return jsonify(result)
+
+@app.route("/api/envato-verify-all", methods=["POST"])
+def api_envato_verify_all():
+    result = verify_all_envato_accounts()
+    result["account_status"] = EnvatoScraper.get_account_status()
+    return jsonify(result)
+
+@app.route("/api/envato-verify", methods=["POST"])
+def api_envato_verify_single():
+    data = request.json or {}
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
+    if not email or not password:
+        return jsonify({"success": False, "error": "Email and password are required"}), 400
+    ok, msg = test_envato_login(email, password)
+    return jsonify({"success": ok, "message": msg, "verified": ok})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))

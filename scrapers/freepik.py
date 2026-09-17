@@ -460,10 +460,17 @@ class FreepikScraper:
             return False
 
     def extract_gdrive_url(self, freepik_url: str, custom_accounts: Optional[List[Dict[str, str]]] = None) -> str:
-        """Convert a Freepik Premium URL to a Direct Google Drive download link with account rotation"""
+        """Convert a Freepik Premium URL to a Direct Google Drive download link with smart auto-switching across pool accounts"""
         pool = custom_accounts if (custom_accounts is not None and len(custom_accounts) > 0) else _load_accounts()
         if not pool:
             raise Exception("No Freepik accounts in pool. Please add accounts in the Freepik modal.")
+
+        # Clean URL to ensure FreepikDownloader accepts it
+        clean_url = freepik_url.strip().split('#')[0]
+        if ".htm" in clean_url:
+            clean_url = clean_url.split('?')[0]
+        if "magnific.com" in clean_url or "magnific.ai" in clean_url:
+            clean_url = clean_url.replace("www.magnific.com", "www.freepik.com").replace("magnific.com", "freepik.com").replace("www.magnific.ai", "www.freepik.com").replace("magnific.ai", "freepik.com")
             
         now = time.time()
         available_accounts = [
@@ -480,39 +487,47 @@ class FreepikScraper:
             )
 
         last_error = ""
+        attempted_count = 0
 
-        # Try available accounts in the pool
+        # Try every available account in the pool sequentially
         for acc in available_accounts:
-            email = acc.get("email", "")
-            password = acc.get("password", "")
+            email = acc.get("email", "").strip()
+            password = acc.get("password", "").strip()
             if not email or not password:
                 continue
 
-            print(f"[FreepikScraper] Attempting extraction with account: {email}")
+            attempted_count += 1
+            print(f"[FreepikScraper] Attempting extraction with account #{attempted_count}: {email}")
+            
+            # 1. Attempt login
             if not self._login_account(email, password):
+                print(f"[FreepikScraper] Login failed for {email}. Auto-switching to next account...")
+                last_error = f"Login failed for {email}"
                 continue
 
+            # 2. Attempt link extraction
             try:
-                gdrive_link = self._process_extraction(freepik_url)
-                return gdrive_link
+                gdrive_link = self._process_extraction(clean_url)
+                if gdrive_link:
+                    print(f"[FreepikScraper] Successfully extracted GDrive link using {email}")
+                    return gdrive_link
             except Exception as exc:
                 err_text = str(exc)
-                if "hourly download limit" in err_text.lower() or "limit" in err_text.lower():
-                    print(f"[FreepikScraper] Account {email} reached hourly limit! Marking limited for 60 mins.")
-                    # Mark account as rate limited for 60 minutes
-                    RATE_LIMITED_ACCOUNTS[email] = time.time() + 3600
-                    last_error = err_text
-                    continue
-                else:
-                    raise exc
+                print(f"[FreepikScraper] Account {email} extraction error: {err_text}. Switching to next account...")
+                RATE_LIMITED_ACCOUNTS[email] = time.time() + 3600
+                last_error = err_text
+                continue
 
-        # All available accounts failed / reached limit
-        status = self.get_account_status()
-        raise FreepikRateLimitException(
-            f"Hourly download quota reached on all accounts ({status['total_accounts']}/{status['total_accounts']} Accounts Limited). Please wait ~{status['reset_minutes']} minutes or add backup accounts.",
-            reset_minutes=status["reset_minutes"],
-            total_accounts=status["total_accounts"]
-        )
+        # If all accounts in pool failed
+        status = self.get_account_status(pool)
+        if last_error:
+            raise Exception(f"{last_error} (tried {attempted_count} pool accounts)")
+        else:
+            raise FreepikRateLimitException(
+                f"All {len(pool)} pool accounts are currently rate-limited or unverified. Please add a fresh account.",
+                reset_minutes=status.get("reset_minutes", 60),
+                total_accounts=len(pool)
+            )
 
     def _process_extraction(self, freepik_url: str) -> str:
         headers = {
@@ -530,7 +545,7 @@ class FreepikScraper:
         # 2. Submit link generator AJAX
         ajax_payload = {
             "csrf_token": csrf_val,
-            "url": freepik_url,
+            "url": freepik_url.strip().split("#")[0].split("?")[0] if ".htm" in freepik_url else freepik_url.strip().split("#")[0],
             "sys_lang_id": "1",
             "g-recaptcha-response": ""
         }

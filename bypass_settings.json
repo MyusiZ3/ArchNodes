@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "mode": "doh",
+  "doh_provider": "cloudflare",
+  "custom_doh_url": "",
+  "proxy_url": ""
+}
