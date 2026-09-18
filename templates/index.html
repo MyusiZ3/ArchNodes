@@ -1236,6 +1236,222 @@
             animation: tutFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* ==========================================================================
+           Comprehensive Responsive & Mobile System (<= 768px and <= 640px / 440px)
+           ========================================================================== */
+
+        /* Responsive Grids & Layout Containers */
+        .bento-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .overview-dual-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .diag-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .dot-trick-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr;
+            gap: 12px;
+        }
+
+        .section-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        /* Tablet & Mobile Screens (<= 768px) */
+        @media (max-width: 768px) {
+            .bento-grid-2 {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+
+            .overview-dual-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+
+            .diag-grid-3 {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            .dot-trick-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            .media-grid, .history-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .history-panel, .bento-hero, .result-panel {
+                padding: 24px 20px !important;
+            }
+        }
+
+        /* Mobile Screens (<= 640px, e.g. 440px, 390px) */
+        @media (max-width: 640px) {
+            body {
+                padding: 0 10px 40px !important;
+            }
+
+            /* Fixed Floating Navbar */
+            .nav-wrapper {
+                top: 8px !important;
+                width: calc(100% - 16px) !important;
+                height: 48px !important;
+                padding: 0 8px !important;
+                border-radius: 14px !important;
+            }
+
+            .nav-brand {
+                gap: 6px !important;
+            }
+
+            .nav-brand span {
+                font-size: 13px !important;
+            }
+
+            .nav-brand img {
+                width: 22px !important;
+                height: 22px !important;
+            }
+
+            .nav-menu {
+                padding: 2px !important;
+                gap: 2px !important;
+            }
+
+            .nav-link {
+                padding: 4px 7px !important;
+                font-size: 11px !important;
+                border-radius: 8px !important;
+            }
+
+            .nav-actions {
+                gap: 4px !important;
+            }
+
+            .icon-btn {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 11.5px !important;
+                border-radius: 7px !important;
+            }
+
+            /* Main Workspace */
+            .main-container {
+                margin-top: 68px !important;
+                gap: 14px !important;
+            }
+
+            .bento-hero, .history-panel, .result-panel {
+                padding: 18px 14px !important;
+                border-radius: 16px !important;
+            }
+
+            .hero-title {
+                font-size: 20px !important;
+                letter-spacing: -0.4px !important;
+            }
+
+            .hero-desc {
+                font-size: 12.5px !important;
+                line-height: 1.45 !important;
+            }
+
+            .build-tag {
+                font-size: 9px !important;
+                padding: 2px 7px !important;
+            }
+
+            /* Search Box */
+            .search-container {
+                padding: 6px 8px !important;
+                border-radius: 10px !important;
+            }
+
+            .search-input {
+                font-size: 12px !important;
+            }
+
+            .search-container .btn-primary {
+                height: 36px !important;
+                padding: 0 12px !important;
+                font-size: 12px !important;
+            }
+
+            /* Filter chips */
+            .filter-row {
+                gap: 6px !important;
+            }
+
+            .filter-btn {
+                padding: 5px 10px !important;
+                font-size: 11px !important;
+            }
+
+            /* Section Headers */
+            .section-header-flex {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .section-header-flex > div:nth-child(2) {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
+
+            /* Diagnostics Grid */
+            .diag-grid-3 {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+
+            /* Modals */
+            #tutorialModalOverlay {
+                padding-top: 16px !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+
+            .custom-modal-card {
+                padding: 18px 14px 16px !important;
+                border-radius: 16px !important;
+                max-height: 94vh !important;
+            }
+
+            /* Footer */
+            .app-footer {
+                margin-top: 40px !important;
+                padding-top: 30px !important;
+            }
+
+            .footer-grid {
+                gap: 24px !important;
+            }
+        }
+
         .custom-modal-icon-wrap {
             width: 52px;
             height: 52px;
@@ -1388,7 +1604,7 @@
           <div id="historyView" style="display: none;">
               <section class="history-panel" style="padding: 28px;">
                   <!-- Header & Subtab Switcher -->
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px;">
+                  <div class="section-header-flex">
                       <div style="flex: 1; min-width: 0;">
                           <div class="hero-meta">Persistent Asset Storage</div>
                           <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">History & Cloud Vault</h2>
@@ -1437,7 +1653,7 @@
           <!-- View 3: Network (Full Proper Tab View) -->
         <div id="networkView" style="display: none;">
             <section class="history-panel" style="padding: 28px;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+                <div class="section-header-flex">
                     <div>
                         <div class="hero-meta">Infrastructure & Routing</div>
                         <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">Network Routing & DNS</h2>
@@ -1449,7 +1665,7 @@
                 </div>
 
                 <!-- Network Bento Grid -->
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+                <div class="bento-grid-2">
                     
                     <!-- Card 1: DoH Engine -->
                     <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
@@ -1544,7 +1760,7 @@
                         <div style="font-size: 13px; font-weight: 800; color: var(--text-heading); display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-signal"></i> Network Diagnostics & Routing Status
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+                        <div class="diag-grid-3">
                             <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
                                 <div style="font-size: 11px; color: var(--text-muted);">DNS Protocol</div>
                                 <div style="font-size: 14px; font-weight: 800; color: var(--text-heading); margin-top: 2px;">DoH (TLS Encrypted)</div>
@@ -1579,7 +1795,7 @@
         <div id="accountsView" style="display: none;">
             <section class="history-panel" style="padding: 28px;">
                 <!-- Header -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+                <div class="section-header-flex">
                     <div>
                         <div class="hero-meta">Account Infrastructure</div>
                         <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">Account Pools & Quotas</h2>
@@ -1591,7 +1807,7 @@
                 </div>
 
                 <!-- Top Overview Metrics (Bento Dual Cards) -->
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div class="overview-dual-grid">
                     
                     <!-- Metric 1: Freepik Overview -->
                     <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition);" onclick="switchPoolSubtab('freepik')">
@@ -1721,7 +1937,7 @@
 
                         <!-- Generator Configuration Card -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
-                            <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 12px;">
+                            <div class="dot-trick-grid">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Primary Gmail Address</label>
                                     <input type="email" id="fpDotBaseEmail" class="bento-input"  placeholder="username@gmail.com" />
@@ -1770,7 +1986,7 @@
                         <!-- Single Account Form -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px;">
                             <div style="font-weight: 800; font-size: 14px; color: var(--text-heading); margin-bottom: 12px;">Add Single Freepik Account</div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div class="bento-grid-2" style="margin-bottom: 12px;">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Email</label>
                                     <input type="email" id="newAccEmail" class="bento-input"  placeholder="user@domain.com" />
@@ -1964,7 +2180,7 @@
 
                         <!-- Generator Configuration Card -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
-                            <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 12px;">
+                            <div class="dot-trick-grid">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Primary Gmail Address</label>
                                     <input type="email" id="envDotBaseEmail" class="bento-input"  placeholder="username@gmail.com" />
@@ -2013,7 +2229,7 @@
                         <!-- Single Account Form -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px;">
                             <div style="font-weight: 800; font-size: 14px; color: var(--text-heading); margin-bottom: 12px;">Add Single Envato Account</div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                            <div class="bento-grid-2" style="margin-bottom: 14px;">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Email (registered at envato-downloader.com)</label>
                                     <input type="email" id="newEnvEmail" class="bento-input"  placeholder="user@domain.com" />
