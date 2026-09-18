@@ -1161,26 +1161,58 @@
                         </div>
                     </div>
 
-                    <!-- Card 2: Proxy & Tunneling -->
+                    <!-- Card 2: Rotating Proxy Pool & IP Randomizer -->
                     <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-heading); font-size: 15px;">
-                                <i class="fa-solid fa-server"></i>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-heading); font-size: 15px;">
+                                    <i class="fa-solid fa-shuffle" style="color: #3b82f6;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 800; color: var(--text-heading);">Rotating Proxy & IP Randomizer</div>
+                                    <div style="font-size: 11.5px; color: var(--text-muted);">Auto-rotate IP addresses across requests</div>
+                                </div>
+                            </div>
+                            <label style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer;">
+                                <input type="checkbox" id="proxyEnableToggle" style="opacity: 0; width: 0; height: 0;" onchange="updateProxyUIState();">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 4px;">Rotation Mode</label>
+                                <select id="proxyRotationMode" class="modal-input" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-heading);">
+                                    <option value="random">🎲 Random IP (Scrambled)</option>
+                                    <option value="round-robin">🔄 Round-Robin (Sequential)</option>
+                                </select>
                             </div>
                             <div>
-                                <div style="font-size: 14px; font-weight: 800; color: var(--text-heading);">Proxy Gateway Routing</div>
-                                <div style="font-size: 11.5px; color: var(--text-muted);">HTTP / HTTPS / SOCKS5 forwarder</div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 4px;">User-Agent Header</label>
+                                <select id="proxyRotateUA" class="modal-input" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-heading);">
+                                    <option value="true">🎭 Randomize Modern UA</option>
+                                    <option value="false">🔒 Fixed Default UA</option>
+                                </select>
                             </div>
                         </div>
 
                         <div>
-                            <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Proxy Gateway Address</label>
-                            <input type="text" id="proxyUrlInput" placeholder="http://user:pass@host:port (optional)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--text-heading);" />
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text-heading);">Proxy Pool List <span id="proxyCountBadge" style="font-size: 11px; font-weight: 600; color: var(--text-muted);">(0 Proxies)</span></label>
+                                <span style="font-size: 11px; color: var(--text-muted);">Format: <code>ip:port</code> or <code>user:pass@ip:port</code></span>
+                            </div>
+                            <textarea id="proxyPoolInput" placeholder="http://104.248.63.18:8080&#10;socks5://192.168.1.1:1080&#10;http://user:pass@127.0.0.1:8888" style="width: 100%; height: 95px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; font-size: 12px; font-family: monospace; color: var(--text-heading); resize: vertical;" oninput="updateProxyCount()"></textarea>
                         </div>
 
-                        <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
-                            Requests route directly through encrypted DNS-over-HTTPS bypass when no proxy is set.
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <button onclick="testAllProxiesPing()" class="action-btn" id="btnTestProxies" style="font-size: 12px; padding: 6px 14px; font-weight: 700;">
+                                <i class="fa-solid fa-bolt"></i> Test & Ping Proxies
+                            </button>
+                            <span id="proxyTestStatusText" style="font-size: 11.5px; color: var(--text-muted);">Ready to test</span>
                         </div>
+
+                        <!-- Live Ping Results Container -->
+                        <div id="proxyPingResultsBox" style="display: none; max-height: 120px; overflow-y: auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-family: monospace; font-size: 11px;"></div>
                     </div>
 
                     <!-- Card 3: Network Diagnostics (Full width) -->
@@ -1200,6 +1232,10 @@
                             <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
                                 <div style="font-size: 11px; color: var(--text-muted);">Active Resolver</div>
                                 <div style="font-size: 14px; font-weight: 800; color: var(--text-heading); margin-top: 2px;" id="diagActiveResolver">Cloudflare (1.1.1.1)</div>
+                            </div>
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+                                <div style="font-size: 11px; color: var(--text-muted);">Outgoing IP Mode</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #3b82f6; margin-top: 2px;" id="diagOutgoingIp">Direct Connection</div>
                             </div>
                         </div>
                     </div>
@@ -1300,7 +1336,10 @@
                             <i class="fa-solid fa-network-wired"></i> Dot-Trick Generator
                         </button>
                         <button id="tabBtnAdd" class="modal-tab-btn" onclick="switchModalTab('add')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
-                            <i class="fa-solid fa-plus"></i> Add & Auto-Register
+                            <i class="fa-solid fa-plus"></i> Add Single
+                        </button>
+                        <button id="tabBtnAutofarm" class="modal-tab-btn" onclick="switchModalTab('autofarm')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
+                            <i class="fa-solid fa-bolt" style="color: #eab308;"></i> 1-Click Auto-Farm
                         </button>
                     </div>
 
@@ -1312,6 +1351,9 @@
                                 <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Stored locally in your browser and synced with backend resolver.</div>
                             </div>
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="action-btn" id="btnSyncFreepikRef" onclick="syncAllFreepikReferrals()" style="font-size: 12px; padding: 6px 12px; font-weight: 700; color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">
+                                    <i class="fa-solid fa-gift"></i> Sync Referral Codes
+                                </button>
                                 <button class="action-btn" onclick="verifyAllPoolAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
                                     <i class="fa-solid fa-rotate"></i> Verify All
                                 </button>
@@ -1322,6 +1364,17 @@
                                     <i class="fa-solid fa-download"></i> Export JSON
                                 </button>
                             </div>
+                        </div>
+
+                        <!-- Freepik Notice Card -->
+                        <div style="padding: 12px 16px; border-radius: var(--radius-sub); background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-body);">
+                                <i class="fa-solid fa-circle-info" style="color: var(--text-muted);"></i>
+                                <span>Need fresh accounts? Register free at <strong>freepikdownloader.com/register</strong> and add credentials here.</span>
+                            </div>
+                            <a href="https://freepikdownloader.com/register" target="_blank" class="action-btn" style="font-size: 11.5px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Register Page
+                            </a>
                         </div>
 
                         <!-- Account List Container -->
@@ -1388,7 +1441,7 @@
                         </div>
                     </div>
 
-                    <!-- TAB 1.3: ADD & AUTO-REGISTER -->
+                    <!-- TAB 1.3: ADD SINGLE & BULK -->
                     <div id="modalTabAdd" style="display: none; flex-direction: column; gap: 16px;">
                         <!-- Single Account Form -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px;">
@@ -1411,18 +1464,6 @@
                             </div>
                         </div>
 
-                        <!-- 1-Click Auto Register Tempmail -->
-                        <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-                            <div>
-                                <div style="font-weight: 800; font-size: 14px; color: var(--text-heading);">1-Click Auto Register Tempmail</div>
-                                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Automatically provisions a temporary email, registers on Freepik, and adds to pool.</div>
-                            </div>
-                            <button class="btn-primary" id="btnAutoRegister" onclick="runAutoRegister()" style="height: 38px; font-size: 13px; font-weight: 700; padding: 0 18px; white-space: nowrap;">
-                                <i class="fa-solid fa-bolt"></i> Auto Register Account
-                            </button>
-                        </div>
-                        <div id="autoRegStatus" style="font-size: 12.5px; color: var(--text-muted);"></div>
-
                         <!-- Bulk Import Textarea -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px;">
                             <div style="font-weight: 800; font-size: 14px; color: var(--text-heading); margin-bottom: 6px;">Bulk Import Accounts</div>
@@ -1431,6 +1472,97 @@
                             <button class="btn-primary" onclick="importBulkAccounts()" style="height: 38px; font-size: 13px; font-weight: 700; margin-top: 10px; padding: 0 18px;">
                                 <i class="fa-solid fa-file-import"></i> Import Accounts
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1.4: FREEPIK 1-CLICK AUTO-FARM REFERRAL -->
+                    <div id="modalTabAutofarm" style="display: none; flex-direction: column; gap: 16px;">
+                        <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div style="font-weight: 800; font-size: 15px; color: var(--text-heading); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-bolt" style="color: #eab308;"></i> Freepik Referral Credit Farmer
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                        Automates account registration, email verification via IMAP/Temp-mail, profile completion, and adds +5 credits to your master account.
+                                    </div>
+                                </div>
+                                <span class="badge" style="background: rgba(234, 179, 8, 0.12); color: #eab308; font-weight: 700; font-size: 11.5px; padding: 4px 10px; border-radius: 9999px;">
+                                    Max 2 Ref / Day / Account
+                                </span>
+                            </div>
+
+                            <!-- Farm Settings Grid -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Target Master Account (To receive credits):</label>
+                                    <select id="fpFarmMasterSelect" class="form-control" style="width: 100%; height: 38px; border-radius: 8px; font-size: 13px; font-weight: 600;" onchange="onFpFarmMasterSelectChange()">
+                                        <option value="">-- Select Master Account --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Referral Code:</label>
+                                    <input type="text" id="fpFarmRefCodeInput" class="form-control" placeholder="Auto-filled (e.g. UX90J52)" style="width: 100%; height: 38px; border-radius: 8px; font-size: 13px; font-family: monospace; font-weight: 700; text-transform: uppercase;">
+                                </div>
+                            </div>
+
+                            <!-- Method Selector -->
+                            <div style="margin-bottom: 14px;">
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Automation Verification Mode:</label>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--badge-bg); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <input type="radio" name="fpFarmMode" value="imap" checked onchange="toggleFpFarmMode()">
+                                        <span><i class="fa-brands fa-google" style="color: #ea4335;"></i> Gmail IMAP (100% Reliable & Real Inbox)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--badge-bg); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <input type="radio" name="fpFarmMode" value="tempmail" onchange="toggleFpFarmMode()">
+                                        <span><i class="fa-solid fa-envelope-open-text" style="color: #3b82f6;"></i> Mail.tm Temp-Mail (Disposable)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Gmail IMAP Inputs -->
+                            <div id="fpFarmImapFields" style="background: var(--badge-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                                    <div>
+                                        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px;">Your Gmail Address:</label>
+                                        <input type="email" id="fpFarmGmailUser" class="form-control" placeholder="yourname@gmail.com" style="width: 100%; height: 36px; border-radius: 6px; font-size: 12.5px;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px;">
+                                            Gmail App Password (16 chars):
+                                            <a href="https://myaccount.google.com/apppasswords" target="_blank" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-decoration: underline; margin-left: 4px;">Get App Password</a>
+                                        </label>
+                                        <input type="password" id="fpFarmGmailAppPass" class="form-control" placeholder="xxxx xxxx xxxx xxxx" style="width: 100%; height: 36px; border-radius: 6px; font-size: 12.5px; font-family: monospace;">
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+                                    <i class="fa-solid fa-shield-halved"></i> Credentials are used solely in local memory for this session and never sent to external servers.
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div id="fpFarmStatusMsg" style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);">
+                                    Ready to generate credits.
+                                </div>
+                                <button class="btn-primary" id="btnStartFpAutoFarm" onclick="runFreepikAutoFarm()" style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #eab308, #ca8a04); border: none; color: #000; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live Terminal Log -->
+                        <div style="background: #090d16; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sub); padding: 14px 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+                                <span style="font-size: 12px; font-weight: 700; color: #94a3b8; font-family: monospace;">
+                                    <i class="fa-solid fa-terminal"></i> AUTOMATION ENGINE CONSOLE
+                                </span>
+                                <button onclick="clearFpFarmConsole()" style="background: transparent; border: none; color: #64748b; font-size: 11px; cursor: pointer; font-weight: 600;">
+                                    Clear Log
+                                </button>
+                            </div>
+                            <div id="fpFarmTerminalLog" style="font-family: 'Consolas', 'Fira Code', monospace; font-size: 12px; color: #38bdf8; min-height: 120px; max-height: 220px; overflow-y: auto; line-height: 1.6; white-space: pre-wrap;">[Console initialized] Select your master account and start farming.</div>
                         </div>
                     </div>
                 </div>
@@ -1446,7 +1578,10 @@
                             <i class="fa-solid fa-network-wired"></i> Dot-Trick Generator
                         </button>
                         <button id="envTabBtnAdd" class="modal-tab-btn" onclick="switchEnvatoSubtab('add')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
-                            <i class="fa-solid fa-plus"></i> Add & Auto-Register
+                            <i class="fa-solid fa-plus"></i> Add Single
+                        </button>
+                        <button id="envTabBtnAutofarm" class="modal-tab-btn" onclick="switchEnvatoSubtab('autofarm')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
+                            <i class="fa-solid fa-bolt" style="color: #eab308;"></i> 1-Click Auto-Farm
                         </button>
                     </div>
 
@@ -1458,6 +1593,9 @@
                                 <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Used to authenticate with <code>envato-downloader.com</code> for Google Drive download links.</div>
                             </div>
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="action-btn" id="btnSyncEnvatoRef" onclick="syncAllEnvatoReferrals()" style="font-size: 12px; padding: 6px 12px; font-weight: 700; color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">
+                                    <i class="fa-solid fa-gift"></i> Sync Referral Codes
+                                </button>
                                 <button class="action-btn" onclick="verifyAllEnvatoAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
                                     <i class="fa-solid fa-rotate"></i> Verify All
                                 </button>
@@ -1591,6 +1729,98 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- TAB 2.4: 1-CLICK AUTO-FARM ENGINE -->
+                    <div id="envTabContentAutofarm" style="display: none; flex-direction: column; gap: 16px;">
+                        <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div style="font-weight: 800; font-size: 15px; color: var(--text-heading); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-bolt" style="color: #eab308;"></i> Envato Referral Credit Farmer
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                        Automates account registration, email verification via IMAP/Temp-mail, profile completion, and adds +5 credits to your master account.
+                                    </div>
+                                </div>
+                                <span class="badge" style="background: rgba(234, 179, 8, 0.12); color: #eab308; font-weight: 700; font-size: 11.5px; padding: 4px 10px; border-radius: 9999px;">
+                                    Max 2 Ref / Day / Account
+                                </span>
+                            </div>
+
+                            <!-- Farm Settings Grid -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Target Master Account (To receive credits):</label>
+                                    <select id="farmMasterSelect" class="form-control" style="width: 100%; height: 38px; border-radius: 8px; font-size: 13px; font-weight: 600;" onchange="onFarmMasterSelectChange()">
+                                        <option value="">-- Select Master Account --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Referral Code:</label>
+                                    <input type="text" id="farmRefCodeInput" class="form-control" placeholder="Auto-filled (e.g. EN68N06)" style="width: 100%; height: 38px; border-radius: 8px; font-size: 13px; font-family: monospace; font-weight: 700; text-transform: uppercase;">
+                                </div>
+                            </div>
+
+                            <!-- Method Selector -->
+                            <div style="margin-bottom: 14px;">
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">Automation Verification Mode:</label>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--badge-bg); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <input type="radio" name="farmMode" value="imap" checked onchange="toggleFarmMode()">
+                                        <span><i class="fa-brands fa-google" style="color: #ea4335;"></i> Gmail IMAP (100% Reliable & Real Inbox)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--badge-bg); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <input type="radio" name="farmMode" value="tempmail" onchange="toggleFarmMode()">
+                                        <span><i class="fa-solid fa-envelope-open-text" style="color: #3b82f6;"></i> Mail.tm Temp-Mail (Disposable)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Gmail IMAP Inputs -->
+                            <div id="farmImapFields" style="background: var(--badge-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                                    <div>
+                                        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px;">Your Gmail Address:</label>
+                                        <input type="email" id="farmGmailUser" class="form-control" placeholder="yourname@gmail.com" style="width: 100%; height: 36px; border-radius: 6px; font-size: 12.5px;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px;">
+                                            Gmail App Password (16 chars):
+                                            <a href="https://myaccount.google.com/apppasswords" target="_blank" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-decoration: underline; margin-left: 4px;">Get App Password</a>
+                                        </label>
+                                        <input type="password" id="farmGmailAppPass" class="form-control" placeholder="xxxx xxxx xxxx xxxx" style="width: 100%; height: 36px; border-radius: 6px; font-size: 12.5px; font-family: monospace;">
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+                                    <i class="fa-solid fa-shield-halved"></i> Credentials are used solely in local memory for this session and never sent to external servers.
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div id="farmStatusMsg" style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);">
+                                    Ready to generate credits.
+                                </div>
+                                <button class="btn-primary" id="btnStartAutoFarm" onclick="runEnvatoAutoFarm()" style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #eab308, #ca8a04); border: none; color: #000; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live Terminal Log -->
+                        <div style="background: #090d16; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sub); padding: 14px 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+                                <span style="font-size: 12px; font-weight: 700; color: #94a3b8; font-family: monospace;">
+                                    <i class="fa-solid fa-terminal"></i> AUTOMATION ENGINE CONSOLE
+                                </span>
+                                <button onclick="clearFarmConsole()" style="background: transparent; border: none; color: #64748b; font-size: 11px; cursor: pointer; font-weight: 600;">
+                                    Clear Log
+                                </button>
+                            </div>
+                            <div id="farmTerminalLog" style="font-family: 'Consolas', 'Fira Code', monospace; font-size: 12px; color: #38bdf8; min-height: 120px; max-height: 220px; overflow-y: auto; line-height: 1.6; white-space: pre-wrap;">[Console initialized] Select your master account and start farming.</div>
+                        </div>
+                    </div>
+
                 </div>
 
             </section>
@@ -1675,6 +1905,12 @@
                 renderHistory();
             } else if (view === 'network') {
                 loadNetworkSettings();
+            } else if (view === 'accounts') {
+                renderPoolAccounts();
+                renderEnvatoPoolAccounts();
+                updateFreepikPill();
+                updateEnvatoOverview();
+                syncAccountsWithBackend();
             }
         }
 
@@ -1795,15 +2031,17 @@
         }
 
         function switchModalTab(tab) {
-            const tabs = ['pool', 'dottrick', 'add'];
+            const tabs = ['pool', 'dottrick', 'add', 'autofarm'];
             tabs.forEach(t => {
-                const btnId = t === 'pool' ? 'tabBtnPool' : t === 'dottrick' ? 'tabBtnDotTrick' : 'tabBtnAdd';
-                const bodyId = t === 'pool' ? 'modalTabPool' : t === 'dottrick' ? 'modalTabDotTrick' : 'modalTabAdd';
+                const btnId = t === 'pool' ? 'tabBtnPool' : t === 'dottrick' ? 'tabBtnDotTrick' : t === 'add' ? 'tabBtnAdd' : 'tabBtnAutofarm';
+                const bodyId = t === 'pool' ? 'modalTabPool' : t === 'dottrick' ? 'modalTabDotTrick' : t === 'add' ? 'modalTabAdd' : 'modalTabAutofarm';
                 const btn = document.getElementById(btnId);
                 const body = document.getElementById(bodyId);
                 if (btn) btn.classList.toggle('active', t === tab);
                 if (body) body.style.display = (t === tab) ? 'flex' : 'none';
             });
+            if (tab === 'pool') renderPoolAccounts();
+            if (tab === 'autofarm') populateFreepikMasterAccountDropdown();
         }
 
         function capitalize(s) {
@@ -1811,52 +2049,110 @@
             return s.charAt(0).toUpperCase() + s.slice(1);
         }
 
+        // --- Synchronize Pools from Backend ---
+        async function syncAccountsWithBackend() {
+            try {
+                const [resFp, resEnv] = await Promise.all([
+                    fetch('/api/freepik-accounts'),
+                    fetch('/api/envato-accounts')
+                ]);
+                const dataFp = await resFp.json();
+                const dataEnv = await resEnv.json();
+                if (dataFp && dataFp.status && Array.isArray(dataFp.status.accounts)) {
+                    saveLocalFreepikAccounts(dataFp.status.accounts);
+                    renderPoolAccounts();
+                }
+                if (dataEnv && dataEnv.status && Array.isArray(dataEnv.status.accounts)) {
+                    saveLocalEnvatoAccounts(dataEnv.status.accounts);
+                    renderEnvatoPoolAccounts();
+                }
+            } catch (e) {
+                console.error("Auto sync accounts error:", e);
+            }
+        }
+
         // Render Pool Status
         function renderPoolAccounts(serverStatus) {
             const accs = getLocalFreepikAccounts();
             const container = document.getElementById('accountsListContainer');
-            const summaryCount = document.getElementById('poolSummaryCount');
+            updateFreepikPill();
 
-            summaryCount.textContent = `${accs.length} Accounts`;
+            if (!container) return;
 
             if (accs.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 24px 0; color: var(--text-muted); font-size: 12.5px;">
-                        No accounts in browser pool yet. Use <strong>Dot-Trick Generator</strong> or <strong>Add & Auto-Register</strong>.
+                    <div style="text-align: center; padding: 28px 0; color: var(--text-muted); font-size: 13px;">
+                        No Freepik accounts in pool yet. Add credentials or use Auto-Farm above.
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = accs.map((acc, index) => {
-                let statusClass = 'status-ready';
-                let statusText = acc.status || 'READY';
+                const refCode = acc.referral_code || '';
+                const dailyUsed = acc.daily_used || 0;
+                const remaining = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - dailyUsed);
 
-                if (serverStatus && serverStatus.accounts) {
-                    const match = serverStatus.accounts.find(a => a.email.toLowerCase() === acc.email.toLowerCase());
-                    if (match) {
-                        statusText = match.status;
-                        if (match.status.includes('Limit')) statusClass = 'status-limit';
-                        else if (match.status.includes('Invalid') || match.status.includes('Error') || match.status.includes('Unverified')) statusClass = 'status-error';
+                const isCooldown = (acc.remaining_daily !== undefined && acc.remaining_daily === 0) || (dailyUsed >= 2) || (acc.rate_limited && remaining === 0);
+                let statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
+                if (!acc.verified) {
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
+                } else if (isCooldown) {
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.12); color: var(--accent-red);"><i class="fa-solid fa-clock"></i> COOLDOWN</span>';
+                }
+
+                const credits = (acc.credits !== undefined) ? acc.credits : 0;
+                const creditBadge = (credits > 0)
+                    ? `<span class="badge" style="background: rgba(34, 197, 94, 0.15); color: #16a34a; font-weight: 800; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(22, 163, 74, 0.25);"><i class="fa-solid fa-coins"></i> ${credits} Credits</span>`
+                    : `<span class="badge" style="background: rgba(239, 68, 68, 0.08); color: var(--text-muted); font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border-color);"><i class="fa-solid fa-coins"></i> 0 Credits</span>`;
+
+                let quotaBadge = '';
+                let copyBtn = '';
+                if (refCode) {
+                    if (remaining === 2) {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-circle-check"></i> 2/2 Available</span>`;
+                        copyBtn = `<button class="action-btn" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
+                    } else if (remaining === 1) {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #eab308; background: rgba(234, 179, 8, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-triangle-exclamation"></i> 1/2 Left</span>`;
+                        copyBtn = `<button class="action-btn" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
+                    } else {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-lock"></i> 0/2 (Max Daily)</span>`;
+                        copyBtn = `<button class="action-btn" disabled title="Daily limit reached (2/2 used today)" style="padding: 5px 10px; font-size: 11.5px; opacity: 0.5; cursor: not-allowed;"><i class="fa-solid fa-lock"></i> Cooldown</button>`;
                     }
+                } else {
+                    quotaBadge = `<span style="font-size: 11px; color: var(--text-muted);">No Ref Code</span>`;
+                    copyBtn = `<button class="action-btn" onclick="fetchSingleFreepikRef('${acc.email}')" title="Fetch Ref Code" style="padding: 5px 10px; font-size: 11.5px;"><i class="fa-solid fa-download"></i> Get Ref</button>`;
                 }
 
                 return `
-                    <div class="account-card">
-                        <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden;">
-                            <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                                ${escapeHtml(acc.email)}
-                            </span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="status-pill ${statusClass}">${escapeHtml(statusText)}</span>
-                                <span style="font-size: 10.5px; color: var(--text-muted); font-family: monospace;">••••••••</span>
+                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <span style="font-size: 13px; font-weight: 700; color: var(--text-heading); word-break: break-all;">${escapeHtml(acc.email)}</span>
+                                    ${refCode ? `<span class="badge" style="background: rgba(147, 51, 234, 0.12); color: #a855f7; font-family: monospace; font-weight: 800; font-size: 11px; padding: 2px 7px; border-radius: 6px;"><i class="fa-solid fa-gift"></i> ${refCode}</span>` : ''}
+                                    ${creditBadge}
+                                    ${quotaBadge}
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                    Added: ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'} 
+                                    ${acc.profile_completed ? ' • <span style="color:#22c55e;"><i class="fa-solid fa-check"></i> Profile Completed</span>' : ''}
+                                </div>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 4px;">
-                            <button onclick="verifySingleAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Verify Login">
-                                <i class="fa-solid fa-rotate-right"></i>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            ${statusBadge}
+                            ${copyBtn}
+                            <button class="action-btn" onclick="autoCompleteFreepikProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 10px; font-size: 11.5px;">
+                                <i class="fa-solid fa-id-card"></i> Profile
                             </button>
-                            <button onclick="removeAccount(${index})" class="btn-secondary" style="padding: 4px 8px; font-size: 11px; color: var(--badge-red-text);" title="Delete Account">
+                            <button class="action-btn" onclick="verifySingleAccount(${index})" title="Check Live Credits & Login" style="padding: 5px 10px; font-size: 11.5px;">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                            <button class="action-btn" onclick="removeAccount(${index})" title="Delete Account" style="padding: 5px 10px; font-size: 11.5px; color: var(--accent-red);">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
@@ -1865,8 +2161,253 @@
             }).join('');
         }
 
+        async function fetchSingleFreepikRef(email) {
+            showToast(`Fetching referral code for ${email}...`, 'info');
+            try {
+                const res = await fetch('/api/freepik-fetch-ref', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+                if (data.success && data.status && data.status.accounts) {
+                    saveLocalFreepikAccounts(data.status.accounts);
+                    renderPoolAccounts();
+                    showToast(`Referral code synced: ${data.referral_code || 'OK'}!`, 'success');
+                } else {
+                    showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (e) {
+                showToast('Failed to fetch referral code: ' + e.message, 'error');
+            }
+        }
+
+        async function syncAllFreepikReferrals() {
+            const btn = document.getElementById('btnSyncFreepikRef');
+            const accs = getLocalFreepikAccounts();
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...';
+            }
+            showToast('Syncing referral codes from freepikdownloader.com...', 'info');
+
+            try {
+                const res = await fetch('/api/freepik-sync-referrals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: accs })
+                });
+                const data = await res.json();
+                if (data.status && Array.isArray(data.status.accounts) && data.status.accounts.length > 0) {
+                    saveLocalFreepikAccounts(data.status.accounts);
+                }
+                renderPoolAccounts();
+                showToast(`Synced ${data.synced_count || 0} referral codes successfully!`, 'success');
+            } catch (e) {
+                showToast('Failed to sync referral codes: ' + e.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-gift"></i> Sync Referral Codes';
+                }
+            }
+        }
+
+        async function copyFreepikRefLink(email, refUrl, refCode) {
+            const target = refUrl || `https://freepikdownloader.com/register?ref=${refCode}`;
+            if (!target) {
+                showToast('Referral link not available for this account.', 'warning');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(target);
+            } catch (e) {
+                const inp = document.createElement('input');
+                inp.value = target;
+                document.body.appendChild(inp);
+                inp.select();
+                document.execCommand('copy');
+                document.body.removeChild(inp);
+            }
+
+            try {
+                const res = await fetch('/api/freepik-track-referral', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+                if (data.status && data.status.accounts) {
+                    saveLocalFreepikAccounts(data.status.accounts);
+                    renderPoolAccounts();
+                }
+                const rem = (data.remaining !== undefined) ? data.remaining : 1;
+                showToast(`Referral Link Copied! (${rem} daily uses remaining)`, 'success');
+            } catch (e) {
+                showToast('Referral link copied to clipboard!', 'success');
+            }
+        }
+
+        async function autoCompleteFreepikProfile(email, password) {
+            showToast(`Auto-completing profile for ${email}...`, 'info');
+            try {
+                const res = await fetch('/api/freepik-complete-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (data.status && data.status.accounts) {
+                        saveLocalFreepikAccounts(data.status.accounts);
+                        renderPoolAccounts();
+                    }
+                    showToast(`Profile completed successfully for ${email}!`, 'success');
+                } else {
+                    showToast(data.error || 'Profile completion failed', 'error');
+                }
+            } catch (e) {
+                showToast('Profile error: ' + e.message, 'error');
+            }
+        }
+
+        function populateFreepikMasterAccountDropdown() {
+            const accs = getLocalFreepikAccounts();
+            const select = document.getElementById('fpFarmMasterSelect');
+            const refInput = document.getElementById('fpFarmRefCodeInput');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">-- Select Master Account --</option>';
+            accs.forEach(acc => {
+                const ref = acc.referral_code || '';
+                const rem = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - (acc.daily_used || 0));
+                const opt = document.createElement('option');
+                opt.value = acc.email;
+                opt.dataset.ref = ref;
+                opt.textContent = `${acc.email} [Ref: ${ref || 'None'}] (${rem}/2 remaining today)`;
+                select.appendChild(opt);
+            });
+
+            if (accs.length > 0) {
+                const best = accs.find(a => a.referral_code && ((a.remaining_daily !== undefined ? a.remaining_daily : (2 - (a.daily_used || 0))) > 0)) || accs[0];
+                if (best) {
+                    select.value = best.email;
+                    if (refInput) refInput.value = best.referral_code || '';
+                }
+            }
+        }
+
+        function onFpFarmMasterSelectChange() {
+            const select = document.getElementById('fpFarmMasterSelect');
+            const refInput = document.getElementById('fpFarmRefCodeInput');
+            if (!select || !refInput) return;
+            const selectedOpt = select.options[select.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset.ref) {
+                refInput.value = selectedOpt.dataset.ref;
+            } else {
+                refInput.value = '';
+            }
+        }
+
+        function toggleFpFarmMode() {
+            const mode = document.querySelector('input[name="fpFarmMode"]:checked')?.value || 'imap';
+            const imapFields = document.getElementById('fpFarmImapFields');
+            if (imapFields) {
+                imapFields.style.display = (mode === 'imap') ? 'block' : 'none';
+            }
+        }
+
+        function logToFpFarmConsole(msg, type = 'info') {
+            const term = document.getElementById('fpFarmTerminalLog');
+            if (!term) return;
+            const time = new Date().toLocaleTimeString();
+            let prefix = `<span style="color: #64748b;">[${time}]</span> `;
+            if (type === 'success') prefix += `<span style="color: #22c55e;">[SUCCESS]</span> `;
+            else if (type === 'error') prefix += `<span style="color: #ef4444;">[ERROR]</span> `;
+            else if (type === 'step') prefix += `<span style="color: #eab308;">[STEP]</span> `;
+            else prefix += `<span style="color: #38bdf8;">[INFO]</span> `;
+            term.innerHTML += `\n${prefix}${escapeHtml(msg)}`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function clearFpFarmConsole() {
+            const term = document.getElementById('fpFarmTerminalLog');
+            if (term) term.innerHTML = '[Console cleared] Ready to farm.';
+        }
+
+        async function runFreepikAutoFarm() {
+            const btn = document.getElementById('btnStartFpAutoFarm');
+            const refCode = document.getElementById('fpFarmRefCodeInput')?.value.trim();
+            const masterEmail = document.getElementById('fpFarmMasterSelect')?.value.trim();
+            const mode = document.querySelector('input[name="fpFarmMode"]:checked')?.value || 'imap';
+            const gmailUser = document.getElementById('fpFarmGmailUser')?.value.trim();
+            const gmailPass = document.getElementById('fpFarmGmailAppPass')?.value.trim();
+            const statusMsg = document.getElementById('fpFarmStatusMsg');
+
+            if (!refCode) {
+                showToast('Please select or enter a master referral code to receive credits.', 'warning');
+                return;
+            }
+
+            if (mode === 'imap' && (!gmailUser || !gmailPass)) {
+                showToast('Please enter your Gmail and 16-character App Password for IMAP verification.', 'warning');
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Farming Credits...';
+            }
+            if (statusMsg) statusMsg.innerHTML = '<span style="color:#eab308;"><i class="fa-solid fa-spinner fa-spin"></i> Automation in progress...</span>';
+            logToFpFarmConsole(`Starting Freepik Auto-Farm routine for Referral Code: ${refCode} (Mode: ${mode.toUpperCase()})`, 'info');
+
+            try {
+                const res = await fetch('/api/freepik-auto-farm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        referral_code: refCode,
+                        master_email: masterEmail,
+                        mode: mode,
+                        gmail_user: gmailUser,
+                        gmail_app_password: gmailPass
+                    })
+                });
+                const data = await res.json();
+
+                if (data.steps && Array.isArray(data.steps)) {
+                    data.steps.forEach(st => logToFpFarmConsole(st, 'step'));
+                }
+
+                if (data.success) {
+                    logToFpFarmConsole(data.message || 'Auto-farm finished successfully! +5 Credits added.', 'success');
+                    if (data.account_status && data.account_status.accounts) {
+                        saveLocalFreepikAccounts(data.account_status.accounts);
+                        renderPoolAccounts();
+                    }
+                    populateFreepikMasterAccountDropdown();
+                    showToast('🎉 +5 Credits added to your Freepik account!', 'success');
+                    if (statusMsg) statusMsg.innerHTML = '<span style="color:#22c55e;"><i class="fa-solid fa-circle-check"></i> +5 Credits added successfully!</span>';
+                } else {
+                    logToFpFarmConsole(data.error || 'Auto-farm failed.', 'error');
+                    showToast('Farming failed: ' + (data.error || 'Unknown error'), 'error');
+                    if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-circle-xmark"></i> ${escapeHtml(data.error || 'Failed')}</span>`;
+                }
+            } catch (e) {
+                logToFpFarmConsole('Network/Execution error: ' + e.message, 'error');
+                showToast('Farm error: ' + e.message, 'error');
+                if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Error: ${escapeHtml(e.message)}</span>`;
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)';
+                }
+            }
+        }
+
         // Add Single Account with Verification
-                async function addSingleAccountVerified() {
+        async function addSingleAccountVerified() {
             const emailEl = document.getElementById('newAccEmail') || document.getElementById('fpSingleEmail');
             const passEl = document.getElementById('newAccPassword') || document.getElementById('fpSinglePass');
             const btn = document.getElementById('btnAddSingleAcc') || document.getElementById('btnAddSingle');
@@ -1887,17 +2428,17 @@
             if (statusEl) statusEl.textContent = 'Verifying credentials with server...';
 
             try {
-                const res = await fetch('/api/freepik-batch-add', {
+                const res = await fetch('/api/freepik-accounts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accounts: [{ email, password }] })
+                    body: JSON.stringify({ email, password })
                 });
                 const data = await res.json();
 
-                if ((data.added_count && data.added_count > 0) || (data.already_in_pool && data.already_in_pool.length > 0)) {
+                if (data.success) {
                     const current = getLocalFreepikAccounts();
                     const filtered = current.filter(a => a.email.toLowerCase() !== email.toLowerCase());
-                    filtered.push({ email, password, status: 'READY', verified: true, added_at: Date.now() / 1000 });
+                    filtered.push(data.account || { email, password, status: 'READY', verified: true, added_at: Date.now() / 1000 });
                     saveLocalFreepikAccounts(filtered);
 
                     if (emailEl) emailEl.value = '';
@@ -1908,7 +2449,7 @@
                     renderPoolAccounts();
                     switchModalTab('pool');
                 } else {
-                    const reason = (data.failed && data.failed[0] && data.failed[0].reason) || 'Login verification failed (wrong password or unverified)';
+                    const reason = data.error || 'Login verification failed (wrong password or unverified)';
                     showToast(`❌ ${reason}`);
                     if (statusEl) statusEl.textContent = reason;
                 }
@@ -1929,25 +2470,29 @@
             const target = accs[index];
             if (!target) return;
 
-            showToast(`Verifying ${target.email}...`);
+            showToast(`Checking ${target.email} live credits on FreepikDownloader...`, 'info');
             try {
-                const res = await fetch('/api/freepik-batch-add', {
+                const res = await fetch('/api/freepik-verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accounts: [{ email: target.email, password: target.password }] })
+                    body: JSON.stringify({ email: target.email, password: target.password })
                 });
                 const data = await res.json();
-                if (data.added_count > 0 || (data.already_in_pool && data.already_in_pool.length > 0)) {
-                    target.status = 'READY';
-                    showToast(`${target.email} is active`);
+                if (data.success) {
+                    target.verified = true;
+                    target.credits = data.credits || 0;
+                    target.status = (data.credits > 0) ? `Ready (${data.credits} Credits)` : '0 Credits (No balance)';
+                    showToast(`✅ ${target.email}: ${data.credits || 0} Credits available!`, 'success');
                 } else {
+                    target.verified = false;
+                    target.credits = 0;
                     target.status = 'INVALID';
-                    showToast(`${target.email} failed verification`);
+                    showToast(`❌ ${target.email} failed: ${data.message || 'Error'}`, 'error');
                 }
                 saveLocalFreepikAccounts(accs);
                 renderPoolAccounts();
             } catch (e) {
-                showToast('Verification request failed');
+                showToast('Verification request failed: ' + e.message, 'error');
             }
         }
 
@@ -1955,81 +2500,28 @@
         async function verifyAllPoolAccounts() {
             const accs = getLocalFreepikAccounts();
             if (accs.length === 0) {
-                showToast('No accounts in pool');
+                showToast('No accounts in pool', 'warning');
                 return;
             }
 
-            const btn = document.getElementById('btnVerifyAll');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking Health...`;
-
+            showToast('Probing live credits for all Freepik accounts...', 'info');
             try {
-                const res = await fetch('/api/freepik-status', {
+                const res = await fetch('/api/freepik-verify-all', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ accounts: accs })
                 });
                 const data = await res.json();
-                if (data.success && data.status) {
-                    renderPoolAccounts(data.status);
-                    showToast(`Verified ${accs.length} accounts`);
+                if (data.success && data.status && Array.isArray(data.status.accounts)) {
+                    saveLocalFreepikAccounts(data.status.accounts);
+                    renderPoolAccounts();
+                    showToast(`✅ Verified ${data.valid_count || 0}/${data.total || 0} accounts active (${data.total_credits || 0} Total Credits)!`, 'success');
                 }
             } catch (e) {
-                showToast('Verification check error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Verify All Accounts`;
+                showToast('Verification check error: ' + e.message, 'error');
             }
         }
 
-        // 1-Click Auto Register
-                async function runAutoRegister() {
-            const btn = document.getElementById('btnAutoRegister');
-            const statusEl = document.getElementById('autoRegStatus');
-
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Account...`;
-            }
-            if (statusEl) {
-                statusEl.innerHTML = `<span style="color: var(--primary-blue);"><i class="fa-solid fa-spinner fa-spin"></i> Auto-creating temporary email & registering on Freepik...</span>`;
-            }
-
-            try {
-                const res = await fetch('/api/freepik-auto-register', { method: 'POST' });
-                const data = await res.json();
-
-                if (data.success) {
-                    if (data.email && data.password) {
-                        const current = getLocalFreepikAccounts();
-                        current.push({ email: data.email, password: data.password, status: 'READY', verified: true, added_at: Date.now() / 1000 });
-                        saveLocalFreepikAccounts(current);
-                    }
-                    if (statusEl) {
-                        statusEl.innerHTML = `<span style="color: var(--badge-green-text); font-weight: 700;">✅ ${data.message || 'New Freepik account created and added!'}</span>`;
-                    }
-                    showToast(`🎉 ${data.message || 'New Freepik account ready!'}`);
-                    renderPoolAccounts();
-                    setTimeout(() => switchModalTab('pool'), 1200);
-                } else {
-                    const err = data.error || 'Auto-register failed';
-                    if (statusEl) {
-                        statusEl.innerHTML = `<span style="color: var(--accent-red); font-weight: 700;">❌ ${err}</span>`;
-                    }
-                    showToast(`❌ ${err}`);
-                }
-            } catch (err) {
-                if (statusEl) {
-                    statusEl.innerHTML = `<span style="color: var(--accent-red);">❌ Network Error: ${err.message}</span>`;
-                }
-                showToast(`❌ ${err.message}`);
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Auto Register Account`;
-                }
-            }
-        }
 
         // --- Gmail Dot-Trick Generator & Batch Verification ---
         let generatedAliasesList = [];
@@ -2251,12 +2743,12 @@
             const summaryCount = document.getElementById('poolSummaryCount');
 
             if (totalEl) totalEl.textContent = accs.length;
-            const readyCount = accs.filter(a => a.status === 'READY' || a.verified).length;
-            const limitedCount = accs.filter(a => a.status === 'RATE_LIMITED' || a.rate_limited).length;
+            const accountsWithCredits = accs.filter(a => (a.verified !== false) && (a.credits !== undefined ? a.credits > 0 : true)).length;
+            const totalCredits = accs.reduce((sum, a) => sum + (a.credits || 0), 0);
 
-            if (readyEl) readyEl.textContent = readyCount;
-            if (limitedEl) limitedEl.textContent = `${limitedCount} Cooldown`;
-            if (summaryCount) summaryCount.textContent = `${accs.length} Accounts`;
+            if (readyEl) readyEl.textContent = `${accountsWithCredits} with Credits`;
+            if (limitedEl) limitedEl.textContent = `${totalCredits} Credits Total`;
+            if (summaryCount) summaryCount.textContent = `${accs.length} Accounts (${totalCredits} Credits Total)`;
         }
 
         
@@ -2280,7 +2772,7 @@
         }
 
                 function switchEnvatoSubtab(tab) {
-            const tabs = ['pool', 'dottrick', 'add'];
+            const tabs = ['pool', 'dottrick', 'add', 'autofarm'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`envTabBtn${capitalize(t)}`);
                 const body = document.getElementById(`envTabContent${capitalize(t)}`);
@@ -2288,6 +2780,7 @@
                 if (body) body.style.display = (t === tab) ? 'flex' : 'none';
             });
             if (tab === 'pool') renderEnvatoPoolAccounts();
+            if (tab === 'autofarm') populateMasterAccountDropdown();
         }
 
         // --- Envato Account Pool Management ---
@@ -2314,14 +2807,21 @@
             const summaryCount = document.getElementById('envatoPoolSummaryCount');
 
             if (totalEl) totalEl.textContent = accs.length;
-            const readyCount = accs.filter(a => a.status === 'READY' || a.verified).length;
-            const limitedCount = accs.filter(a => a.status === 'RATE_LIMITED' || a.rate_limited).length;
+            const readyCount = accs.filter(a => {
+                const rem = (a.remaining_daily !== undefined) ? a.remaining_daily : Math.max(0, 2 - (a.daily_used || 0));
+                return (a.verified !== false) && !a.rate_limited && (a.status !== 'RATE_LIMITED') && rem > 0;
+            }).length;
+            const limitedCount = accs.filter(a => {
+                const rem = (a.remaining_daily !== undefined) ? a.remaining_daily : Math.max(0, 2 - (a.daily_used || 0));
+                return a.rate_limited || (a.status === 'RATE_LIMITED') || rem === 0;
+            }).length;
 
             if (readyEl) readyEl.textContent = readyCount;
             if (limitedEl) limitedEl.textContent = `${limitedCount} Cooldown`;
             if (summaryCount) summaryCount.textContent = `${accs.length} Accounts`;
         }
 
+        
         function renderEnvatoPoolAccounts() {
             const accs = getLocalEnvatoAccounts();
             const container = document.getElementById('envatoAccountsListContainer');
@@ -2332,33 +2832,67 @@
             if (accs.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 28px 0; color: var(--text-muted); font-size: 13px;">
-                        No Envato accounts in pool yet. Add credentials from <strong>envato-downloader.com</strong> above.
+                        No Envato accounts in pool yet. Add credentials or use Auto-Farm above.
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = accs.map((acc, index) => {
+                const refCode = acc.referral_code || '';
+                const dailyUsed = acc.daily_used || 0;
+                const remaining = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - dailyUsed);
+
+                const isCooldown = (acc.remaining_daily !== undefined && acc.remaining_daily === 0) || (dailyUsed >= 2) || (acc.rate_limited && remaining === 0);
                 let statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
-                if (acc.rate_limited || acc.status === 'RATE_LIMITED') {
-                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.12); color: var(--accent-red);"><i class="fa-solid fa-clock"></i> COOLDOWN</span>';
-                } else if (!acc.verified) {
+                if (!acc.verified) {
                     statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
+                } else if (isCooldown) {
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.12); color: var(--accent-red);"><i class="fa-solid fa-clock"></i> COOLDOWN</span>';
+                }
+
+                let quotaBadge = '';
+                let copyBtn = '';
+                if (refCode) {
+                    if (remaining === 2) {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-circle-check"></i> 2/2 Available</span>`;
+                        copyBtn = `<button class="action-btn" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
+                    } else if (remaining === 1) {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #eab308; background: rgba(234, 179, 8, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-triangle-exclamation"></i> 1/2 Left</span>`;
+                        copyBtn = `<button class="action-btn" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
+                    } else {
+                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-lock"></i> 0/2 (Max Daily)</span>`;
+                        copyBtn = `<button class="action-btn" disabled title="Daily limit reached (2/2 used today)" style="padding: 5px 10px; font-size: 11.5px; opacity: 0.5; cursor: not-allowed;"><i class="fa-solid fa-lock"></i> Cooldown</button>`;
+                    }
+                } else {
+                    quotaBadge = `<span style="font-size: 11px; color: var(--text-muted);">No Ref Code</span>`;
+                    copyBtn = `<button class="action-btn" onclick="fetchSingleEnvatoRef('${acc.email}')" title="Fetch Ref Code" style="padding: 5px 10px; font-size: 11.5px;"><i class="fa-solid fa-download"></i> Get Ref</button>`;
                 }
 
                 return `
-                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
                                 <i class="fa-solid fa-user"></i>
                             </div>
                             <div>
-                                <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); word-break: break-all;">${acc.email}</div>
-                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Added: ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'}</div>
+                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <span style="font-size: 13px; font-weight: 700; color: var(--text-heading); word-break: break-all;">${acc.email}</span>
+                                    ${refCode ? `<span class="badge" style="background: rgba(147, 51, 234, 0.12); color: #a855f7; font-family: monospace; font-weight: 800; font-size: 11px; padding: 2px 7px; border-radius: 6px;"><i class="fa-solid fa-gift"></i> ${refCode}</span>` : ''}
+                                    ${quotaBadge}
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                    Added: ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'} 
+                                    ${acc.profile_completed ? ' • <span style="color:#22c55e;"><i class="fa-solid fa-check"></i> Profile Completed</span>' : ''}
+                                </div>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                             ${statusBadge}
+                            ${copyBtn}
+                            <button class="action-btn" onclick="autoCompleteEnvatoProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 10px; font-size: 11.5px;">
+                                <i class="fa-solid fa-id-card"></i> Profile
+                            </button>
                             <button class="action-btn" onclick="verifySingleEnvatoAccount(${index})" title="Verify Login" style="padding: 5px 10px; font-size: 11.5px;">
                                 <i class="fa-solid fa-rotate"></i>
                             </button>
@@ -2370,6 +2904,227 @@
                 `;
             }).join('');
         }
+
+        
+        async function fetchSingleEnvatoRef(email) {
+            showToast(`Fetching referral code for ${email}...`, 'info');
+            try {
+                const res = await fetch('/api/envato-sync-referrals', { method: 'POST' });
+                const data = await res.json();
+                if (data.status && data.status.accounts) {
+                    saveLocalEnvatoAccounts(data.status.accounts);
+                    renderEnvatoPoolAccounts();
+                }
+                showToast(`Referral code synced for ${email}!`, 'success');
+            } catch (e) {
+                showToast('Failed to fetch referral code: ' + e.message, 'error');
+            }
+        }
+
+async function syncAllEnvatoReferrals() {
+            const btn = document.getElementById('btnSyncEnvatoRef');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...';
+            }
+            showToast('Syncing referral codes from envato-downloader.com...', 'info');
+
+            try {
+                const res = await fetch('/api/envato-sync-referrals', { method: 'POST' });
+                const data = await res.json();
+                if (data.status && data.status.accounts) {
+                    saveLocalEnvatoAccounts(data.status.accounts);
+                }
+                renderEnvatoPoolAccounts();
+                showToast(`Synced ${data.synced_count || 0} referral codes successfully!`, 'success');
+            } catch (e) {
+                showToast('Failed to sync referral codes: ' + e.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-gift"></i> Sync Referral Codes';
+                }
+            }
+        }
+
+        async function copyEnvatoRefLink(email, refUrl, refCode) {
+            const target = refUrl || `https://envato-downloader.com/register?ref=${refCode}`;
+            if (!target) {
+                showToast('Referral link not available for this account.', 'warning');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(target);
+            } catch (e) {
+                // Fallback copy
+                const inp = document.createElement('input');
+                inp.value = target;
+                document.body.appendChild(inp);
+                inp.select();
+                document.execCommand('copy');
+                document.body.removeChild(inp);
+            }
+
+            // Track usage count
+            try {
+                const res = await fetch('/api/envato-track-referral', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+                if (data.status && data.status.accounts) {
+                    saveLocalEnvatoAccounts(data.status.accounts);
+                    renderEnvatoPoolAccounts();
+                }
+                const rem = (data.remaining !== undefined) ? data.remaining : 1;
+                showToast(`Referral Link Copied! (${rem} daily uses remaining)`, 'success');
+            } catch (e) {
+                showToast('Referral link copied to clipboard!', 'success');
+            }
+        }
+
+        async function autoCompleteEnvatoProfile(email, password) {
+            showToast(`Auto-completing profile for ${email}...`, 'info');
+            try {
+                const res = await fetch('/api/envato-complete-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (data.status && data.status.accounts) {
+                        saveLocalEnvatoAccounts(data.status.accounts);
+                        renderEnvatoPoolAccounts();
+                    }
+                    showToast(`Profile completed successfully for ${email}!`, 'success');
+                } else {
+                    showToast(data.error || 'Profile completion failed', 'error');
+                }
+            } catch (e) {
+                showToast('Profile error: ' + e.message, 'error');
+            }
+        }
+
+        function populateMasterAccountDropdown() {
+            const accs = getLocalEnvatoAccounts();
+            const select = document.getElementById('farmMasterSelect');
+            const refInput = document.getElementById('farmRefCodeInput');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">-- Select Master Account --</option>';
+            accs.forEach(acc => {
+                const ref = acc.referral_code || '';
+                const rem = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - (acc.daily_used || 0));
+                const opt = document.createElement('option');
+                opt.value = acc.email;
+                opt.dataset.ref = ref;
+                opt.dataset.rem = rem;
+                opt.textContent = `${acc.email} [Code: ${ref || 'None'}] (${rem}/2 Available Today)`;
+                select.appendChild(opt);
+            });
+
+            // Select first available with refCode
+            const available = accs.find(a => a.referral_code && (a.remaining_daily === undefined || a.remaining_daily > 0));
+            if (available) {
+                select.value = available.email;
+                if (refInput) refInput.value = available.referral_code;
+            }
+        }
+
+        function onFarmMasterSelectChange() {
+            const select = document.getElementById('farmMasterSelect');
+            const refInput = document.getElementById('farmRefCodeInput');
+            const selectedOpt = select.options[select.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset.ref) {
+                refInput.value = selectedOpt.dataset.ref;
+            }
+        }
+
+        function toggleFarmMode() {
+            const mode = document.querySelector('input[name="farmMode"]:checked')?.value || 'imap';
+            const imapFields = document.getElementById('farmImapFields');
+            if (imapFields) {
+                imapFields.style.display = (mode === 'imap') ? 'block' : 'none';
+            }
+        }
+
+        function logToFarmConsole(msg, type = 'info') {
+            const consoleEl = document.getElementById('farmTerminalLog');
+            if (!consoleEl) return;
+            const timeStr = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : '⚡';
+            consoleEl.textContent += `\n[${timeStr}] ${prefix} ${msg}`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function clearFarmConsole() {
+            const consoleEl = document.getElementById('farmTerminalLog');
+            if (consoleEl) consoleEl.textContent = '[Console cleared] Ready.';
+        }
+
+        async function runEnvatoAutoFarm() {
+            const btn = document.getElementById('btnStartAutoFarm');
+            const select = document.getElementById('farmMasterSelect');
+            const refCode = document.getElementById('farmRefCodeInput')?.value.trim();
+            const mode = document.querySelector('input[name="farmMode"]:checked')?.value || 'imap';
+            const gmailUser = document.getElementById('farmGmailUser')?.value.trim();
+            const gmailAppPass = document.getElementById('farmGmailAppPass')?.value.trim();
+
+            if (!refCode) {
+                showToast('Please select a master account or enter a valid Referral Code.', 'warning');
+                return;
+            }
+
+            if (mode === 'imap' && (!gmailUser || !gmailAppPass)) {
+                showToast('Please enter your Gmail address and 16-character App Password for IMAP auto-confirm.', 'warning');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Farming Credits...';
+            logToFarmConsole(`Starting automation with Master Referral Code: ${refCode} (Mode: ${mode.toUpperCase()})...`, 'info');
+
+            try {
+                const res = await fetch('/api/envato-auto-farm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        master_ref_code: refCode,
+                        master_email: select.value,
+                        mode: mode,
+                        gmail_user: gmailUser,
+                        gmail_app_password: gmailAppPass
+                    })
+                });
+
+                const data = await res.json();
+                if (data.steps && Array.isArray(data.steps)) {
+                    data.steps.forEach(st => logToFarmConsole(st, 'info'));
+                }
+
+                if (data.success) {
+                    logToFarmConsole(`SUCCESS: ${data.message}`, 'success');
+                    showToast(data.message, 'success');
+                    if (data.status && data.status.accounts) {
+                        saveLocalEnvatoAccounts(data.status.accounts);
+                        populateMasterAccountDropdown();
+                    }
+                } else {
+                    logToFarmConsole(`FAILED: ${data.error}`, 'error');
+                    showToast(data.error || 'Auto-farm failed', 'error');
+                }
+            } catch (e) {
+                logToFarmConsole(`Network/Server Error: ${e.message}`, 'error');
+                showToast('Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)';
+            }
+        }
+
 
         async function addSingleEnvatoAccount() {
             const email = document.getElementById('newEnvEmail').value.trim();
@@ -2429,18 +3184,24 @@
                 const data = await res.json();
                 if (data.success) {
                     acc.verified = true;
-                    acc.status = 'READY';
-                    acc.rate_limited = false;
-                    showToast(`${acc.email} is active and valid!`);
+                    acc.remaining_daily = (data.remaining_daily !== undefined) ? data.remaining_daily : (data.credits !== undefined ? data.credits : 2);
+                    acc.daily_used = (acc.remaining_daily === 0) ? 2 : 0;
+                    acc.rate_limited = (acc.remaining_daily === 0);
+                    acc.status = (acc.remaining_daily === 0) ? 'Quota Limit Reached (0/2)' : 'READY';
+                    if (acc.remaining_daily === 0) {
+                        showToast(`⚠️ ${acc.email} is active, but 0 credits remaining (Cooldown)`, 'warning');
+                    } else {
+                        showToast(`✅ ${acc.email} is active with credits available!`, 'success');
+                    }
                 } else {
                     acc.verified = false;
                     acc.status = 'INVALID';
-                    showToast(`${acc.email}: ${data.message || 'Verification failed'}`);
+                    showToast(`❌ ${acc.email}: ${data.message || 'Verification failed'}`, 'error');
                 }
                 saveLocalEnvatoAccounts(accs);
                 renderEnvatoPoolAccounts();
             } catch (err) {
-                showToast(`Verification error: ${err.message}`);
+                showToast(`Verification error: ${err.message}`, 'error');
             }
         }
 
@@ -2451,7 +3212,25 @@
                 return;
             }
 
-            showToast(`Verifying ${accs.length} Envato accounts...`);
+            showToast(`Verifying ${accs.length} Envato accounts with live credit probe...`, 'info');
+            try {
+                const res = await fetch('/api/envato-verify-all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accounts: accs })
+                });
+                const data = await res.json();
+                if (data.success && (data.status || data.account_status)) {
+                    const st = data.status || data.account_status;
+                    if (Array.isArray(st.accounts) && st.accounts.length > 0) {
+                        saveLocalEnvatoAccounts(st.accounts);
+                        renderEnvatoPoolAccounts();
+                        showToast(`Verified ${st.total_accounts || 0} accounts (${st.ready_accounts || 0} Ready, ${st.limited_accounts || 0} Cooldown)!`, 'success');
+                        return;
+                    }
+                }
+            } catch (e) {}
+
             for (let i = 0; i < accs.length; i++) {
                 await verifySingleEnvatoAccount(i);
             }
@@ -2526,13 +3305,109 @@
             URL.revokeObjectURL(url);
         }
 
+        // Synchronize browser localStorage pools with backend accounts.json & envato_accounts.json
+        async function syncAccountsWithBackend() {
+            let changed = false;
+            try {
+                // 1. Sync Freepik accounts from backend
+                const resFp = await fetch('/api/freepik-accounts');
+                const dataFp = await resFp.json();
+                if (dataFp.success && dataFp.status && Array.isArray(dataFp.status.accounts)) {
+                    const serverFpAccs = dataFp.status.accounts;
+                    const localFpAccs = getLocalFreepikAccounts();
+
+                    if (localFpAccs.length === 0 && serverFpAccs.length > 0) {
+                        const newAccs = serverFpAccs.map(a => ({
+                            email: a.email,
+                            password: a.password || a.email,
+                            status: a.is_active ? 'READY' : 'RATE_LIMITED',
+                            verified: true,
+                            rate_limited: !a.is_active,
+                            added_at: Date.now() / 1000
+                        }));
+                        saveLocalFreepikAccounts(newAccs);
+                        changed = true;
+                    } else if (serverFpAccs.length > 0) {
+                        let localUpdated = false;
+                        serverFpAccs.forEach(srv => {
+                            const found = localFpAccs.find(l => l.email.toLowerCase() === srv.email.toLowerCase());
+                            if (!found) {
+                                localFpAccs.push({
+                                    email: srv.email,
+                                    password: srv.password || srv.email,
+                                    status: srv.is_active ? 'READY' : 'RATE_LIMITED',
+                                    verified: true,
+                                    rate_limited: !srv.is_active,
+                                    added_at: Date.now() / 1000
+                                });
+                                localUpdated = true;
+                            } else {
+                                const newStatus = srv.is_active ? 'READY' : 'RATE_LIMITED';
+                                if (found.status !== newStatus || found.rate_limited === srv.is_active) {
+                                    found.status = newStatus;
+                                    found.rate_limited = !srv.is_active;
+                                    localUpdated = true;
+                                }
+                            }
+                        });
+                        if (localUpdated) {
+                            saveLocalFreepikAccounts(localFpAccs);
+                            changed = true;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("[ArchNodes] Freepik backend sync notice:", e);
+            }
+
+            try {
+                // 2. Sync Envato accounts from backend
+                const resEnv = await fetch('/api/envato-accounts');
+                const dataEnv = await resEnv.json();
+                if (dataEnv.success && dataEnv.status && Array.isArray(dataEnv.status.accounts)) {
+                    const serverEnvAccs = dataEnv.status.accounts;
+                    const localEnvAccs = getLocalEnvatoAccounts();
+
+                    if (localEnvAccs.length === 0 && serverEnvAccs.length > 0) {
+                        saveLocalEnvatoAccounts(serverEnvAccs);
+                        changed = true;
+                    } else if (serverEnvAccs.length > 0) {
+                        let localUpdated = false;
+                        serverEnvAccs.forEach(srv => {
+                            const idx = localEnvAccs.findIndex(l => l.email.toLowerCase() === srv.email.toLowerCase());
+                            if (idx === -1) {
+                                localEnvAccs.push(srv);
+                                localUpdated = true;
+                            } else {
+                                localEnvAccs[idx] = { ...localEnvAccs[idx], ...srv };
+                                localUpdated = true;
+                            }
+                        });
+                        if (localUpdated) {
+                            saveLocalEnvatoAccounts(localEnvAccs);
+                            changed = true;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("[ArchNodes] Envato backend sync notice:", e);
+            }
+
+            updateFreepikPill();
+            updateEnvatoOverview();
+            renderPoolAccounts();
+            renderEnvatoPoolAccounts();
+            return changed;
+        }
+
         // Global refresh for all accounts data
-        function refreshAllAccountsData() {
+        async function refreshAllAccountsData() {
             renderPoolAccounts();
             renderEnvatoPoolAccounts();
             updateFreepikPill();
             updateEnvatoOverview();
-            showToast('Account pools refreshed');
+            await syncAccountsWithBackend();
+            showToast('Account pools refreshed & synced with backend');
         }
 
         
@@ -2603,31 +3478,30 @@
             const customPass = document.getElementById('fpDotBasePassword') ? document.getElementById('fpDotBasePassword').value.trim() : '';
 
             if (!baseEmail || !baseEmail.includes('@')) {
-                showToast('Please enter a valid Gmail address');
+                showToast('Please enter a valid Gmail address', 'warning');
                 return;
             }
 
             if (!samePass && !customPass) {
-                showToast('Please enter a password or check "Use Email as Password"');
+                showToast('Please enter a password or check "Use Email as Password"', 'warning');
                 return;
             }
 
             const aliases = generateDotVariations(baseEmail, count);
-            const existingPool = new Set(getLocalFreepikAccounts().map(a => a.email.toLowerCase()));
 
             fpGeneratedDotList = aliases.map(email => ({
                 email: email,
                 password: samePass ? email : customPass,
-                status: existingPool.has(email.toLowerCase()) ? 'IN_POOL' : 'READY_TO_REGISTER',
-                inPool: existingPool.has(email.toLowerCase())
+                status: 'READY_TO_REGISTER',
+                inPool: false
             }));
 
             document.getElementById('fpDotResultBox').style.display = 'flex';
             renderFpDotList();
-            showToast(`Generated ${aliases.length} Freepik dot aliases!`);
+            showToast(`Generated ${aliases.length} Freepik dot aliases! Register & then click Verify & Add.`);
         }
 
-                function renderFpDotList() {
+        function renderFpDotList() {
             const container = document.getElementById('fpDotListContainer');
             if (!container) return;
 
@@ -2659,7 +3533,7 @@
                             </button>
                         </div>
 
-                        <!-- Right: Perfectly Aligned Column Grid (Fixed Widths) -->
+                        <!-- Right: Column Grid -->
                         <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
                             <!-- Fixed Width Status Badge -->
                             <div style="width: 130px; display: flex; align-items: center;">
@@ -2672,7 +3546,7 @@
                             </button>
 
                             <!-- Fixed Width Verify & Add Button -->
-                            <button class="action-btn" onclick="verifyFpSingleDotAlias(${index})" id="btnVerifyFpDot_${index}" title="Verify login & add to pool" style="width: 112px; height: 32px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; padding: 0; ${item.inPool ? 'background: var(--card-subtle); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.3); opacity: 0.9; cursor: default;' : 'background: var(--badge-green-bg); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.25);'}" ${item.inPool ? 'disabled' : ''}>
+                            <button class="action-btn" onclick="verifyFpSingleDotAlias(${index})" id="btnVerifyFpDot_${index}" title="Verify login & add to pool" style="width: 112px; height: 32px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; padding: 0; ${item.inPool ? 'background: var(--card-subtle); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.3);' : 'background: var(--badge-green-bg); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.25);'}">
                                 <i class="fa-solid ${item.inPool ? 'fa-circle-check' : 'fa-check'}" style="font-size: 11px;"></i> ${item.inPool ? 'Verified' : 'Verify & Add'}
                             </button>
                         </div>
@@ -2688,31 +3562,40 @@
             renderFpDotList();
 
             try {
-                const res = await fetch('/api/freepik-batch-add', {
+                const res = await fetch('/api/freepik-accounts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accounts: [{ email: item.email, password: item.password }] })
+                    body: JSON.stringify({ email: item.email, password: item.password })
                 });
                 const data = await res.json();
 
-                if ((data.added_count && data.added_count > 0) || (data.already_in_pool && data.already_in_pool.length > 0)) {
+                if (data.success) {
                     item.status = 'IN_POOL';
                     item.inPool = true;
                     const pool = getLocalFreepikAccounts();
                     if (!pool.some(a => a.email.toLowerCase() === item.email.toLowerCase())) {
-                        pool.push({ email: item.email, password: item.password, status: 'READY', verified: true });
+                        const accData = data.account || {};
+                        pool.push({
+                            email: item.email,
+                            password: item.password,
+                            status: 'READY',
+                            verified: true,
+                            referral_code: accData.referral_code || '',
+                            referral_url: accData.referral_url || '',
+                            added_at: Date.now() / 1000
+                        });
                         saveLocalFreepikAccounts(pool);
                     }
-                    showToast(`✅ ${item.email} verified and added to Freepik pool!`);
+                    showToast(`✅ ${item.email} verified and added to Freepik pool!`, 'success');
                 } else {
                     item.status = 'FAILED';
-                    item.errorMsg = (data.failed && data.failed[0] && data.failed[0].reason) || 'Login failed';
-                    showToast(`❌ ${item.email}: ${item.errorMsg}`);
+                    item.errorMsg = data.error || 'Login failed';
+                    showToast(`❌ ${item.email}: ${item.errorMsg}`, 'error');
                 }
             } catch (err) {
                 item.status = 'FAILED';
                 item.errorMsg = err.message;
-                showToast(`❌ Error: ${err.message}`);
+                showToast(`❌ Error: ${err.message}`, 'error');
             }
 
             renderFpDotList();
@@ -2724,7 +3607,7 @@
             const unverified = fpGeneratedDotList.filter(item => !item.inPool);
 
             if (unverified.length === 0) {
-                showToast('All aliases are already verified in pool!');
+                showToast('All aliases are already verified in pool!', 'info');
                 return;
             }
 
@@ -2733,55 +3616,57 @@
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying Batch...';
             }
 
-            showToast(`Batch verifying ${unverified.length} Freepik accounts...`);
+            showToast(`Verifying ${unverified.length} Freepik accounts sequentially...`, 'info');
+            let verifiedCount = 0;
 
-            try {
-                const res = await fetch('/api/freepik-batch-add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accounts: unverified.map(u => ({ email: u.email, password: u.password })) })
-                });
-                const data = await res.json();
-
-                const verifiedEmails = new Set();
-                if (data.details) {
-                    data.details.forEach(d => {
-                        if (d.success) verifiedEmails.add(d.email.toLowerCase());
-                    });
-                }
-                if (data.already_in_pool) {
-                    data.already_in_pool.forEach(em => verifiedEmails.add(em.toLowerCase()));
-                }
-
-                const pool = getLocalFreepikAccounts();
-                let newlyAdded = 0;
-
-                fpGeneratedDotList.forEach(item => {
-                    if (verifiedEmails.has(item.email.toLowerCase())) {
-                        item.status = 'IN_POOL';
-                        item.inPool = true;
-                        if (!pool.some(a => a.email.toLowerCase() === item.email.toLowerCase())) {
-                            pool.push({ email: item.email, password: item.password, status: 'READY', verified: true });
-                            newlyAdded++;
+            for (let i = 0; i < fpGeneratedDotList.length; i++) {
+                const item = fpGeneratedDotList[i];
+                if (!item.inPool) {
+                    item.status = 'VERIFYING';
+                    renderFpDotList();
+                    try {
+                        const res = await fetch('/api/freepik-accounts', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: item.email, password: item.password })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            item.status = 'IN_POOL';
+                            item.inPool = true;
+                            verifiedCount++;
+                            const pool = getLocalFreepikAccounts();
+                            if (!pool.some(a => a.email.toLowerCase() === item.email.toLowerCase())) {
+                                const accData = data.account || {};
+                                pool.push({
+                                    email: item.email,
+                                    password: item.password,
+                                    status: 'READY',
+                                    verified: true,
+                                    referral_code: accData.referral_code || '',
+                                    referral_url: accData.referral_url || '',
+                                    added_at: Date.now() / 1000
+                                });
+                                saveLocalFreepikAccounts(pool);
+                            }
+                        } else {
+                            item.status = 'FAILED';
+                            item.errorMsg = data.error || 'Login failed';
                         }
-                    } else if (!item.inPool) {
+                    } catch (e) {
                         item.status = 'FAILED';
-                        item.errorMsg = 'Unverified / Login Failed';
+                        item.errorMsg = e.message;
                     }
-                });
-
-                saveLocalFreepikAccounts(pool);
-                renderFpDotList();
-                renderPoolAccounts();
-
-                showToast(`Verified and added ${newlyAdded} accounts to Freepik pool!`);
-            } catch (err) {
-                showToast(`❌ Batch verify error: ${err.message}`);
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-check-double"></i> <span>Batch Verify All & Add to Pool</span>';
+                    renderFpDotList();
                 }
+            }
+
+            renderPoolAccounts();
+            showToast(`Verified and added ${verifiedCount} accounts to Freepik pool!`, 'success');
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-double"></i> <span>Batch Verify All & Add to Pool</span>';
             }
         }
 
@@ -2802,31 +3687,30 @@
             const customPass = document.getElementById('envDotBasePassword') ? document.getElementById('envDotBasePassword').value.trim() : '';
 
             if (!baseEmail || !baseEmail.includes('@')) {
-                showToast('Please enter a valid Gmail address');
+                showToast('Please enter a valid Gmail address', 'warning');
                 return;
             }
 
             if (!samePass && !customPass) {
-                showToast('Please enter a password or check "Use Email as Password"');
+                showToast('Please enter a password or check "Use Email as Password"', 'warning');
                 return;
             }
 
             const aliases = generateDotVariations(baseEmail, count);
-            const existingPool = new Set(getLocalEnvatoAccounts().map(a => a.email.toLowerCase()));
 
             envGeneratedDotList = aliases.map(email => ({
                 email: email,
                 password: samePass ? email : customPass,
-                status: existingPool.has(email.toLowerCase()) ? 'IN_POOL' : 'READY_TO_REGISTER',
-                inPool: existingPool.has(email.toLowerCase())
+                status: 'READY_TO_REGISTER',
+                inPool: false
             }));
 
             document.getElementById('envDotResultBox').style.display = 'flex';
             renderEnvDotList();
-            showToast(`Generated ${aliases.length} Envato dot aliases!`);
+            showToast(`Generated ${aliases.length} Envato dot aliases! Register & then click Verify & Add.`);
         }
 
-                function renderEnvDotList() {
+        function renderEnvDotList() {
             const container = document.getElementById('envDotListContainer');
             if (!container) return;
 
@@ -2858,7 +3742,7 @@
                             </button>
                         </div>
 
-                        <!-- Right: Perfectly Aligned Column Grid (Fixed Widths) -->
+                        <!-- Right: Column Grid -->
                         <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
                             <!-- Fixed Width Status Badge -->
                             <div style="width: 130px; display: flex; align-items: center;">
@@ -2871,7 +3755,7 @@
                             </button>
 
                             <!-- Fixed Width Verify & Add Button -->
-                            <button class="action-btn" onclick="verifyEnvSingleDotAlias(${index})" id="btnVerifyEnvDot_${index}" title="Verify login & add to pool" style="width: 112px; height: 32px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; padding: 0; ${item.inPool ? 'background: var(--card-subtle); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.3); opacity: 0.9; cursor: default;' : 'background: var(--badge-green-bg); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.25);'}" ${item.inPool ? 'disabled' : ''}>
+                            <button class="action-btn" onclick="verifyEnvSingleDotAlias(${index})" id="btnVerifyEnvDot_${index}" title="Verify login & add to pool" style="width: 112px; height: 32px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; padding: 0; ${item.inPool ? 'background: var(--card-subtle); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.3);' : 'background: var(--badge-green-bg); color: var(--badge-green-text); border: 1px solid rgba(16, 185, 129, 0.25);'}">
                                 <i class="fa-solid ${item.inPool ? 'fa-circle-check' : 'fa-check'}" style="font-size: 11px;"></i> ${item.inPool ? 'Verified' : 'Verify & Add'}
                             </button>
                         </div>
@@ -3591,6 +4475,213 @@
 
         // Initialize state
         updateFreepikPill();
+        updateEnvatoOverview();
+        renderPoolAccounts();
+        renderEnvatoPoolAccounts();
+        syncAccountsWithBackend();
+    
+
+        // --- Network & Proxy Rotation Management ---
+        async function loadNetworkSettings() {
+            try {
+                // 1. Load DoH / Bypass settings
+                const res = await fetch('/api/bypass-settings');
+                const data = await res.json();
+                if (data.success && data.settings) {
+                    const toggle = document.getElementById('bypassToggle');
+                    if (toggle) toggle.checked = data.settings.enabled !== false;
+                    const sel = document.getElementById('dohProviderSelect');
+                    if (sel) sel.value = data.settings.doh_provider || 'cloudflare';
+                    const customInp = document.getElementById('customDohInput');
+                    if (customInp) customInp.value = data.settings.custom_doh_url || '';
+                    toggleCustomDoh();
+                }
+
+                // 2. Load Proxy settings
+                const resProxy = await fetch('/api/proxy-settings');
+                const dataProxy = await resProxy.json();
+                if (dataProxy.success) {
+                    const settings = dataProxy.settings || {};
+                    const enableToggle = document.getElementById('proxyEnableToggle');
+                    if (enableToggle) enableToggle.checked = !!settings.enabled;
+                    const modeSelect = document.getElementById('proxyRotationMode');
+                    if (modeSelect) modeSelect.value = settings.rotation_mode || 'random';
+                    const uaSelect = document.getElementById('proxyRotateUA');
+                    if (uaSelect) uaSelect.value = String(settings.rotate_user_agents !== false);
+                    const poolInput = document.getElementById('proxyPoolInput');
+                    if (poolInput && Array.isArray(settings.proxies)) {
+                        poolInput.value = settings.proxies.join('\n');
+                    }
+                    updateProxyCount();
+                    updateProxyUIState();
+
+                    // Update Diagnostics IP
+                    const ipInfo = dataProxy.ip_info || {};
+                    const diagIpEl = document.getElementById('diagOutgoingIp');
+                    if (diagIpEl) {
+                        if (settings.enabled && settings.proxies && settings.proxies.length > 0) {
+                            diagIpEl.innerHTML = `<span style="color:#22c55e;"><i class="fa-solid fa-shuffle"></i> Rotating (${settings.proxies.length} IPs)</span>`;
+                        } else {
+                            diagIpEl.innerHTML = `<span style="color:var(--text-heading);"><i class="fa-solid fa-globe"></i> Direct (${ipInfo.ip || 'Local'})</span>`;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading network settings:", e);
+            }
+        }
+
+        function updateProxyCount() {
+            const poolInput = document.getElementById('proxyPoolInput');
+            const countBadge = document.getElementById('proxyCountBadge');
+            if (!poolInput || !countBadge) return;
+            const lines = poolInput.value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            countBadge.textContent = `(${lines.length} Proxies)`;
+        }
+
+        function updateProxyUIState() {
+            const enabled = document.getElementById('proxyEnableToggle')?.checked;
+            const badge = document.getElementById('networkStatusBadge');
+            const badgeText = document.getElementById('networkStatusText');
+            if (badge && badgeText) {
+                if (enabled) {
+                    badgeText.textContent = "DoH + Proxy Rotating Active";
+                    badge.style.color = "#3b82f6";
+                    badge.style.borderColor = "rgba(59, 130, 246, 0.3)";
+                } else {
+                    badgeText.textContent = "DoH Engine Active";
+                    badge.style.color = "var(--badge-green-text)";
+                    badge.style.borderColor = "rgba(16, 185, 129, 0.2)";
+                }
+            }
+        }
+
+        async function saveNetworkSettings() {
+            showToast("Saving network & proxy configuration...", "info");
+            try {
+                // 1. Save DoH Bypass
+                const enabled = document.getElementById('bypassToggle')?.checked !== false;
+                const dohProvider = document.getElementById('dohProviderSelect')?.value || 'cloudflare';
+                const customDoh = document.getElementById('customDohInput')?.value.trim() || '';
+                
+                await fetch('/api/bypass-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        enabled: enabled,
+                        doh_provider: dohProvider,
+                        custom_doh_url: customDoh
+                    })
+                });
+
+                // 2. Save Proxy Settings
+                const proxyEnabled = document.getElementById('proxyEnableToggle')?.checked || false;
+                const rotationMode = document.getElementById('proxyRotationMode')?.value || 'random';
+                const rotateUA = document.getElementById('proxyRotateUA')?.value === 'true';
+                const poolText = document.getElementById('proxyPoolInput')?.value || '';
+                const proxyList = poolText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+                const resProxy = await fetch('/api/proxy-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        enabled: proxyEnabled,
+                        rotation_mode: rotationMode,
+                        rotate_user_agents: rotateUA,
+                        proxies: proxyList
+                    })
+                });
+
+                showToast("Network & Proxy configuration saved successfully!", "success");
+                loadNetworkSettings();
+            } catch (e) {
+                showToast("Failed to save network configuration: " + e.message, "error");
+            }
+        }
+
+        async function testAllProxiesPing() {
+            const btn = document.getElementById('btnTestProxies');
+            const statusText = document.getElementById('proxyTestStatusText');
+            const resultsBox = document.getElementById('proxyPingResultsBox');
+            const poolText = document.getElementById('proxyPoolInput')?.value || '';
+            const proxyList = poolText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+            if (proxyList.length === 0) {
+                showToast("Please enter at least one proxy in the list to test.", "warning");
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing Ping...';
+            }
+            if (statusText) statusText.textContent = `Testing ${proxyList.length} proxies...`;
+            if (resultsBox) {
+                resultsBox.style.display = 'block';
+                resultsBox.innerHTML = '<div style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Testing latency and outgoing IP...</div>';
+            }
+
+            // Save first to backend
+            await fetch('/api/proxy-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    enabled: document.getElementById('proxyEnableToggle')?.checked || false,
+                    rotation_mode: document.getElementById('proxyRotationMode')?.value || 'random',
+                    rotate_user_agents: document.getElementById('proxyRotateUA')?.value === 'true',
+                    proxies: proxyList
+                })
+            });
+
+            try {
+                const res = await fetch('/api/proxy-test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                const results = data.results?.results || [];
+                const activeCount = data.results?.active_count || 0;
+
+                if (resultsBox) {
+                    if (results.length === 0) {
+                        resultsBox.innerHTML = '<div style="color:var(--text-muted);">No results returned.</div>';
+                    } else {
+                        resultsBox.innerHTML = results.map(r => {
+                            if (r.status === 'active') {
+                                return `<div style="display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:#22c55e;">
+                                    <span><i class="fa-solid fa-circle-check"></i> ${r.proxy}</span>
+                                    <span>IP: ${r.ip} (${r.latency_ms}ms)</span>
+                                </div>`;
+                            } else {
+                                return `<div style="display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:#ef4444;">
+                                    <span><i class="fa-solid fa-circle-xmark"></i> ${r.proxy}</span>
+                                    <span>${r.error || 'Timeout / Refused'}</span>
+                                </div>`;
+                            }
+                        }).join('');
+                    }
+                }
+
+                if (statusText) statusText.textContent = `${activeCount}/${results.length} Active Proxies`;
+                showToast(`Proxy test complete: ${activeCount}/${results.length} proxies online!`, activeCount > 0 ? 'success' : 'warning');
+            } catch (e) {
+                if (statusText) statusText.textContent = 'Test failed';
+                showToast('Proxy test error: ' + e.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Test & Ping Proxies';
+                }
+            }
+        }
+
+        // Auto sync pools on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            syncAccountsWithBackend();
+        });
+        syncAccountsWithBackend();
+
     </script>
 </body>
 </html>
