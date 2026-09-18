@@ -37,6 +37,8 @@ from scrapers.vault import find_vault_item, add_vault_item, load_vault, save_vau
 from scrapers.envato import (
     get_envato_info,
     EnvatoScraper,
+    _load_envato_accounts,
+    _save_envato_accounts,
     add_account as add_envato_account,
     remove_account as remove_envato_account,
     batch_add_accounts as batch_add_envato_accounts,
@@ -553,9 +555,35 @@ def api_envato_verify_single():
     data = request.json or {}
     email = data.get("email", "").strip()
     password = data.get("password", "").strip()
-    if not email or not password:
-        return jsonify({"success": False, "error": "Email and password are required"}), 400
+    if not email:
+        return jsonify({"success": False, "error": "Email is required"}), 400
+    
+    if not password:
+        accounts = _load_envato_accounts()
+        for a in accounts:
+            if a.get("email", "").lower() == email.lower():
+                password = a.get("password", "")
+                break
+                
+    if not password:
+        return jsonify({"success": False, "error": "Password not found for account"}), 400
+
     ok, msg, credits = test_envato_login(email, password, check_credits=True)
+    
+    accounts = _load_envato_accounts()
+    updated = False
+    for a in accounts:
+        if a.get("email", "").lower() == email.lower():
+            a["verified"] = ok
+            a["credits"] = credits
+            a["remaining_daily"] = credits
+            a["rate_limited"] = (credits == 0)
+            a["status"] = "Ready" if (ok and credits > 0) else ("Quota Limit Reached (0/2)" if ok else "Invalid credentials")
+            updated = True
+            break
+    if updated:
+        _save_envato_accounts(accounts)
+
     return jsonify({
         "success": ok,
         "message": msg,
@@ -563,7 +591,8 @@ def api_envato_verify_single():
         "credits": credits,
         "remaining_daily": credits,
         "rate_limited": (credits == 0),
-        "status": "Ready" if (ok and credits > 0) else "Quota Limit Reached (0/2)"
+        "status": "Ready" if (ok and credits > 0) else ("Quota Limit Reached (0/2)" if ok else "Invalid credentials"),
+        "account_status": EnvatoScraper.get_account_status()
     })
 
 @app.route("/api/vault-stats", methods=["GET"])

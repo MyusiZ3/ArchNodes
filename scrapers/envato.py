@@ -80,6 +80,7 @@ def check_envato_credits(scraper, csrf_token: str) -> Tuple[bool, int, str]:
 
 def test_envato_login(email: str, password: str, check_credits: bool = True) -> Tuple[bool, str, int]:
     scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True})
+    apply_network_settings(scraper)
     try:
         home_res = scraper.get("https://envato-downloader.com/", timeout=15)
         soup_home = BeautifulSoup(home_res.text, "html.parser")
@@ -101,12 +102,19 @@ def test_envato_login(email: str, password: str, check_credits: bool = True) -> 
         res = scraper.post("https://envato-downloader.com/AuthController/loginPost", data=payload, headers=headers, timeout=15)
         res_json = res.json()
         if res.status_code == 200 and res_json.get("result") == 1:
-            credits = 2
-            msg = "Login successful"
-            if check_credits:
-                _, credits, cmsg = check_envato_credits(scraper, csrf_token)
-                msg = f"Login successful ({cmsg})"
-            return True, msg, credits
+            credits = 0
+            try:
+                r_home = scraper.get("https://envato-downloader.com/", timeout=15)
+                soup_after = BeautifulSoup(r_home.text, "html.parser")
+                for a in soup_after.find_all(["a", "button", "span", "div"]):
+                    txt = a.get_text(strip=True)
+                    m = re.search(r'(\d+)\s*credits?', txt, re.I)
+                    if m and "earn" not in txt.lower() and "get" not in txt.lower() and "free" not in txt.lower() and len(txt) < 30:
+                        credits = int(m.group(1))
+                        break
+            except Exception:
+                pass
+            return True, "Login successful", credits
         msg = res_json.get("error_message") or res_json.get("message") or "Invalid credentials"
         clean_msg = re.sub(r'<[^>]+>', ' ', str(msg)).strip()
         return False, clean_msg or "Login failed", 0
@@ -120,15 +128,20 @@ def add_account(email: str, password: str, verify: bool = True) -> Dict:
             if password and acc.get("password") != password:
                 acc["password"] = password
             if verify:
-                ok, msg, _ = test_envato_login(email, password, check_credits=False)
+                ok, msg, creds = test_envato_login(email, password, check_credits=True)
                 acc["verified"] = ok
+                acc["credits"] = creds
+                acc["remaining_daily"] = creds
+                acc["rate_limited"] = (creds == 0)
+                acc["status"] = "Ready" if (ok and creds > 0) else "Quota Limit Reached (0/2)"
             _save_envato_accounts(accounts)
             return {"success": True, "message": f"Account {email} is already in the pool", "already_in_pool": True, "account": acc}
             
     is_valid = True
     msg = "Account added"
+    credits = 2
     if verify:
-        is_valid, msg, _ = test_envato_login(email, password, check_credits=False)
+        is_valid, msg, credits = test_envato_login(email, password, check_credits=True)
         if not is_valid:
             return {"success": False, "error": f"Verification failed: {msg}"}
             
@@ -137,12 +150,13 @@ def add_account(email: str, password: str, verify: bool = True) -> Dict:
         "email": email,
         "password": password,
         "verified": is_valid,
+        "credits": credits,
         "referral_code": "",
         "referral_url": "",
         "daily_used": 0,
-        "remaining_daily": 2,
-        "rate_limited": False,
-        "status": "Ready",
+        "remaining_daily": credits,
+        "rate_limited": (credits == 0),
+        "status": "Ready" if (is_valid and credits > 0) else "Quota Limit Reached (0/2)",
         "last_used_date": today,
         "added_at": time.time()
     }
@@ -184,6 +198,7 @@ def batch_add_accounts(acc_list: List[Dict[str, str]]) -> Dict:
                 "email": em,
                 "password": pw,
                 "verified": False,
+                "credits": 2,
                 "referral_code": "",
                 "referral_url": "",
                 "daily_used": 0,
@@ -202,20 +217,19 @@ def verify_all_accounts(custom_accounts: Optional[List[Dict]] = None) -> Dict:
     accounts = custom_accounts if (custom_accounts is not None and len(custom_accounts) > 0) else _load_envato_accounts()
     results = []
     valid_count = 0
-    now = time.time()
+    total_credits = 0
     today = _get_today_str()
     for acc in accounts:
         em = acc.get("email", "")
         pw = acc.get("password", "")
-        ok, msg, _ = test_envato_login(em, pw, check_credits=False)
+        ok, msg, creds = test_envato_login(em, pw, check_credits=True)
         acc["verified"] = ok
+        acc["credits"] = creds
+        acc["remaining_daily"] = creds
         if ok:
             valid_count += 1
-            if acc.get("last_used_date") != today:
-                acc["daily_used"] = 0
-                acc["last_used_date"] = today
-            acc["remaining_daily"] = max(0, 2 - acc.get("daily_used", 0))
-            if acc["remaining_daily"] > 0:
+            total_credits += creds
+            if creds > 0:
                 acc["rate_limited"] = False
                 acc["status"] = "Ready"
                 RATE_LIMITED_ENVATO_ACCOUNTS.pop(em, None)
@@ -225,10 +239,10 @@ def verify_all_accounts(custom_accounts: Optional[List[Dict]] = None) -> Dict:
         else:
             acc["status"] = "Invalid credentials"
         acc["last_used_date"] = today
-        results.append({"email": em, "success": ok, "message": msg})
+        results.append({"email": em, "success": ok, "message": msg, "credits": creds})
     if len(accounts) > 0:
         _save_envato_accounts(accounts)
-    return {"success": True, "valid_count": valid_count, "total": len(accounts), "details": results}
+    return {"success": True, "valid_count": valid_count, "total_credits": total_credits, "total": len(accounts), "details": results}
 
 def fetch_envato_referral_code(email: str, password: str, save_to_pool: bool = True) -> Dict:
     """Log in to envato-downloader.com, scrape /get-credits, and extract referral code & link"""
@@ -639,19 +653,22 @@ class EnvatoScraper:
         accounts_info = []
         ready_count = 0
         rate_limited_count = 0
+        total_credits = 0
 
         for acc in pool:
             em = acc.get("email", "")
             is_limited = RATE_LIMITED_ENVATO_ACCOUNTS.get(em, 0) > now
             daily_used = acc.get("daily_used", 0) if acc.get("last_used_date") == today else 0
-            remaining = max(0, 2 - daily_used)
+            remaining = acc.get("remaining_daily", max(0, 2 - daily_used))
+            credits = acc.get("credits", remaining)
+            total_credits += credits
 
             if not acc.get("verified", True):
                 status_str = "Unverified"
             elif is_limited:
                 status_str = "Rate-Limited (1h cooldown)"
                 rate_limited_count += 1
-            elif remaining == 0:
+            elif credits == 0:
                 status_str = "Quota Reached (0/2)"
                 rate_limited_count += 1
             else:
@@ -662,12 +679,13 @@ class EnvatoScraper:
                 "email": em,
                 "password": acc.get("password", ""),
                 "status": status_str,
-                "rate_limited": is_limited or (remaining == 0),
+                "credits": credits,
+                "rate_limited": is_limited or (credits == 0),
                 "verified": acc.get("verified", True),
                 "referral_code": acc.get("referral_code", ""),
                 "referral_url": acc.get("referral_url", ""),
                 "daily_used": daily_used,
-                "remaining_daily": remaining,
+                "remaining_daily": credits,
                 "profile_completed": acc.get("profile_completed", False),
                 "added_at": acc.get("added_at", time.time())
             })
@@ -677,6 +695,8 @@ class EnvatoScraper:
             "total_accounts": total,
             "active_accounts": ready_count,
             "ready_accounts": ready_count,
+            "accounts_with_credits": ready_count,
+            "total_credits": total_credits,
             "limited_accounts": rate_limited_count,
             "rate_limited_accounts": rate_limited_count,
             "accounts": accounts_info

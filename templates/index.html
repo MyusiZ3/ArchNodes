@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArchNodes — Digital Asset Engine</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2309090b'/><path d='M8 22L16 10L24 22M11 18h10' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+    <link rel="icon" type="image/png" href="/static/logo.png">
+    <link rel="apple-touch-icon" href="/static/logo.png">
     
     <!-- Google Font: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,6 +75,34 @@
             --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
+        html {
+            scrollbar-gutter: stable;
+            overflow-y: scroll;
+        }
+
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(140, 140, 150, 0.25);
+            border-radius: 9999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(140, 140, 150, 0.45);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -96,6 +125,9 @@
         .nav-wrapper {
             position: fixed;
             top: 16px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
             width: calc(100% - 32px);
             max-width: 1000px;
             height: 56px;
@@ -506,6 +538,30 @@
             background: var(--pill-active-bg);
             color: var(--pill-active-text);
             border-color: var(--pill-active-bg);
+        }
+
+        #vaultCountBadge {
+            background: var(--border-color);
+            color: var(--text-heading);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-left: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .filter-btn.active #vaultCountBadge {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        html.dark .filter-btn.active #vaultCountBadge {
+            background: rgba(0, 0, 0, 0.15);
+            color: #09090b;
         }
 
         /* Results Card */
@@ -988,6 +1044,253 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* App Footer Styles */
+        .app-footer {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 60px;
+            padding-top: 40px;
+            padding-bottom: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+        }
+
+        .footer-brand-col {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--text-heading);
+            color: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .footer-brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--text-heading);
+        }
+
+        .footer-brand-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 330px;
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .footer-col-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .footer-social-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .footer-social-btn {
+            font-size: 18px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-social-btn:hover {
+            color: var(--text-heading);
+            transform: translateY(-2px);
+        }
+
+        .footer-contact-link {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            word-break: break-all;
+            transition: opacity 0.2s ease;
+        }
+
+        .footer-contact-link:hover {
+            opacity: 0.8;
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* Custom Confirmation Modal */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+        }
+
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 28px 24px 22px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px var(--border-color);
+            transform: scale(0.94) translateY(8px);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .custom-modal-overlay.active .custom-modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .custom-modal-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .custom-modal-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .custom-modal-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 22px;
+            max-width: 320px;
+        }
+
+        .custom-modal-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .custom-modal-btn-cancel {
+            flex: 1;
+            height: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .custom-modal-btn-confirm {
+            flex: 1.2;
+            height: 40px;
+            font-size: 13px;
+            font-weight: 800;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #ef4444 !important;
+            color: #fff !important;
+            border: none;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+
+        .custom-modal-btn-confirm:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -995,6 +1298,7 @@
     <!-- Navigation -->
     <div class="nav-wrapper">
         <a href="/" class="nav-brand">
+
             <span>ArchNodes.</span>
         </a>
 
@@ -1041,7 +1345,9 @@
                     <button class="filter-btn active" onclick="filterPlatform('all')"><i class="fa-solid fa-layer-group"></i> All Sources</button>
                     <button class="filter-btn" onclick="filterPlatform('freepik')"><img src="https://cdn.simpleicons.org/freepik/1273EB" alt="Freepik" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 3px;" /> Freepik</button>
                     <button class="filter-btn" onclick="filterPlatform('envato')"><img src="https://cdn.simpleicons.org/envato/87E64B" alt="Envato" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 3px;" /> Envato Elements</button>
-                    <button class="filter-btn" onclick="filterPlatform('motionarray')"><i class="fa-solid fa-film"></i> Motion Array</button>
+                    <button class="filter-btn" onclick="showToast('Motion Array engine is currently in development (Locked)', 'warning')" style="opacity: 0.5; cursor: not-allowed;" title="Motion Array is currently in development">
+                        <i class="fa-solid fa-lock" style="font-size: 11px;"></i> Motion Array <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 4px; background: rgba(255,255,255,0.08); margin-left: 3px; font-weight: 600;">Locked</span>
+                    </button>
                 </div>
             </section>
 
@@ -1063,20 +1369,21 @@
 
                   <!-- View 2: History & Cloud Vault -->
           <div id="historyView" style="display: none;">
-              <section class="history-panel">
+              <section class="history-panel" style="padding: 28px;">
                   <!-- Header & Subtab Switcher -->
-                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
-                      <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px;">
+                      <div style="flex: 1; min-width: 0;">
                           <div class="hero-meta">Persistent Asset Storage</div>
                           <h2 style="font-size: 20px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.5px;">History & Cloud Vault</h2>
+                          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Track cached downloads and persistent cloud vault storage.</p>
                       </div>
-                      <div style="display: flex; gap: 10px; align-items: center;">
+                      <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
                           <div class="filter-bar" style="margin: 0; padding: 4px; background: var(--card-subtle);">
                               <button id="historySubtabSessionBtn" onclick="switchHistorySubtab('session')" class="filter-btn active" style="font-size: 12px; padding: 6px 14px;">
                                   <i class="fa-solid fa-clock-rotate-left"></i> Session History
                               </button>
                               <button id="historySubtabVaultBtn" onclick="switchHistorySubtab('vault')" class="filter-btn" style="font-size: 12px; padding: 6px 14px;">
-                                  <i class="fa-solid fa-cloud-arrow-down"></i> Cloud Pool Vault <span id="vaultCountBadge" style="background: var(--border-color); padding: 1px 6px; border-radius: 10px; font-size: 10px; margin-left: 4px;">0</span>
+                                  <i class="fa-solid fa-cloud-arrow-down"></i> Cloud Pool Vault <span id="vaultCountBadge">0</span>
                               </button>
                           </div>
                           <button id="clearHistoryBtn" onclick="clearHistory()" class="filter-btn" style="color: var(--text-muted); font-size: 12px; padding: 7px 12px;">
@@ -1338,8 +1645,8 @@
                         <button id="tabBtnAdd" class="modal-tab-btn" onclick="switchModalTab('add')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
                             <i class="fa-solid fa-plus"></i> Add Single
                         </button>
-                        <button id="tabBtnAutofarm" class="modal-tab-btn" onclick="switchModalTab('autofarm')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
-                            <i class="fa-solid fa-bolt" style="color: #eab308;"></i> 1-Click Auto-Farm
+                        <button id="tabBtnAutofarm" class="modal-tab-btn" onclick="showToast('1-Click Auto-Farm is temporarily locked for maintenance.', 'warning')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: not-allowed; opacity: 0.5;" title="Temporarily Locked">
+                            <i class="fa-solid fa-lock" style="color: #94a3b8;"></i> 1-Click Auto-Farm <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 4px; background: rgba(255,255,255,0.08); margin-left: 4px; color: #94a3b8; font-weight: 600;">Locked</span>
                         </button>
                     </div>
 
@@ -1354,8 +1661,8 @@
                                 <button class="action-btn" id="btnSyncFreepikRef" onclick="syncAllFreepikReferrals()" style="font-size: 12px; padding: 6px 12px; font-weight: 700; color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">
                                     <i class="fa-solid fa-gift"></i> Sync Referral Codes
                                 </button>
-                                <button class="action-btn" onclick="verifyAllPoolAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
-                                    <i class="fa-solid fa-rotate"></i> Verify All
+                                <button class="action-btn" id="btnVerifyAllFp" onclick="verifyAllPoolAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
+                                    <i class="fa-solid fa-rotate" id="iconVerifyAllFp"></i> <span>Verify All</span>
                                 </button>
                                 <button class="action-btn" onclick="clearInvalidAccounts()" style="font-size: 12px; padding: 6px 12px;">
                                     <i class="fa-solid fa-trash-can"></i> Clear Inactive
@@ -1378,7 +1685,7 @@
                         </div>
 
                         <!-- Account List Container -->
-                        <div id="accountsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto;">
+                        <div id="accountsListContainer" style="display: flex; flex-direction: column; gap: 8px;">
                             <!-- Populated dynamically -->
                         </div>
                     </div>
@@ -1544,10 +1851,10 @@
                             <!-- Action Button -->
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                 <div id="fpFarmStatusMsg" style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);">
-                                    Ready to generate credits.
+                                    Feature temporarily under maintenance.
                                 </div>
-                                <button class="btn-primary" id="btnStartFpAutoFarm" onclick="runFreepikAutoFarm()" style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #eab308, #ca8a04); border: none; color: #000; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)
+                                <button class="btn-primary" id="btnStartFpAutoFarm" disabled style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: var(--badge-bg); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; cursor: not-allowed; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-lock"></i> 1-Click Farming (Locked)
                                 </button>
                             </div>
                         </div>
@@ -1580,8 +1887,8 @@
                         <button id="envTabBtnAdd" class="modal-tab-btn" onclick="switchEnvatoSubtab('add')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
                             <i class="fa-solid fa-plus"></i> Add Single
                         </button>
-                        <button id="envTabBtnAutofarm" class="modal-tab-btn" onclick="switchEnvatoSubtab('autofarm')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: pointer;">
-                            <i class="fa-solid fa-bolt" style="color: #eab308;"></i> 1-Click Auto-Farm
+                        <button id="envTabBtnAutofarm" class="modal-tab-btn" onclick="showToast('1-Click Auto-Farm is temporarily locked for maintenance.', 'warning')" style="border-radius: var(--radius-pill); padding: 6px 16px; font-size: 12.5px; font-weight: 700; border: none; background: transparent; cursor: not-allowed; opacity: 0.5;" title="Temporarily Locked">
+                            <i class="fa-solid fa-lock" style="color: #94a3b8;"></i> 1-Click Auto-Farm <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 4px; background: rgba(255,255,255,0.08); margin-left: 4px; color: #94a3b8; font-weight: 600;">Locked</span>
                         </button>
                     </div>
 
@@ -1596,8 +1903,8 @@
                                 <button class="action-btn" id="btnSyncEnvatoRef" onclick="syncAllEnvatoReferrals()" style="font-size: 12px; padding: 6px 12px; font-weight: 700; color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">
                                     <i class="fa-solid fa-gift"></i> Sync Referral Codes
                                 </button>
-                                <button class="action-btn" onclick="verifyAllEnvatoAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
-                                    <i class="fa-solid fa-rotate"></i> Verify All
+                                <button class="action-btn" id="btnVerifyAllEnv" onclick="verifyAllEnvatoAccounts()" style="font-size: 12px; padding: 6px 12px; font-weight: 700;">
+                                    <i class="fa-solid fa-rotate" id="iconVerifyAllEnv"></i> <span>Verify All</span>
                                 </button>
                                 <button class="action-btn" onclick="clearInvalidEnvatoAccounts()" style="font-size: 12px; padding: 6px 12px;">
                                     <i class="fa-solid fa-trash-can"></i> Clear Inactive
@@ -1620,7 +1927,7 @@
                         </div>
 
                         <!-- Envato Account List Container -->
-                        <div id="envatoAccountsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto;">
+                        <div id="envatoAccountsListContainer" style="display: flex; flex-direction: column; gap: 8px;">
                             <!-- Populated dynamically -->
                         </div>
                     </div>
@@ -1799,10 +2106,10 @@
                             <!-- Action Button -->
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                 <div id="farmStatusMsg" style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);">
-                                    Ready to generate credits.
+                                    Feature temporarily under maintenance.
                                 </div>
-                                <button class="btn-primary" id="btnStartAutoFarm" onclick="runEnvatoAutoFarm()" style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #eab308, #ca8a04); border: none; color: #000; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-rocket"></i> Start 1-Click Farming (+5 Credits)
+                                <button class="btn-primary" id="btnStartAutoFarm" disabled style="height: 40px; padding: 0 22px; font-size: 13.5px; font-weight: 800; background: var(--badge-bg); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; cursor: not-allowed; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-lock"></i> 1-Click Farming (Locked)
                                 </button>
                             </div>
                         </div>
@@ -1828,11 +2135,143 @@
 
     </main>
 
+    <!-- App Footer -->
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <!-- Col 1: Brand Info -->
+                <div class="footer-brand-col">
+                    <div class="footer-brand">
+                        <img src="/static/logo.png" alt="ArchNodes" style="width: 40px; height: 40px; object-fit: contain; display: block;" />
+                        <span class="footer-brand-name" style="font-size: 18px;">ArchNodes</span>
+                    </div>
+                    <p class="footer-brand-desc">
+                        High-performance creative asset downloader and multi-account pool manager for Freepik, Envato Elements, and high-demand design workflows.
+                    </p>
+                </div>
+
+                <!-- Col 2: Core Developer -->
+                <div class="footer-col">
+                    <div class="footer-col-title">CORE DEVELOPER</div>
+                    <div class="footer-social-links">
+                        <a href="https://github.com/MyusiZ3" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://www.instagram.com/imyusi_/" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/muhamad-sidik-a6757b25b/" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="LinkedIn">
+                            <i class="fa-brands fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 3: Connect & Support -->
+                <div class="footer-col">
+                    <div class="footer-col-title">CONNECT & SUPPORT</div>
+                    <a href="mailto:muhamadsidik.work.id@gmail.com" class="footer-contact-link">
+                        muhamadsidik.work.id@gmail.com
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Copyright & Status -->
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    © 2026 ARCHNODES | ARCH.
+                </div>
+                <div class="footer-crafted">
+                    ALL RIGHTS RESERVED
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModalOverlay" class="custom-modal-overlay" style="display: none;" onclick="if(event.target === this) closeConfirmModal(false);">
+        <div class="custom-modal-card">
+            <div class="custom-modal-icon-wrap" id="confirmModalIconWrap">
+                <i id="confirmModalIcon" class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 id="confirmModalTitle" class="custom-modal-title">Clear Download History?</h3>
+            <p id="confirmModalDesc" class="custom-modal-desc">
+                Are you sure you want to clear your download history? This action cannot be undone.
+            </p>
+            <div class="custom-modal-actions">
+                <button id="confirmModalCancelBtn" class="action-btn custom-modal-btn-cancel" onclick="closeConfirmModal(false)">
+                    Cancel
+                </button>
+                <button id="confirmModalActionBtn" class="btn-primary custom-modal-btn-confirm" onclick="closeConfirmModal(true)">
+                    Clear History
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">Action completed</div>
 
     <!-- Application Script Logic -->
     <script>
+        // --- Custom Confirmation Dialog Engine ---
+        let confirmModalCallback = null;
+
+        function showConfirmDialog({
+            title = 'Are you sure?',
+            message = 'Please confirm this action.',
+            icon = 'fa-solid fa-triangle-exclamation',
+            iconColor = '#ef4444',
+            iconBg = 'rgba(239, 68, 68, 0.12)',
+            confirmText = 'Confirm',
+            confirmBg = '#ef4444',
+            cancelText = 'Cancel',
+            onConfirm = null
+        } = {}) {
+            const overlay = document.getElementById('confirmModalOverlay');
+            const titleEl = document.getElementById('confirmModalTitle');
+            const descEl = document.getElementById('confirmModalDesc');
+            const iconWrap = document.getElementById('confirmModalIconWrap');
+            const iconEl = document.getElementById('confirmModalIcon');
+            const actionBtn = document.getElementById('confirmModalActionBtn');
+            const cancelBtn = document.getElementById('confirmModalCancelBtn');
+
+            if (!overlay) return;
+
+            if (titleEl) titleEl.textContent = title;
+            if (descEl) descEl.textContent = message;
+            if (iconEl) iconEl.className = icon;
+            if (iconWrap) {
+                iconWrap.style.background = iconBg;
+                iconWrap.style.color = iconColor;
+                iconWrap.style.borderColor = iconColor ? iconColor + '40' : 'rgba(239,68,68,0.25)';
+            }
+            if (actionBtn) {
+                actionBtn.textContent = confirmText;
+                actionBtn.style.background = confirmBg;
+            }
+            if (cancelBtn) cancelBtn.textContent = cancelText;
+
+            confirmModalCallback = onConfirm;
+
+            overlay.style.display = 'flex';
+            void overlay.offsetWidth;
+            overlay.classList.add('active');
+        }
+
+        function closeConfirmModal(confirmed) {
+            const overlay = document.getElementById('confirmModalOverlay');
+            if (!overlay) return;
+
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                if (confirmed && typeof confirmModalCallback === 'function') {
+                    confirmModalCallback();
+                }
+                confirmModalCallback = null;
+            }, 200);
+        }
+
         // --- Theme Engine ---
         function initTheme() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -1997,6 +2436,10 @@
 
         // --- Platform Filter Tabs ---
         function filterPlatform(platform) {
+            if (platform === 'motionarray') {
+                showToast('Motion Array engine is currently in development (Locked)', 'warning');
+                return;
+            }
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
             const input = document.getElementById('urlInput');
@@ -2031,17 +2474,22 @@
         }
 
         function switchModalTab(tab) {
-            const tabs = ['pool', 'dottrick', 'add', 'autofarm'];
+            if (tab === 'autofarm') {
+                showToast('1-Click Auto-Farm is temporarily locked for maintenance.', 'warning');
+                return;
+            }
+            const tabs = ['pool', 'dottrick', 'add'];
             tabs.forEach(t => {
-                const btnId = t === 'pool' ? 'tabBtnPool' : t === 'dottrick' ? 'tabBtnDotTrick' : t === 'add' ? 'tabBtnAdd' : 'tabBtnAutofarm';
-                const bodyId = t === 'pool' ? 'modalTabPool' : t === 'dottrick' ? 'modalTabDotTrick' : t === 'add' ? 'modalTabAdd' : 'modalTabAutofarm';
+                const btnId = t === 'pool' ? 'tabBtnPool' : t === 'dottrick' ? 'tabBtnDotTrick' : 'tabBtnAdd';
+                const bodyId = t === 'pool' ? 'modalTabPool' : t === 'dottrick' ? 'modalTabDotTrick' : 'modalTabAdd';
                 const btn = document.getElementById(btnId);
                 const body = document.getElementById(bodyId);
                 if (btn) btn.classList.toggle('active', t === tab);
                 if (body) body.style.display = (t === tab) ? 'flex' : 'none';
             });
+            const autofarmBody = document.getElementById('modalTabAutofarm');
+            if (autofarmBody) autofarmBody.style.display = 'none';
             if (tab === 'pool') renderPoolAccounts();
-            if (tab === 'autofarm') populateFreepikMasterAccountDropdown();
         }
 
         function capitalize(s) {
@@ -2071,6 +2519,63 @@
             }
         }
 
+        // Pagination State
+        const ACCOUNTS_PER_PAGE = 7;
+        let freepikCurrentPage = 1;
+        let envatoCurrentPage = 1;
+
+        function renderPaginationControls(currentPage, totalPages, totalCount, startIdx, changeFnName) {
+            if (totalPages <= 1) return '';
+            const endIdx = Math.min(startIdx + ACCOUNTS_PER_PAGE, totalCount);
+            
+            let pageBtns = '';
+            for (let p = 1; p <= totalPages; p++) {
+                if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+                    const isActive = (p === currentPage);
+                    pageBtns += `
+                        <button class="action-btn" onclick="${changeFnName}(${p})" style="min-width: 30px; height: 30px; padding: 0 6px; font-size: 12px; font-weight: 700; border-radius: 6px; ${isActive ? 'background: #6366f1; color: #fff; border-color: #6366f1;' : ''}">
+                            ${p}
+                        </button>
+                    `;
+                } else if (p === currentPage - 2 || p === currentPage + 2) {
+                    pageBtns += `<span style="font-size: 11px; color: var(--text-muted); padding: 0 3px; user-select: none;">...</span>`;
+                }
+            }
+
+            return `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 4px 4px 4px; border-top: 1px solid var(--border-color); margin-top: 4px; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-size: 12px; color: var(--text-muted);">
+                        Showing <b style="color: var(--text-heading);">${startIdx + 1}</b>–<b style="color: var(--text-heading);">${endIdx}</b> of <b style="color: var(--text-heading);">${totalCount}</b> accounts
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <button class="action-btn" onclick="${changeFnName}(${currentPage - 1})" ${currentPage === 1 ? 'disabled style="opacity: 0.35; cursor: not-allowed; padding: 5px 10px; font-size: 12px;"' : 'style="padding: 5px 10px; font-size: 12px;"'}>
+                            <i class="fa-solid fa-chevron-left"></i> Prev
+                        </button>
+                        ${pageBtns}
+                        <button class="action-btn" onclick="${changeFnName}(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity: 0.35; cursor: not-allowed; padding: 5px 10px; font-size: 12px;"' : 'style="padding: 5px 10px; font-size: 12px;"'}>
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function changeFreepikPage(p) {
+            const accs = getLocalFreepikAccounts();
+            const totalPages = Math.ceil(accs.length / ACCOUNTS_PER_PAGE) || 1;
+            if (p < 1 || p > totalPages) return;
+            freepikCurrentPage = p;
+            renderPoolAccounts();
+        }
+
+        function changeEnvatoPage(p) {
+            const accs = getLocalEnvatoAccounts();
+            const totalPages = Math.ceil(accs.length / ACCOUNTS_PER_PAGE) || 1;
+            if (p < 1 || p > totalPages) return;
+            envatoCurrentPage = p;
+            renderEnvatoPoolAccounts();
+        }
+
         // Render Pool Status
         function renderPoolAccounts(serverStatus) {
             const accs = getLocalFreepikAccounts();
@@ -2088,77 +2593,104 @@
                 return;
             }
 
-            container.innerHTML = accs.map((acc, index) => {
+            const totalPages = Math.ceil(accs.length / ACCOUNTS_PER_PAGE) || 1;
+            if (freepikCurrentPage > totalPages) freepikCurrentPage = totalPages;
+            if (freepikCurrentPage < 1) freepikCurrentPage = 1;
+
+            const startIdx = (freepikCurrentPage - 1) * ACCOUNTS_PER_PAGE;
+            const currentSlice = accs.slice(startIdx, startIdx + ACCOUNTS_PER_PAGE);
+
+            const cardsHtml = currentSlice.map((acc, sliceIdx) => {
+                const index = startIdx + sliceIdx;
                 const refCode = acc.referral_code || '';
                 const dailyUsed = acc.daily_used || 0;
                 const remaining = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - dailyUsed);
+                const credits = (acc.credits !== undefined) ? acc.credits : 0;
 
-                const isCooldown = (acc.remaining_daily !== undefined && acc.remaining_daily === 0) || (dailyUsed >= 2) || (acc.rate_limited && remaining === 0);
-                let statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
+                // Status Badge & Dot
+                let statusBadge = '';
+                let statusColor = '#22c55e';
                 if (!acc.verified) {
-                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
-                } else if (isCooldown) {
-                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.12); color: var(--accent-red);"><i class="fa-solid fa-clock"></i> COOLDOWN</span>';
+                    statusColor = '#94a3b8';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
+                } else if (credits > 0) {
+                    statusColor = '#22c55e';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
+                } else {
+                    statusColor = '#ef4444';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: rgba(239, 68, 68, 0.1); color: var(--accent-red);"><i class="fa-solid fa-ban"></i> 0 CREDITS</span>';
                 }
 
-                const credits = (acc.credits !== undefined) ? acc.credits : 0;
-                const creditBadge = (credits > 0)
-                    ? `<span class="badge" style="background: rgba(34, 197, 94, 0.15); color: #16a34a; font-weight: 800; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(22, 163, 74, 0.25);"><i class="fa-solid fa-coins"></i> ${credits} Credits</span>`
-                    : `<span class="badge" style="background: rgba(239, 68, 68, 0.08); color: var(--text-muted); font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border-color);"><i class="fa-solid fa-coins"></i> 0 Credits</span>`;
+                // Credit Chip
+                const creditChip = (credits > 0)
+                    ? `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 800; background: rgba(34, 197, 94, 0.12); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.25);"><i class="fa-solid fa-coins"></i> ${credits} Credits</span>`
+                    : `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--badge-bg); color: var(--text-muted); border: 1px solid var(--border-color);"><i class="fa-solid fa-coins"></i> 0 Credits</span>`;
 
-                let quotaBadge = '';
-                let copyBtn = '';
+                // Referral Chip
+                let refChip = '';
+                let refActionBtn = '';
                 if (refCode) {
-                    if (remaining === 2) {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-circle-check"></i> 2/2 Available</span>`;
-                        copyBtn = `<button class="action-btn" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
-                    } else if (remaining === 1) {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #eab308; background: rgba(234, 179, 8, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-triangle-exclamation"></i> 1/2 Left</span>`;
-                        copyBtn = `<button class="action-btn" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
-                    } else {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-lock"></i> 0/2 (Max Daily)</span>`;
-                        copyBtn = `<button class="action-btn" disabled title="Daily limit reached (2/2 used today)" style="padding: 5px 10px; font-size: 11.5px; opacity: 0.5; cursor: not-allowed;"><i class="fa-solid fa-lock"></i> Cooldown</button>`;
-                    }
+                    refChip = `
+                        <span role="button" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Referral: ${refCode} (${remaining}/2 clicks left today). Click to copy link!" style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 700; background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2);">
+                            <i class="fa-solid fa-gift"></i> ${refCode} <span style="font-size: 10px; opacity: 0.85;">(${remaining}/2)</span> <i class="fa-solid fa-copy" style="font-size: 9.5px; margin-left: 2px;"></i>
+                        </span>
+                    `;
+                    refActionBtn = `
+                        <button class="action-btn" onclick="copyFreepikRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 9px; font-size: 11.5px; color: #a855f7; font-weight: 700; border-color: rgba(168, 85, 247, 0.25);">
+                            <i class="fa-solid fa-copy"></i> Ref
+                        </button>
+                    `;
                 } else {
-                    quotaBadge = `<span style="font-size: 11px; color: var(--text-muted);">No Ref Code</span>`;
-                    copyBtn = `<button class="action-btn" onclick="fetchSingleFreepikRef('${acc.email}')" title="Fetch Ref Code" style="padding: 5px 10px; font-size: 11.5px;"><i class="fa-solid fa-download"></i> Get Ref</button>`;
+                    refChip = `<span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-gift"></i> No Ref</span>`;
+                    refActionBtn = `
+                        <button class="action-btn" onclick="fetchSingleFreepikRef('${acc.email}')" title="Fetch Referral Code" style="padding: 5px 9px; font-size: 11.5px;">
+                            <i class="fa-solid fa-download"></i> Ref
+                        </button>
+                    `;
                 }
 
                 return `
-                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                                    <span style="font-size: 13px; font-weight: 700; color: var(--text-heading); word-break: break-all;">${escapeHtml(acc.email)}</span>
-                                    ${refCode ? `<span class="badge" style="background: rgba(147, 51, 234, 0.12); color: #a855f7; font-family: monospace; font-weight: 800; font-size: 11px; padding: 2px 7px; border-radius: 6px;"><i class="fa-solid fa-gift"></i> ${refCode}</span>` : ''}
-                                    ${creditBadge}
-                                    ${quotaBadge}
+                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+                            <div style="position: relative; flex-shrink: 0;">
+                                <div style="width: 34px; height: 34px; border-radius: 9px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
+                                    <i class="fa-solid fa-user"></i>
                                 </div>
-                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
-                                    Added: ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'} 
-                                    ${acc.profile_completed ? ' • <span style="color:#22c55e;"><i class="fa-solid fa-check"></i> Profile Completed</span>' : ''}
+                                <span style="position: absolute; bottom: -1px; right: -1px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--bg-card); background: ${statusColor};"></span>
+                            </div>
+                            <div style="min-width: 0; flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                                    <span style="font-size: 13.5px; font-weight: 700; color: var(--text-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; cursor: pointer;" onclick="copyToClipboard('${escapeHtml(acc.email)}', 'Email copied!')" title="${escapeHtml(acc.email)} (Click to copy)">
+                                        ${escapeHtml(acc.email)}
+                                    </span>
+                                    ${statusBadge}
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 3px; flex-wrap: wrap;">
+                                    ${creditChip}
+                                    ${refChip}
+                                    ${acc.profile_completed ? '<span style="color:#22c55e; display: inline-flex; align-items: center; gap: 3px;"><i class="fa-solid fa-check"></i> Profile</span>' : ''}
+                                    <span style="opacity: 0.7;">• ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'}</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            ${statusBadge}
-                            ${copyBtn}
-                            <button class="action-btn" onclick="autoCompleteFreepikProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 10px; font-size: 11.5px;">
+                        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                            ${refActionBtn}
+                            <button class="action-btn" onclick="autoCompleteFreepikProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 9px; font-size: 11.5px;">
                                 <i class="fa-solid fa-id-card"></i> Profile
                             </button>
-                            <button class="action-btn" onclick="verifySingleAccount(${index})" title="Check Live Credits & Login" style="padding: 5px 10px; font-size: 11.5px;">
-                                <i class="fa-solid fa-rotate"></i>
+                            <button class="action-btn" id="btnVerifyFp_${index}" onclick="verifySingleAccount(${index})" title="Check Live Credits & Login" style="width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px;">
+                                <i class="fa-solid fa-rotate" id="iconVerifyFp_${index}"></i>
                             </button>
-                            <button class="action-btn" onclick="removeAccount(${index})" title="Delete Account" style="padding: 5px 10px; font-size: 11.5px; color: var(--accent-red);">
+                            <button class="action-btn" onclick="removeAccount(${index})" title="Delete Account" style="width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px; color: var(--accent-red);">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            const paginationHtml = renderPaginationControls(freepikCurrentPage, totalPages, accs.length, startIdx, 'changeFreepikPage');
+            container.innerHTML = cardsHtml + paginationHtml;
         }
 
         async function fetchSingleFreepikRef(email) {
@@ -2470,6 +3002,11 @@
             const target = accs[index];
             if (!target) return;
 
+            const icon = document.getElementById(`iconVerifyFp_${index}`);
+            const btn = document.getElementById(`btnVerifyFp_${index}`);
+            if (icon) icon.classList.add('fa-spin');
+            if (btn) btn.disabled = true;
+
             showToast(`Checking ${target.email} live credits on FreepikDownloader...`, 'info');
             try {
                 const res = await fetch('/api/freepik-verify', {
@@ -2493,6 +3030,11 @@
                 renderPoolAccounts();
             } catch (e) {
                 showToast('Verification request failed: ' + e.message, 'error');
+            } finally {
+                const curIcon = document.getElementById(`iconVerifyFp_${index}`);
+                const curBtn = document.getElementById(`btnVerifyFp_${index}`);
+                if (curIcon) curIcon.classList.remove('fa-spin');
+                if (curBtn) curBtn.disabled = false;
             }
         }
 
@@ -2502,6 +3044,17 @@
             if (accs.length === 0) {
                 showToast('No accounts in pool', 'warning');
                 return;
+            }
+
+            const allBtn = document.getElementById('btnVerifyAllFp');
+            const allIcon = document.getElementById('iconVerifyAllFp');
+            if (allIcon) allIcon.classList.add('fa-spin');
+            if (allBtn) allBtn.disabled = true;
+
+            // Also spin individual card icons
+            for (let i = 0; i < accs.length; i++) {
+                const icon = document.getElementById(`iconVerifyFp_${i}`);
+                if (icon) icon.classList.add('fa-spin');
             }
 
             showToast('Probing live credits for all Freepik accounts...', 'info');
@@ -2519,6 +3072,13 @@
                 }
             } catch (e) {
                 showToast('Verification check error: ' + e.message, 'error');
+            } finally {
+                if (allIcon) allIcon.classList.remove('fa-spin');
+                if (allBtn) allBtn.disabled = false;
+                for (let i = 0; i < accs.length; i++) {
+                    const icon = document.getElementById(`iconVerifyFp_${i}`);
+                    if (icon) icon.classList.remove('fa-spin');
+                }
             }
         }
 
@@ -2721,10 +3281,21 @@
 
         // Clear Invalid Accounts
         function clearInvalidAccounts() {
-            const accs = getLocalFreepikAccounts().filter(a => a.status !== 'INVALID' && a.status !== 'ERROR');
-            saveLocalFreepikAccounts(accs);
-            showToast('Cleared inactive accounts');
-            renderPoolAccounts();
+            showConfirmDialog({
+                title: 'Clear Inactive Accounts?',
+                message: 'This will remove all invalid or unverified accounts from your Freepik pool.',
+                icon: 'fa-solid fa-user-slash',
+                iconColor: '#f59e0b',
+                iconBg: 'rgba(245, 158, 11, 0.12)',
+                confirmText: 'Clear Inactive',
+                confirmBg: '#f59e0b',
+                onConfirm: () => {
+                    const accs = getLocalFreepikAccounts().filter(a => a.status !== 'INVALID' && a.status !== 'ERROR');
+                    saveLocalFreepikAccounts(accs);
+                    showToast('Cleared inactive accounts');
+                    renderPoolAccounts();
+                }
+            });
         }
 
         function removeAccount(index) {
@@ -2771,16 +3342,21 @@
             }
         }
 
-                function switchEnvatoSubtab(tab) {
-            const tabs = ['pool', 'dottrick', 'add', 'autofarm'];
+        function switchEnvatoSubtab(tab) {
+            if (tab === 'autofarm') {
+                showToast('1-Click Auto-Farm is temporarily locked for maintenance.', 'warning');
+                return;
+            }
+            const tabs = ['pool', 'dottrick', 'add'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`envTabBtn${capitalize(t)}`);
                 const body = document.getElementById(`envTabContent${capitalize(t)}`);
                 if (btn) btn.classList.toggle('active', t === tab);
                 if (body) body.style.display = (t === tab) ? 'flex' : 'none';
             });
+            const autofarmBody = document.getElementById('envTabContentAutofarm');
+            if (autofarmBody) autofarmBody.style.display = 'none';
             if (tab === 'pool') renderEnvatoPoolAccounts();
-            if (tab === 'autofarm') populateMasterAccountDropdown();
         }
 
         // --- Envato Account Pool Management ---
@@ -2807,21 +3383,14 @@
             const summaryCount = document.getElementById('envatoPoolSummaryCount');
 
             if (totalEl) totalEl.textContent = accs.length;
-            const readyCount = accs.filter(a => {
-                const rem = (a.remaining_daily !== undefined) ? a.remaining_daily : Math.max(0, 2 - (a.daily_used || 0));
-                return (a.verified !== false) && !a.rate_limited && (a.status !== 'RATE_LIMITED') && rem > 0;
-            }).length;
-            const limitedCount = accs.filter(a => {
-                const rem = (a.remaining_daily !== undefined) ? a.remaining_daily : Math.max(0, 2 - (a.daily_used || 0));
-                return a.rate_limited || (a.status === 'RATE_LIMITED') || rem === 0;
-            }).length;
+            const accountsWithCredits = accs.filter(a => (a.verified !== false) && ((a.credits !== undefined ? a.credits : a.remaining_daily) > 0)).length;
+            const totalCredits = accs.reduce((sum, a) => sum + (a.credits !== undefined ? a.credits : (a.remaining_daily !== undefined ? a.remaining_daily : 0)), 0);
 
-            if (readyEl) readyEl.textContent = readyCount;
-            if (limitedEl) limitedEl.textContent = `${limitedCount} Cooldown`;
-            if (summaryCount) summaryCount.textContent = `${accs.length} Accounts`;
+            if (readyEl) readyEl.textContent = `${accountsWithCredits} with Credits`;
+            if (limitedEl) limitedEl.textContent = `${totalCredits} Credits Total`;
+            if (summaryCount) summaryCount.textContent = `${accs.length} Accounts (${totalCredits} Credits Total)`;
         }
 
-        
         function renderEnvatoPoolAccounts() {
             const accs = getLocalEnvatoAccounts();
             const container = document.getElementById('envatoAccountsListContainer');
@@ -2838,71 +3407,104 @@
                 return;
             }
 
-            container.innerHTML = accs.map((acc, index) => {
+            const totalPages = Math.ceil(accs.length / ACCOUNTS_PER_PAGE) || 1;
+            if (envatoCurrentPage > totalPages) envatoCurrentPage = totalPages;
+            if (envatoCurrentPage < 1) envatoCurrentPage = 1;
+
+            const startIdx = (envatoCurrentPage - 1) * ACCOUNTS_PER_PAGE;
+            const currentSlice = accs.slice(startIdx, startIdx + ACCOUNTS_PER_PAGE);
+
+            const cardsHtml = currentSlice.map((acc, sliceIdx) => {
+                const index = startIdx + sliceIdx;
                 const refCode = acc.referral_code || '';
                 const dailyUsed = acc.daily_used || 0;
                 const remaining = (acc.remaining_daily !== undefined) ? acc.remaining_daily : Math.max(0, 2 - dailyUsed);
+                const credits = (acc.credits !== undefined) ? acc.credits : remaining;
 
-                const isCooldown = (acc.remaining_daily !== undefined && acc.remaining_daily === 0) || (dailyUsed >= 2) || (acc.rate_limited && remaining === 0);
-                let statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
+                // Status Badge & Dot
+                let statusBadge = '';
+                let statusColor = '#22c55e';
                 if (!acc.verified) {
-                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
-                } else if (isCooldown) {
-                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.12); color: var(--accent-red);"><i class="fa-solid fa-clock"></i> COOLDOWN</span>';
+                    statusColor = '#94a3b8';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: var(--badge-bg); color: var(--text-muted);"><i class="fa-solid fa-circle-question"></i> UNVERIFIED</span>';
+                } else if (credits > 0) {
+                    statusColor = '#22c55e';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: var(--badge-green-bg); color: var(--badge-green-text);"><i class="fa-solid fa-circle-check"></i> READY</span>';
+                } else {
+                    statusColor = '#ef4444';
+                    statusBadge = '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; background: rgba(239, 68, 68, 0.1); color: var(--accent-red);"><i class="fa-solid fa-ban"></i> 0 CREDITS</span>';
                 }
 
-                let quotaBadge = '';
-                let copyBtn = '';
+                // Credit Chip
+                const creditChip = (credits > 0)
+                    ? `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 800; background: rgba(34, 197, 94, 0.12); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.25);"><i class="fa-solid fa-coins"></i> ${credits} Credits</span>`
+                    : `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--badge-bg); color: var(--text-muted); border: 1px solid var(--border-color);"><i class="fa-solid fa-coins"></i> 0 Credits</span>`;
+
+                // Referral Chip
+                let refChip = '';
+                let refActionBtn = '';
                 if (refCode) {
-                    if (remaining === 2) {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-circle-check"></i> 2/2 Available</span>`;
-                        copyBtn = `<button class="action-btn" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
-                    } else if (remaining === 1) {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #eab308; background: rgba(234, 179, 8, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-triangle-exclamation"></i> 1/2 Left</span>`;
-                        copyBtn = `<button class="action-btn" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 10px; font-size: 11.5px; color: #a855f7; font-weight: 700;"><i class="fa-solid fa-copy"></i> Copy Ref</button>`;
-                    } else {
-                        quotaBadge = `<span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 9999px;"><i class="fa-solid fa-lock"></i> 0/2 (Max Daily)</span>`;
-                        copyBtn = `<button class="action-btn" disabled title="Daily limit reached (2/2 used today)" style="padding: 5px 10px; font-size: 11.5px; opacity: 0.5; cursor: not-allowed;"><i class="fa-solid fa-lock"></i> Cooldown</button>`;
-                    }
+                    refChip = `
+                        <span role="button" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Referral: ${refCode}. Click to copy link!" style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 700; background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2);">
+                            <i class="fa-solid fa-gift"></i> ${refCode} <i class="fa-solid fa-copy" style="font-size: 9.5px; margin-left: 2px;"></i>
+                        </span>
+                    `;
+                    refActionBtn = `
+                        <button class="action-btn" onclick="copyEnvatoRefLink('${acc.email}', '${acc.referral_url || ''}', '${refCode}')" title="Copy Referral Link" style="padding: 5px 9px; font-size: 11.5px; color: #a855f7; font-weight: 700; border-color: rgba(168, 85, 247, 0.25);">
+                            <i class="fa-solid fa-copy"></i> Ref
+                        </button>
+                    `;
                 } else {
-                    quotaBadge = `<span style="font-size: 11px; color: var(--text-muted);">No Ref Code</span>`;
-                    copyBtn = `<button class="action-btn" onclick="fetchSingleEnvatoRef('${acc.email}')" title="Fetch Ref Code" style="padding: 5px 10px; font-size: 11.5px;"><i class="fa-solid fa-download"></i> Get Ref</button>`;
+                    refChip = `<span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-gift"></i> No Ref</span>`;
+                    refActionBtn = `
+                        <button class="action-btn" onclick="fetchSingleEnvatoRef('${acc.email}')" title="Fetch Referral Code" style="padding: 5px 9px; font-size: 11.5px;">
+                            <i class="fa-solid fa-download"></i> Ref
+                        </button>
+                    `;
                 }
 
                 return `
-                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                                    <span style="font-size: 13px; font-weight: 700; color: var(--text-heading); word-break: break-all;">${acc.email}</span>
-                                    ${refCode ? `<span class="badge" style="background: rgba(147, 51, 234, 0.12); color: #a855f7; font-family: monospace; font-weight: 800; font-size: 11px; padding: 2px 7px; border-radius: 6px;"><i class="fa-solid fa-gift"></i> ${refCode}</span>` : ''}
-                                    ${quotaBadge}
+                    <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+                            <div style="position: relative; flex-shrink: 0;">
+                                <div style="width: 34px; height: 34px; border-radius: 9px; background: var(--badge-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-heading);">
+                                    <i class="fa-solid fa-user"></i>
                                 </div>
-                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
-                                    Added: ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'} 
-                                    ${acc.profile_completed ? ' • <span style="color:#22c55e;"><i class="fa-solid fa-check"></i> Profile Completed</span>' : ''}
+                                <span style="position: absolute; bottom: -1px; right: -1px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--bg-card); background: ${statusColor};"></span>
+                            </div>
+                            <div style="min-width: 0; flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                                    <span style="font-size: 13.5px; font-weight: 700; color: var(--text-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; cursor: pointer;" onclick="copyToClipboard('${escapeHtml(acc.email)}', 'Email copied!')" title="${escapeHtml(acc.email)} (Click to copy)">
+                                        ${escapeHtml(acc.email)}
+                                    </span>
+                                    ${statusBadge}
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 3px; flex-wrap: wrap;">
+                                    ${creditChip}
+                                    ${refChip}
+                                    ${acc.profile_completed ? '<span style="color:#22c55e; display: inline-flex; align-items: center; gap: 3px;"><i class="fa-solid fa-check"></i> Profile</span>' : ''}
+                                    <span style="opacity: 0.7;">• ${acc.added_at ? new Date(acc.added_at * 1000).toLocaleDateString() : 'Active'}</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            ${statusBadge}
-                            ${copyBtn}
-                            <button class="action-btn" onclick="autoCompleteEnvatoProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 10px; font-size: 11.5px;">
+                        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                            ${refActionBtn}
+                            <button class="action-btn" onclick="autoCompleteEnvatoProfile('${acc.email}', '${acc.password || ''}')" title="Auto-complete Profile" style="padding: 5px 9px; font-size: 11.5px;">
                                 <i class="fa-solid fa-id-card"></i> Profile
                             </button>
-                            <button class="action-btn" onclick="verifySingleEnvatoAccount(${index})" title="Verify Login" style="padding: 5px 10px; font-size: 11.5px;">
-                                <i class="fa-solid fa-rotate"></i>
+                            <button class="action-btn" id="btnVerifyEnv_${index}" onclick="verifySingleEnvatoAccount(${index})" title="Verify Live Credits & Login" style="width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px;">
+                                <i class="fa-solid fa-rotate" id="iconVerifyEnv_${index}"></i>
                             </button>
-                            <button class="action-btn" onclick="removeEnvatoAccount(${index})" title="Delete Account" style="padding: 5px 10px; font-size: 11.5px; color: var(--accent-red);">
+                            <button class="action-btn" onclick="removeEnvatoAccount(${index})" title="Delete Account" style="width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px; color: var(--accent-red);">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            const paginationHtml = renderPaginationControls(envatoCurrentPage, totalPages, accs.length, startIdx, 'changeEnvatoPage');
+            container.innerHTML = cardsHtml + paginationHtml;
         }
 
         
@@ -3174,7 +3776,12 @@ async function syncAllEnvatoReferrals() {
             if (!accs[index]) return;
             const acc = accs[index];
 
-            showToast(`Verifying ${acc.email}...`);
+            const icon = document.getElementById(`iconVerifyEnv_${index}`);
+            const btn = document.getElementById(`btnVerifyEnv_${index}`);
+            if (icon) icon.classList.add('fa-spin');
+            if (btn) btn.disabled = true;
+
+            showToast(`Checking ${acc.email} live credits on EnvatoDownloader...`, 'info');
             try {
                 const res = await fetch('/api/envato-verify', {
                     method: 'POST',
@@ -3184,17 +3791,19 @@ async function syncAllEnvatoReferrals() {
                 const data = await res.json();
                 if (data.success) {
                     acc.verified = true;
-                    acc.remaining_daily = (data.remaining_daily !== undefined) ? data.remaining_daily : (data.credits !== undefined ? data.credits : 2);
-                    acc.daily_used = (acc.remaining_daily === 0) ? 2 : 0;
-                    acc.rate_limited = (acc.remaining_daily === 0);
-                    acc.status = (acc.remaining_daily === 0) ? 'Quota Limit Reached (0/2)' : 'READY';
-                    if (acc.remaining_daily === 0) {
-                        showToast(`⚠️ ${acc.email} is active, but 0 credits remaining (Cooldown)`, 'warning');
+                    acc.credits = (data.credits !== undefined) ? data.credits : ((data.remaining_daily !== undefined) ? data.remaining_daily : 2);
+                    acc.remaining_daily = acc.credits;
+                    acc.daily_used = (acc.credits === 0) ? 2 : 0;
+                    acc.rate_limited = (acc.credits === 0);
+                    acc.status = (acc.credits === 0) ? '0 Credits (Cooldown)' : 'READY';
+                    if (acc.credits === 0) {
+                        showToast(`⚠️ ${acc.email}: 0 credits remaining (Cooldown)`, 'warning');
                     } else {
-                        showToast(`✅ ${acc.email} is active with credits available!`, 'success');
+                        showToast(`✅ ${acc.email}: ${acc.credits} Credits available!`, 'success');
                     }
                 } else {
                     acc.verified = false;
+                    acc.credits = 0;
                     acc.status = 'INVALID';
                     showToast(`❌ ${acc.email}: ${data.message || 'Verification failed'}`, 'error');
                 }
@@ -3202,17 +3811,32 @@ async function syncAllEnvatoReferrals() {
                 renderEnvatoPoolAccounts();
             } catch (err) {
                 showToast(`Verification error: ${err.message}`, 'error');
+            } finally {
+                const curIcon = document.getElementById(`iconVerifyEnv_${index}`);
+                const curBtn = document.getElementById(`btnVerifyEnv_${index}`);
+                if (curIcon) curIcon.classList.remove('fa-spin');
+                if (curBtn) curBtn.disabled = false;
             }
         }
 
         async function verifyAllEnvatoAccounts() {
             const accs = getLocalEnvatoAccounts();
             if (accs.length === 0) {
-                showToast('No accounts to verify');
+                showToast('No accounts to verify', 'warning');
                 return;
             }
 
-            showToast(`Verifying ${accs.length} Envato accounts with live credit probe...`, 'info');
+            const allBtn = document.getElementById('btnVerifyAllEnv');
+            const allIcon = document.getElementById('iconVerifyAllEnv');
+            if (allIcon) allIcon.classList.add('fa-spin');
+            if (allBtn) allBtn.disabled = true;
+
+            for (let i = 0; i < accs.length; i++) {
+                const icon = document.getElementById(`iconVerifyEnv_${i}`);
+                if (icon) icon.classList.add('fa-spin');
+            }
+
+            showToast(`Probing live credits for all ${accs.length} Envato accounts...`, 'info');
             try {
                 const res = await fetch('/api/envato-verify-all', {
                     method: 'POST',
@@ -3225,16 +3849,24 @@ async function syncAllEnvatoReferrals() {
                     if (Array.isArray(st.accounts) && st.accounts.length > 0) {
                         saveLocalEnvatoAccounts(st.accounts);
                         renderEnvatoPoolAccounts();
-                        showToast(`Verified ${st.total_accounts || 0} accounts (${st.ready_accounts || 0} Ready, ${st.limited_accounts || 0} Cooldown)!`, 'success');
+                        showToast(`✅ Verified ${st.total_accounts || 0} accounts (${data.total_credits || st.total_credits || 0} Total Credits)!`, 'success');
                         return;
                     }
                 }
-            } catch (e) {}
-
-            for (let i = 0; i < accs.length; i++) {
-                await verifySingleEnvatoAccount(i);
+                for (let i = 0; i < accs.length; i++) {
+                    await verifySingleEnvatoAccount(i);
+                }
+                showToast('Envato pool verification completed.', 'success');
+            } catch (e) {
+                showToast('Verification error: ' + e.message, 'error');
+            } finally {
+                if (allIcon) allIcon.classList.remove('fa-spin');
+                if (allBtn) allBtn.disabled = false;
+                for (let i = 0; i < accs.length; i++) {
+                    const icon = document.getElementById(`iconVerifyEnv_${i}`);
+                    if (icon) icon.classList.remove('fa-spin');
+                }
             }
-            showToast('Envato pool verification completed.');
         }
 
         function removeEnvatoAccount(index) {
@@ -3254,10 +3886,21 @@ async function syncAllEnvatoReferrals() {
         }
 
         function clearInvalidEnvatoAccounts() {
-            const accs = getLocalEnvatoAccounts().filter(a => a.status !== 'INVALID' && a.verified !== false);
-            saveLocalEnvatoAccounts(accs);
-            renderEnvatoPoolAccounts();
-            showToast('Cleared inactive Envato accounts');
+            showConfirmDialog({
+                title: 'Clear Inactive Accounts?',
+                message: 'This will remove all invalid or unverified accounts from your Envato pool.',
+                icon: 'fa-solid fa-user-slash',
+                iconColor: '#f59e0b',
+                iconBg: 'rgba(245, 158, 11, 0.12)',
+                confirmText: 'Clear Inactive',
+                confirmBg: '#f59e0b',
+                onConfirm: () => {
+                    const accs = getLocalEnvatoAccounts().filter(a => a.status !== 'INVALID' && a.verified !== false);
+                    saveLocalEnvatoAccounts(accs);
+                    renderEnvatoPoolAccounts();
+                    showToast('Cleared inactive Envato accounts');
+                }
+            });
         }
 
         function importBulkEnvatoAccounts() {
@@ -4156,12 +4799,22 @@ async function syncAllEnvatoReferrals() {
         }
 
         function clearHistory() {
-            if (confirm('Are you sure you want to clear your download history?')) {
-                localStorage.removeItem('archnodes_history');
-                currentHistoryPage = 1;
-                renderHistory();
-                showToast('Download history cleared');
-            }
+            showConfirmDialog({
+                title: 'Clear Download History?',
+                message: 'Are you sure you want to clear your download history? This action cannot be undone.',
+                icon: 'fa-solid fa-trash-can',
+                iconColor: '#ef4444',
+                iconBg: 'rgba(239, 68, 68, 0.12)',
+                confirmText: 'Yes, Clear All',
+                confirmBg: '#ef4444',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    localStorage.removeItem('archnodes_history');
+                    currentHistoryPage = 1;
+                    renderHistory();
+                    showToast('Download history cleared');
+                }
+            });
         }
 
         function loadHistoryItem(url) {
