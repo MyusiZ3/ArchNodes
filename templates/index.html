@@ -1222,6 +1222,20 @@
             transform: scale(1) translateY(0);
         }
 
+        #tutorialModalOverlay {
+            align-items: flex-start;
+            padding-top: clamp(36px, 6vh, 60px);
+        }
+
+        @keyframes tutFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tut-tab-pane {
+            animation: tutFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         .custom-modal-icon-wrap {
             width: 52px;
             height: 52px;
@@ -2236,7 +2250,7 @@
             </div>
 
             <!-- SUBVIEW 1: GENERAL WORKFLOW -->
-            <div id="tutTabGeneral" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+            <div id="tutTabGeneral" class="tut-tab-pane" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
                 <!-- Step 1: Studio -->
                 <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
                     <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
@@ -2272,7 +2286,7 @@
             </div>
 
             <!-- SUBVIEW 2: ACCOUNT SETUP & POOLS (ADVANCED) -->
-            <div id="tutTabAccounts" style="display: none; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+            <div id="tutTabAccounts" class="tut-tab-pane" style="display: none; flex-direction: column; gap: 10px; margin-bottom: 18px;">
                 <!-- Step 1: Freepik Setup -->
                 <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
                     <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
@@ -2419,13 +2433,23 @@
             const accountsBtn = document.getElementById('tutSubtabAccountsBtn');
 
             if (tab === 'general') {
-                if (generalBox) generalBox.style.display = 'flex';
+                if (generalBox) {
+                    generalBox.style.display = 'flex';
+                    generalBox.style.animation = 'none';
+                    void generalBox.offsetWidth;
+                    generalBox.style.animation = '';
+                }
                 if (accountsBox) accountsBox.style.display = 'none';
                 if (generalBtn) generalBtn.classList.add('active');
                 if (accountsBtn) accountsBtn.classList.remove('active');
             } else {
                 if (generalBox) generalBox.style.display = 'none';
-                if (accountsBox) accountsBox.style.display = 'flex';
+                if (accountsBox) {
+                    accountsBox.style.display = 'flex';
+                    accountsBox.style.animation = 'none';
+                    void accountsBox.offsetWidth;
+                    accountsBox.style.animation = '';
+                }
                 if (generalBtn) generalBtn.classList.remove('active');
                 if (accountsBtn) accountsBtn.classList.add('active');
             }
