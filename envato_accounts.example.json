@@ -1,0 +1,17 @@
+[
+  {
+    "email": "user@example.com",
+    "password": "sample_password",
+    "referral_code": "EN00X00",
+    "referral_url": "https://envato-downloader.com/register?ref=EN00X00",
+    "credits": 2,
+    "remaining_daily": 2,
+    "daily_used": 0,
+    "status": "Ready",
+    "verified": true,
+    "profile_completed": true,
+    "rate_limited": false,
+    "added_at": 1789652154.0,
+    "last_used_date": "2026-09-19"
+  }
+]

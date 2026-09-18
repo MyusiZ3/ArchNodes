@@ -1,0 +1,10 @@
+[
+  {
+    "email": "user@example.com",
+    "cookie": "GR_REMEMBER_ME=xxxx; cf_clearance=xxxx;",
+    "daily_limit": 10,
+    "used_today": 0,
+    "last_used": null,
+    "status": "active"
+  }
+]

@@ -1310,6 +1310,9 @@
             </ul>
 
         <div class="nav-actions">
+            <button class="icon-btn" onclick="openTutorialModal()" title="Tutorial & Quick Guide" id="tutorialBtn" aria-label="Tutorial Guide">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
             <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">
                 <i class="fa-solid fa-moon" id="themeIcon"></i>
             </button>
@@ -2208,6 +2211,77 @@
         </div>
     </div>
 
+    <!-- User Guide / Tutorial Modal -->
+    <div id="tutorialModalOverlay" class="custom-modal-overlay" style="display: none;" onclick="if(event.target === this) closeTutorialModal();">
+        <div class="custom-modal-card" style="max-width: 540px; text-align: left; padding: 26px 26px 22px; align-items: stretch;">
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+                <div>
+                    <div class="hero-meta" style="font-size: 10px; margin-bottom: 3px;">QUICK START GUIDE</div>
+                    <h3 style="font-size: 17px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.4px;">How to Use ArchNodes</h3>
+                </div>
+                <button onclick="closeTutorialModal()" class="icon-btn" style="width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;" title="Close">
+                    <i class="fa-solid fa-xmark" style="font-size: 13px;"></i>
+                </button>
+            </div>
+
+            <!-- Steps Grid -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <!-- Step 1: Studio -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        1
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Resolve & Download Assets</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Paste any Freepik or Envato Elements asset URL into the <strong>Studio</strong> search bar and click <strong>Extract</strong> to retrieve high-resolution files.</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: History & Cloud Vault -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        2
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Session History & Cloud Vault</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Open <strong>History</strong> to view recently resolved items, or switch to <strong>Cloud Pool Vault</strong> to access permanent Google Drive download links synced across pools.</div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Network & ISP Bypass -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        3
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">DNS & Proxy Routing</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">If your internet provider blocks access, enable DNS-over-HTTPS (DoH) or add proxy lists in the <strong>Network</strong> tab for automatic traffic routing.</div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Account Pools -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        4
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Account Pools & Quotas</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Manage premium credentials in the <strong>Accounts</strong> tab. The system balances downloads across active accounts to prevent daily limit exhaustion.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+                <span style="font-size: 11.5px; color: var(--text-muted); margin-right: auto;"><kbd style="background: var(--card-subtle); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: inherit;">Esc</kbd> to close</span>
+                <button class="btn-primary" onclick="closeTutorialModal()" style="padding: 7px 18px; font-size: 12.5px; font-weight: 700; border-radius: 8px;">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">Action completed</div>
 
@@ -2271,6 +2345,39 @@
                 confirmModalCallback = null;
             }, 200);
         }
+
+        // --- User Guide / Tutorial Modal Engine ---
+        function openTutorialModal() {
+            const overlay = document.getElementById('tutorialModalOverlay');
+            if (!overlay) return;
+            overlay.style.display = 'flex';
+            void overlay.offsetWidth;
+            overlay.classList.add('active');
+        }
+
+        function closeTutorialModal() {
+            const overlay = document.getElementById('tutorialModalOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                if (!overlay.classList.contains('active')) {
+                    overlay.style.display = 'none';
+                }
+            }, 200);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const tutOverlay = document.getElementById('tutorialModalOverlay');
+                if (tutOverlay && tutOverlay.classList.contains('active')) {
+                    closeTutorialModal();
+                }
+                const confOverlay = document.getElementById('confirmModalOverlay');
+                if (confOverlay && confOverlay.classList.contains('active')) {
+                    closeConfirmModal(false);
+                }
+            }
+        });
 
         // --- Theme Engine ---
         function initTheme() {
