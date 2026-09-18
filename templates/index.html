@@ -2213,11 +2213,11 @@
 
     <!-- User Guide / Tutorial Modal -->
     <div id="tutorialModalOverlay" class="custom-modal-overlay" style="display: none;" onclick="if(event.target === this) closeTutorialModal();">
-        <div class="custom-modal-card" style="max-width: 540px; text-align: left; padding: 26px 26px 22px; align-items: stretch;">
+        <div class="custom-modal-card" style="max-width: 580px; text-align: left; padding: 24px 26px 20px; align-items: stretch; max-height: 88vh; overflow-y: auto;">
             <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
                 <div>
-                    <div class="hero-meta" style="font-size: 10px; margin-bottom: 3px;">QUICK START GUIDE</div>
+                    <div class="hero-meta" style="font-size: 10px; margin-bottom: 3px;">DOCUMENTATION & GUIDE</div>
                     <h3 style="font-size: 17px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.4px;">How to Use ArchNodes</h3>
                 </div>
                 <button onclick="closeTutorialModal()" class="icon-btn" style="width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;" title="Close">
@@ -2225,16 +2225,26 @@
                 </button>
             </div>
 
-            <!-- Steps Grid -->
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <!-- Subtab Switcher -->
+            <div style="display: flex; gap: 6px; background: var(--card-subtle); padding: 4px; border-radius: var(--radius-pill); border: 1px solid var(--border-color); margin-bottom: 16px; width: fit-content;">
+                <button id="tutSubtabGeneralBtn" onclick="switchTutSubtab('general')" class="filter-btn active" style="font-size: 12px; padding: 5px 14px; border: none;">
+                    <i class="fa-solid fa-compass"></i> General Workflow
+                </button>
+                <button id="tutSubtabAccountsBtn" onclick="switchTutSubtab('accounts')" class="filter-btn" style="font-size: 12px; padding: 5px 14px; border: none;">
+                    <i class="fa-solid fa-user-gear"></i> Account Setup & Pools
+                </button>
+            </div>
+
+            <!-- SUBVIEW 1: GENERAL WORKFLOW -->
+            <div id="tutTabGeneral" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
                 <!-- Step 1: Studio -->
                 <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
                     <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
                         1
                     </div>
                     <div>
-                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Resolve & Download Assets</div>
-                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Paste any Freepik or Envato Elements asset URL into the <strong>Studio</strong> search bar and click <strong>Extract</strong> to retrieve high-resolution files.</div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Resolve & Extract Media</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Navigate to <strong>Studio</strong>, paste any supported Freepik or Envato Elements asset URL into the search field, and click <strong>Extract</strong> to stream high-resolution files.</div>
                     </div>
                 </div>
 
@@ -2245,7 +2255,7 @@
                     </div>
                     <div>
                         <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Session History & Cloud Vault</div>
-                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Open <strong>History</strong> to view recently resolved items, or switch to <strong>Cloud Pool Vault</strong> to access permanent Google Drive download links synced across pools.</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Track recent downloads in <strong>Session History</strong>, or switch to <strong>Cloud Pool Vault</strong> to access permanent Google Drive download links synced across pools.</div>
                     </div>
                 </div>
 
@@ -2256,18 +2266,54 @@
                     </div>
                     <div>
                         <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">DNS & Proxy Routing</div>
-                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">If your internet provider blocks access, enable DNS-over-HTTPS (DoH) or add proxy lists in the <strong>Network</strong> tab for automatic traffic routing.</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">If your internet service provider blocks access to creative platforms, enable DNS-over-HTTPS (DoH) or add HTTP/SOCKS5 proxy lists in the <strong>Network</strong> tab.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBVIEW 2: ACCOUNT SETUP & POOLS (ADVANCED) -->
+            <div id="tutTabAccounts" style="display: none; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+                <!-- Step 1: Freepik Setup -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        1
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Freepik Pool & Cookie Setup</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Open <strong>Accounts</strong> &gt; <strong>Freepik Pool</strong>. Use <strong>Add Single</strong> to paste your session cookie (<code>GR_REMEMBER_ME</code>), or use the built-in <strong>Dot-Trick Generator</strong> to create multiple Gmail aliases for rapid quota scaling.</div>
                     </div>
                 </div>
 
-                <!-- Step 4: Account Pools -->
+                <!-- Step 2: Envato Pool Setup -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        2
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Envato Elements Pool Setup</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Open <strong>Accounts</strong> &gt; <strong>Envato Pool</strong>. Add registered accounts with their email, password, and referral codes. The system tracks remaining daily limits and verified download tokens.</div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Automated Quota Balancer -->
+                <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
+                        3
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Automated Quota Balancer & Failover</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">When an active account exhausts its daily quota (e.g., 10 downloads on Freepik or daily limits on Envato), the engine automatically flags it for cooldown and rotates to the next available account.</div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Client-Side Security -->
                 <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
                     <div style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: var(--text-heading); flex-shrink: 0;">
                         4
                     </div>
                     <div>
-                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Account Pools & Quotas</div>
-                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Manage premium credentials in the <strong>Accounts</strong> tab. The system balances downloads across active accounts to prevent daily limit exhaustion.</div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Local Storage & Privacy</div>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">All pool accounts and session cookies are preserved locally inside your browser runtime (<code>localStorage</code>). Credentials are never transmitted to third-party databases.</div>
                     </div>
                 </div>
             </div>
@@ -2364,6 +2410,25 @@
                     overlay.style.display = 'none';
                 }
             }, 200);
+        }
+
+        function switchTutSubtab(tab) {
+            const generalBox = document.getElementById('tutTabGeneral');
+            const accountsBox = document.getElementById('tutTabAccounts');
+            const generalBtn = document.getElementById('tutSubtabGeneralBtn');
+            const accountsBtn = document.getElementById('tutSubtabAccountsBtn');
+
+            if (tab === 'general') {
+                if (generalBox) generalBox.style.display = 'flex';
+                if (accountsBox) accountsBox.style.display = 'none';
+                if (generalBtn) generalBtn.classList.add('active');
+                if (accountsBtn) accountsBtn.classList.remove('active');
+            } else {
+                if (generalBox) generalBox.style.display = 'none';
+                if (accountsBox) accountsBox.style.display = 'flex';
+                if (generalBtn) generalBtn.classList.remove('active');
+                if (accountsBtn) accountsBtn.classList.add('active');
+            }
         }
 
         document.addEventListener('keydown', (e) => {
