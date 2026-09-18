@@ -1,44 +1,100 @@
 [
   {
+    "added_at": 1789652154.8970077,
+    "daily_used": 0,
     "email": "experiment12300@gmail.com",
     "password": "experiment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "EN68N06",
+    "referral_url": "https://envato-downloader.com/register?ref=EN68N06",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652154.8970077
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652237.9236248,
+    "daily_used": 0,
     "email": "e.xperiment12300@gmail.com",
     "password": "e.xperiment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "YJ90W84",
+    "referral_url": "https://envato-downloader.com/register?ref=YJ90W84",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652237.9236248
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652293.4056478,
+    "daily_used": 0,
     "email": "ex.periment12300@gmail.com",
     "password": "ex.periment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "IS18C18",
+    "referral_url": "https://envato-downloader.com/register?ref=IS18C18",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652293.4056478
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652355.1485248,
+    "daily_used": 0,
     "email": "e.x.periment12300@gmail.com",
     "password": "e.x.periment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "PE47U74",
+    "referral_url": "https://envato-downloader.com/register?ref=PE47U74",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652355.1485248
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652413.338151,
+    "daily_used": 0,
     "email": "exp.eriment12300@gmail.com",
     "password": "exp.eriment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "GC51Q45",
+    "referral_url": "https://envato-downloader.com/register?ref=GC51Q45",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652413.338151
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652592.2921107,
+    "daily_used": 0,
     "email": "e.xp.eriment12300@gmail.com",
     "password": "e.xp.eriment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "XR84E64",
+    "referral_url": "https://envato-downloader.com/register?ref=XR84E64",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652592.2921107
+    "last_used_date": "2026-09-19"
   },
   {
+    "added_at": 1789652775.2585797,
+    "daily_used": 0,
     "email": "ex.p.eriment12300@gmail.com",
     "password": "ex.p.eriment12300@gmail.com",
+    "profile_completed": true,
+    "rate_limited": false,
+    "referral_code": "HD46A29",
+    "referral_url": "https://envato-downloader.com/register?ref=HD46A29",
+    "remaining_daily": 2,
+    "status": "Ready",
     "verified": true,
-    "added_at": 1789652775.2585797
+    "last_used_date": "2026-09-19"
   }
 ]
