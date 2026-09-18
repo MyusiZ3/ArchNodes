@@ -1493,15 +1493,15 @@
                             <div>
                                 <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 4px;">Rotation Mode</label>
                                 <select id="proxyRotationMode" class="modal-input" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-heading);">
-                                    <option value="random">🎲 Random IP (Scrambled)</option>
-                                    <option value="round-robin">🔄 Round-Robin (Sequential)</option>
+                                    <option value="random">Random IP (Scrambled)</option>
+                                    <option value="round-robin">Round-Robin (Sequential)</option>
                                 </select>
                             </div>
                             <div>
                                 <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 4px;">User-Agent Header</label>
                                 <select id="proxyRotateUA" class="modal-input" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--text-heading);">
-                                    <option value="true">🎭 Randomize Modern UA</option>
-                                    <option value="false">🔒 Fixed Default UA</option>
+                                    <option value="true">Randomize Modern UA</option>
+                                    <option value="false">Fixed Default UA</option>
                                 </select>
                             </div>
                         </div>
@@ -3091,7 +3091,7 @@
                         renderPoolAccounts();
                     }
                     populateFreepikMasterAccountDropdown();
-                    showToast('🎉 +5 Credits added to your Freepik account!', 'success');
+                    showToast('+5 Credits added to your Freepik account!', 'success');
                     if (statusMsg) statusMsg.innerHTML = '<span style="color:#22c55e;"><i class="fa-solid fa-circle-check"></i> +5 Credits added successfully!</span>';
                 } else {
                     logToFpFarmConsole(data.error || 'Auto-farm failed.', 'error');
@@ -3149,16 +3149,16 @@
                     if (passEl) passEl.value = '';
                     if (statusEl) statusEl.textContent = '';
 
-                    showToast('✅ Account verified and added to Freepik pool!');
+                    showToast('Account verified and added to Freepik pool!');
                     renderPoolAccounts();
                     switchModalTab('pool');
                 } else {
                     const reason = data.error || 'Login verification failed (wrong password or unverified)';
-                    showToast(`❌ ${reason}`);
+                    showToast(`${reason}`);
                     if (statusEl) statusEl.textContent = reason;
                 }
             } catch (err) {
-                showToast(`❌ Network Error: ${err.message}`);
+                showToast(`Network Error: ${err.message}`);
                 if (statusEl) statusEl.textContent = err.message;
             } finally {
                 if (btn) {
@@ -3191,12 +3191,12 @@
                     target.verified = true;
                     target.credits = data.credits || 0;
                     target.status = (data.credits > 0) ? `Ready (${data.credits} Credits)` : '0 Credits (No balance)';
-                    showToast(`✅ ${target.email}: ${data.credits || 0} Credits available!`, 'success');
+                    showToast(`${target.email}: ${data.credits || 0} Credits available!`, 'success');
                 } else {
                     target.verified = false;
                     target.credits = 0;
                     target.status = 'INVALID';
-                    showToast(`❌ ${target.email} failed: ${data.message || 'Error'}`, 'error');
+                    showToast(`${target.email} failed: ${data.message || 'Error'}`, 'error');
                 }
                 saveLocalFreepikAccounts(accs);
                 renderPoolAccounts();
@@ -3240,7 +3240,7 @@
                 if (data.success && data.status && Array.isArray(data.status.accounts)) {
                     saveLocalFreepikAccounts(data.status.accounts);
                     renderPoolAccounts();
-                    showToast(`✅ Verified ${data.valid_count || 0}/${data.total || 0} accounts active (${data.total_credits || 0} Total Credits)!`, 'success');
+                    showToast(`Verified ${data.valid_count || 0}/${data.total || 0} accounts active (${data.total_credits || 0} Total Credits)!`, 'success');
                 }
             } catch (e) {
                 showToast('Verification check error: ' + e.message, 'error');
@@ -3829,7 +3829,7 @@ async function syncAllEnvatoReferrals() {
             const consoleEl = document.getElementById('farmTerminalLog');
             if (!consoleEl) return;
             const timeStr = new Date().toLocaleTimeString();
-            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : '⚡';
+            const prefix = type === 'error' ? '[ERROR]' : type === 'success' ? '[OK]' : '[INFO]';
             consoleEl.textContent += `\n[${timeStr}] ${prefix} ${msg}`;
             consoleEl.scrollTop = consoleEl.scrollHeight;
         }
@@ -3969,15 +3969,15 @@ async function syncAllEnvatoReferrals() {
                     acc.rate_limited = (acc.credits === 0);
                     acc.status = (acc.credits === 0) ? '0 Credits (Cooldown)' : 'READY';
                     if (acc.credits === 0) {
-                        showToast(`⚠️ ${acc.email}: 0 credits remaining (Cooldown)`, 'warning');
+                        showToast(`${acc.email}: 0 credits remaining (Cooldown)`, 'warning');
                     } else {
-                        showToast(`✅ ${acc.email}: ${acc.credits} Credits available!`, 'success');
+                        showToast(`${acc.email}: ${acc.credits} Credits available!`, 'success');
                     }
                 } else {
                     acc.verified = false;
                     acc.credits = 0;
                     acc.status = 'INVALID';
-                    showToast(`❌ ${acc.email}: ${data.message || 'Verification failed'}`, 'error');
+                    showToast(`${acc.email}: ${data.message || 'Verification failed'}`, 'error');
                 }
                 saveLocalEnvatoAccounts(accs);
                 renderEnvatoPoolAccounts();
@@ -4021,7 +4021,7 @@ async function syncAllEnvatoReferrals() {
                     if (Array.isArray(st.accounts) && st.accounts.length > 0) {
                         saveLocalEnvatoAccounts(st.accounts);
                         renderEnvatoPoolAccounts();
-                        showToast(`✅ Verified ${st.total_accounts || 0} accounts (${data.total_credits || st.total_credits || 0} Total Credits)!`, 'success');
+                        showToast(`Verified ${st.total_accounts || 0} accounts (${data.total_credits || st.total_credits || 0} Total Credits)!`, 'success');
                         return;
                     }
                 }
@@ -4401,16 +4401,16 @@ async function syncAllEnvatoReferrals() {
                         });
                         saveLocalFreepikAccounts(pool);
                     }
-                    showToast(`✅ ${item.email} verified and added to Freepik pool!`, 'success');
+                    showToast(`${item.email} verified and added to Freepik pool!`, 'success');
                 } else {
                     item.status = 'FAILED';
                     item.errorMsg = data.error || 'Login failed';
-                    showToast(`❌ ${item.email}: ${item.errorMsg}`, 'error');
+                    showToast(`${item.email}: ${item.errorMsg}`, 'error');
                 }
             } catch (err) {
                 item.status = 'FAILED';
                 item.errorMsg = err.message;
-                showToast(`❌ Error: ${err.message}`, 'error');
+                showToast(`Error: ${err.message}`, 'error');
             }
 
             renderFpDotList();
@@ -4601,16 +4601,16 @@ async function syncAllEnvatoReferrals() {
                         pool.push({ email: item.email, password: item.password, status: 'READY', verified: true, added_at: Date.now() / 1000 });
                         saveLocalEnvatoAccounts(pool);
                     }
-                    showToast(`✅ ${item.email} verified and added to Envato pool!`);
+                    showToast(`${item.email} verified and added to Envato pool!`);
                 } else {
                     item.status = 'FAILED';
                     item.errorMsg = data.error || 'Login failed';
-                    showToast(`❌ ${item.email}: ${item.errorMsg}`);
+                    showToast(`${item.email}: ${item.errorMsg}`);
                 }
             } catch (err) {
                 item.status = 'FAILED';
                 item.errorMsg = err.message;
-                showToast(`❌ Error: ${err.message}`);
+                showToast(`Error: ${err.message}`);
             }
 
             renderEnvDotList();
@@ -4713,15 +4713,15 @@ async function syncAllEnvatoReferrals() {
                             </div>
                         </div>
                     `;
-                    showToast('🎉 Tempmail generated and form auto-filled!');
+                    showToast('Tempmail generated and form auto-filled!');
                 } else {
                     const err = data.error || 'Auto-register failed';
-                    if (statusEl) statusEl.innerHTML = `<span style="color: var(--accent-red); font-weight: 700;">❌ ${err}</span>`;
-                    showToast(`❌ ${err}`);
+                    if (statusEl) statusEl.innerHTML = `<span style="color: var(--accent-red); font-weight: 700;">${err}</span>`;
+                    showToast(`${err}`);
                 }
             } catch (err) {
-                if (statusEl) statusEl.innerHTML = `<span style="color: var(--accent-red);">❌ Network Error: ${err.message}</span>`;
-                showToast(`❌ ${err.message}`);
+                if (statusEl) statusEl.innerHTML = `<span style="color: var(--accent-red);">Network Error: ${err.message}</span>`;
+                showToast(`${err.message}`);
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -4759,7 +4759,7 @@ async function syncAllEnvatoReferrals() {
                     });
                     const data = await res.json();
                     if (data.success && data.download_url) {
-                        if (data.from_vault) { showToast('⚡ Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
+                        if (data.from_vault) { showToast('Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
                         showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Creative Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
@@ -4806,7 +4806,7 @@ async function syncAllEnvatoReferrals() {
                     });
                     const data = await res.json();
                     if (data.success && data.download_url) {
-                        if (data.from_vault) { showToast('⚡ Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
+                        if (data.from_vault) { showToast('Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
                         showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Envato Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
