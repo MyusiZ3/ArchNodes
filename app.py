@@ -50,6 +50,7 @@ from scrapers.envato import (
     complete_envato_profile,
     auto_farm_envato_referral
 )
+from scrapers.imap_engine import batch_scan_and_activate_gmail_inbox
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -75,6 +76,10 @@ def api_check():
     if not profile_url:
         return jsonify({"status": "error", "message": "Invalid URL format"}), 400
 
+    vault_entry = find_vault_item(profile_url)
+    in_vault = bool(vault_entry and vault_entry.get("download_url"))
+    vault_download_url = vault_entry.get("download_url") if in_vault else None
+
     if platform == "freepik":
         url_low = profile_url.lower()
         file_type = "PSD" if "psd" in url_low else "VECTOR" if "vector" in url_low else "PHOTO" if "photo" in url_low else "ZIP"
@@ -86,11 +91,15 @@ def api_check():
             "count": 1,
             "image_count": 1,
             "video_count": 0,
+            "in_vault": in_vault,
+            "download_url": vault_download_url,
+            "from_vault": in_vault,
             "media_items": [{
                 "index": 1,
                 "type": file_type,
                 "src": profile_url,
                 "poster": "",
+                "download_url": vault_download_url,
                 "download_type": "freepik"
             }],
             "account_status": FreepikScraper.get_account_status()
@@ -112,11 +121,15 @@ def api_check():
             "count": 1,
             "image_count": 1,
             "video_count": 0,
+            "in_vault": in_vault,
+            "download_url": vault_download_url,
+            "from_vault": in_vault,
             "media_items": [{
                 "index": 1,
                 "type": file_type,
                 "src": profile_url,
                 "poster": "",
+                "download_url": vault_download_url,
                 "download_type": "envato"
             }]
         })
@@ -538,6 +551,23 @@ def api_envato_batch_add():
         return jsonify({"success": False, "error": "Account list is empty"}), 400
     result = batch_add_envato_accounts(accounts)
     result["account_status"] = EnvatoScraper.get_account_status()
+    return jsonify(result)
+
+@app.route("/api/imap-batch-verify", methods=["POST"])
+def api_imap_batch_verify():
+    data = request.json or {}
+    gmail_user = data.get("gmail_user", "").strip()
+    gmail_app_password = data.get("gmail_app_password", "").strip()
+    platform = data.get("platform", "all").strip()
+
+    if not gmail_user or not gmail_app_password:
+        return jsonify({"success": False, "error": "Gmail address and Google App Password are required"}), 400
+
+    result = batch_scan_and_activate_gmail_inbox(
+        gmail_user=gmail_user,
+        gmail_app_pass=gmail_app_password,
+        platform=platform
+    )
     return jsonify(result)
 
 @app.route("/api/envato-verify-all", methods=["POST"])
