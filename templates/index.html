@@ -6105,13 +6105,8 @@ async function syncAllEnvatoReferrals() {
                 const fileType = (m.type || 'ASSET').toUpperCase();
                 const itemTitle = m.title || data.model_name || `Asset Item #${itemIdx}`;
 
-                const vaultRibbonHtml = isFromVault 
-                    ? `<div class="vault-ribbon"><i class="fa-solid fa-bolt"></i> <span>Instant Resolution · 0 Quota Used (Loaded from Cloud Vault)</span></div>`
-                    : '';
-
                 return `
                     <div class="rich-media-card">
-                        ${vaultRibbonHtml}
                         <div class="rich-media-preview-box">
                             <img src="${thumb}" class="rich-media-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 65\\'><rect width=\\'100\\' height=\\'65\\' fill=\\'%2318181b\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%23a1a1aa\\' font-size=\\'9\\' font-family=\\'sans-serif\\' font-weight=\\'bold\\' text-anchor=\\'middle\\' dominant-baseline=\\'middle\\'>Creative Preview</text></svg>'" />
                             <div class="rich-media-overlay-badges">
@@ -6130,24 +6125,12 @@ async function syncAllEnvatoReferrals() {
                                     <span class="rich-meta-label">Platform</span>
                                     <span class="rich-meta-value">${platformName}</span>
                                 </div>
-                                <div class="rich-meta-item">
-                                    <span class="rich-meta-label">Resolution Mode</span>
-                                    <span class="rich-meta-value" style="color: ${isFromVault ? '#10b981' : '#3b82f6'};">
-                                        <i class="fa-solid ${isFromVault ? 'fa-cloud-bolt' : 'fa-bolt'}"></i> ${isFromVault ? 'Cloud Vault' : 'Live Extracted'}
-                                    </span>
-                                </div>
-                                <div class="rich-meta-item">
-                                    <span class="rich-meta-label">Quota Impact</span>
-                                    <span class="rich-meta-value" style="color: ${isFromVault ? '#10b981' : 'var(--text-heading)'};">
-                                        ${isFromVault ? '0 Credits (Free)' : '1 Pool Download'}
-                                    </span>
-                                </div>
                             </div>
                             <div class="rich-media-actions">
-                                <a href="${dlUrl}" target="_blank" class="btn-primary" style="flex: 1.4; height: 38px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; border-radius: 8px;">
-                                    <i class="fa-solid fa-download"></i> Direct Download
+                                <a href="${dlUrl}" target="_blank" class="btn-primary" style="flex: 1.2; height: 38px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; border-radius: 8px; white-space: nowrap;">
+                                    <i class="fa-solid fa-download"></i> Download
                                 </a>
-                                <button class="action-btn" onclick="copyHistoryUrl('${dlUrl}', event)" title="Copy Direct Download URL" style="height: 38px; padding: 0 12px; font-size: 12px; font-weight: 700; border-radius: 8px;">
+                                <button class="action-btn" onclick="copyHistoryUrl('${dlUrl}', event)" title="Copy Download Link" style="height: 38px; padding: 0 12px; font-size: 12px; font-weight: 700; border-radius: 8px; white-space: nowrap;">
                                     <i class="fa-regular fa-copy"></i> Copy Link
                                 </button>
                                 <a href="${currentUrl}" target="_blank" class="action-btn" title="Open Source Webpage" style="height: 38px; padding: 0 12px; font-size: 12px; font-weight: 700; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
