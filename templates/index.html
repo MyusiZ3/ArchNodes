@@ -6088,42 +6088,121 @@ async function syncAllEnvatoReferrals() {
             return '';
         }
 
-        function getFallbackCardThumb(platform, fileType, title) {
-            const rawPlat = (platform || '').toLowerCase();
-            let gradStart = '#1e293b', gradEnd = '#0f172a', accent = '#38bdf8', iconName = 'ASSET';
-            let brandLabel = 'CREATIVE ASSET';
+        function getAppIconPreviewSvg(fileType, platform, title) {
+            const ft = (fileType || 'ASSET').toUpperCase();
             
-            if (rawPlat.includes('freepik')) {
-                gradStart = '#0f2942'; gradEnd = '#061325'; accent = '#0284c7'; brandLabel = 'FREEPIK'; iconName = (fileType || 'PSD').toUpperCase();
-            } else if (rawPlat.includes('envato')) {
-                gradStart = '#0f3322'; gradEnd = '#051910'; accent = '#10b981'; brandLabel = 'ENVATO'; iconName = (fileType || 'TEMPLATE').toUpperCase();
-            } else if (rawPlat.includes('magnific')) {
-                gradStart = '#2e1065'; gradEnd = '#140428'; accent = '#a855f7'; brandLabel = 'MAGNIFIC AI'; iconName = 'ENHANCED';
+            let appTag = 'ASSET';
+            let appName = 'Creative Asset';
+            let borderColor = '#6366F1';
+            let glowColor = '#6366F1';
+            let bgStart = '#0f172a';
+            let bgEnd = '#020617';
+            let badgeLabel = 'DIGITAL CREATIVE ASSET';
+
+            if (ft.includes('PSD') || ft.includes('MOCKUP')) {
+                appTag = 'Ps';
+                appName = 'Adobe Photoshop';
+                borderColor = '#31A8FF';
+                glowColor = '#0066FF';
+                bgStart = '#001E36';
+                bgEnd = '#000B14';
+                badgeLabel = 'PHOTOSHOP DOCUMENT (.PSD)';
+            } else if (ft.includes('AI') || ft.includes('VECTOR') || ft.includes('EPS') || ft.includes('SVG')) {
+                appTag = 'Ai';
+                appName = 'Adobe Illustrator';
+                borderColor = '#FF9A00';
+                glowColor = '#FF6600';
+                bgStart = '#2B1200';
+                bgEnd = '#0F0500';
+                badgeLabel = 'VECTOR GRAPHIC (.AI / .EPS)';
+            } else if (ft.includes('PR') || ft.includes('PRO') || ft.includes('MOV') || ft.includes('MP4') || ft.includes('VIDEO')) {
+                appTag = 'Pr';
+                appName = 'Adobe Premiere Pro';
+                borderColor = '#EA77FF';
+                glowColor = '#9999FF';
+                bgStart = '#1E0A2A';
+                bgEnd = '#0A0210';
+                badgeLabel = 'VIDEO PRODUCTION (.MOV / .MP4)';
+            } else if (ft.includes('AE') || ft.includes('AFTER') || ft.includes('MOTION')) {
+                appTag = 'Ae';
+                appName = 'Adobe After Effects';
+                borderColor = '#D291FF';
+                glowColor = '#8A2BE2';
+                bgStart = '#18002E';
+                bgEnd = '#080010';
+                badgeLabel = 'MOTION TEMPLATE (.AEP)';
+            } else if (ft.includes('PHOTO') || ft.includes('JPG') || ft.includes('JPEG') || ft.includes('PNG') || ft.includes('RAW')) {
+                appTag = 'Lr';
+                appName = 'Adobe Lightroom';
+                borderColor = '#31A8FF';
+                glowColor = '#00D2FF';
+                bgStart = '#00182C';
+                bgEnd = '#000A14';
+                badgeLabel = 'HIGH RESOLUTION IMAGE';
+            } else if (ft.includes('AUDIO') || ft.includes('MUSIC') || ft.includes('SOUND') || ft.includes('MP3') || ft.includes('WAV')) {
+                appTag = 'Au';
+                appName = 'Adobe Audition';
+                borderColor = '#00E4BB';
+                glowColor = '#00BFA5';
+                bgStart = '#00241D';
+                bgEnd = '#000E0B';
+                badgeLabel = 'AUDIO MASTER (.WAV / .MP3)';
+            } else if (ft.includes('FONT') || ft.includes('TTF') || ft.includes('OTF') || ft.includes('WOFF')) {
+                appTag = 'Aa';
+                appName = 'Typography Studio';
+                borderColor = '#F59E0B';
+                glowColor = '#E11D48';
+                bgStart = '#261002';
+                bgEnd = '#0E0400';
+                badgeLabel = 'OPENTYPE FONT (.OTF / .TTF)';
+            } else if (ft.includes('3D') || ft.includes('OBJ') || ft.includes('FBX') || ft.includes('BLEND') || ft.includes('C4D')) {
+                appTag = '3D';
+                appName = '3D Studio Asset';
+                borderColor = '#EC4899';
+                glowColor = '#F43F5E';
+                bgStart = '#26061B';
+                bgEnd = '#0D0109';
+                badgeLabel = '3D MODEL & TEXTURES';
+            } else if (ft.includes('TEMPLATE')) {
+                appTag = 'Tpl';
+                appName = 'Design Template';
+                borderColor = '#10B981';
+                glowColor = '#059669';
+                bgStart = '#052317';
+                bgEnd = '#020F09';
+                badgeLabel = 'READY-TO-USE TEMPLATE';
             }
 
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="100%" height="100%">
-                <defs>
-                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="${gradStart}"/>
-                        <stop offset="100%" stop-color="${gradEnd}"/>
-                    </linearGradient>
-                    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
-                        <stop offset="0%" stop-color="${accent}" stop-opacity="0.3"/>
-                        <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
-                    </radialGradient>
-                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                    </pattern>
-                </defs>
-                <rect width="600" height="380" fill="url(#bg)"/>
-                <rect width="600" height="380" fill="url(#grid)"/>
-                <circle cx="300" cy="170" r="170" fill="url(#glow)"/>
-                <rect x="230" y="105" width="140" height="90" rx="14" fill="rgba(255,255,255,0.05)" stroke="${accent}" stroke-width="1.5" stroke-opacity="0.5"/>
-                <text x="300" y="160" fill="${accent}" font-size="22" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="2">${iconName}</text>
-                <text x="300" y="238" fill="#f4f4f5" font-size="15" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="700" text-anchor="middle" letter-spacing="1.5">${brandLabel}</text>
-                <text x="300" y="262" fill="#71717a" font-size="12" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="500" text-anchor="middle">Ready for resolution</text>
-            </svg>`;
-            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg_${appTag}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${bgStart}"/>
+      <stop offset="100%" stop-color="${bgEnd}"/>
+    </linearGradient>
+    <radialGradient id="glow_${appTag}" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="${glowColor}" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="${glowColor}" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid_${appTag}" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow_${appTag}" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="${glowColor}" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="600" height="360" fill="url(#bg_${appTag})"/>
+  <rect width="600" height="360" fill="url(#grid_${appTag})"/>
+  <circle cx="300" cy="155" r="155" fill="url(#glow_${appTag})"/>
+  
+  <g filter="url(#shadow_${appTag})">
+    <rect x="235" y="70" width="130" height="130" rx="28" fill="#09090b" stroke="${borderColor}" stroke-width="3"/>
+    <text x="300" y="157" fill="${borderColor}" font-size="52" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="-1">${appTag}</text>
+  </g>
+  
+  <text x="300" y="244" fill="#ffffff" font-size="15" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="800" text-anchor="middle" letter-spacing="1.5">${appName.toUpperCase()}</text>
+  <text x="300" y="270" fill="rgba(255,255,255,0.45)" font-size="12" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="600" text-anchor="middle" letter-spacing="0.5">${badgeLabel}</text>
+</svg>`;
+
             return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
         }
 
@@ -6165,17 +6244,13 @@ async function syncAllEnvatoReferrals() {
                 const rawTitle = (m.title || data.model_name || `Asset Item #${itemIdx}`).trim();
                 const displayTitle = rawTitle.length > 34 ? rawTitle.substring(0, 34) + '...' : rawTitle;
 
-                let thumb = m.poster || m.thumbnail || m.thumb || '';
-                if (!thumb && rawPlatform === 'freepik') {
-                    thumb = getFreepikThumbnail(currentUrl);
-                }
-                const fallbackThumb = getFallbackCardThumb(rawPlatform, fileType, rawTitle);
-                const initialSrc = thumb || fallbackThumb;
+                const appIconSvg = getAppIconPreviewSvg(fileType, rawPlatform, rawTitle);
+                const initialSrc = appIconSvg;
 
                 return `
                     <div class="rich-media-card">
                         <div class="rich-media-preview-box">
-                            <img src="${initialSrc}" class="rich-media-thumb" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null; this.src='${fallbackThumb}';" />
+                            <img src="${initialSrc}" class="rich-media-thumb" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null; this.src='${appIconSvg}';" />
                             <div class="rich-media-overlay-badges">
                                 ${platformBadgeHtml}
                                 <span class="format-pill">${fileType}</span>
