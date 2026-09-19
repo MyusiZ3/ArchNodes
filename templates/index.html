@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchNodes — Digital Asset Engine</title>
-    <link rel="icon" type="image/png" href="/static/logo.png">
-    <link rel="apple-touch-icon" href="/static/logo.png">
+    <title>ArchNodes. — Digital Asset Engine</title>
+    <link rel="icon" type="image/png" id="appFavicon" href="/static/logo_black.png">
+    <link rel="apple-touch-icon" id="appAppleTouchIcon" href="/static/logo_black.png">
     
     <!-- Google Font: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -600,8 +600,186 @@
 
         .media-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        /* Rich Asset Preview Card Architecture */
+        .rich-media-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .rich-media-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-modal);
+            transform: translateY(-2px);
+        }
+
+        .rich-media-preview-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: var(--card-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .rich-media-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            background: #18181b;
+        }
+
+        .rich-media-card:hover .rich-media-thumb {
+            transform: scale(1.03);
+        }
+
+        .rich-media-overlay-badges {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .platform-tag {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .platform-tag.freepik {
+            background: rgba(18, 115, 235, 0.9);
+            color: #ffffff;
+        }
+
+        .platform-tag.envato {
+            background: rgba(135, 230, 75, 0.95);
+            color: #09090b;
+        }
+
+        .platform-tag.magnific {
+            background: rgba(168, 85, 247, 0.9);
+            color: #ffffff;
+        }
+
+        .platform-tag.generic {
+            background: rgba(24, 24, 27, 0.85);
+            color: #ffffff;
+        }
+
+        .format-pill {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 6px;
+            background: rgba(9, 9, 11, 0.85);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            letter-spacing: 0.5px;
+        }
+
+        html.dark .format-pill {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fafafa;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .vault-ribbon {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.12));
+            border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+            color: #10b981;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .rich-media-body {
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .rich-media-title {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--text-heading);
+            line-height: 1.35;
+            word-break: break-word;
+            margin: 0;
+        }
+
+        .rich-media-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .rich-meta-item {
+            background: var(--card-subtle);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .rich-meta-label {
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .rich-meta-value {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-heading);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rich-media-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 4px;
         }
 
         .media-card {
@@ -653,6 +831,56 @@
             background: var(--btn-bg);
             color: var(--btn-text);
             border-color: var(--btn-bg);
+        }
+
+        /* Keyboard Shortcut <kbd> Badges */
+        kbd {
+            background: var(--card-subtle);
+            border: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-hover);
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+            color: var(--text-heading);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            min-width: 22px;
+            padding: 3px 7px;
+            text-align: center;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--card-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            gap: 12px;
+        }
+
+        .shortcut-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+
+        .shortcut-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .shortcut-keys {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         /* Toggle Switch */
@@ -1961,9 +2189,9 @@
             <section class="bento-hero">
                 <div class="hero-head">
                     <div>
-                        <div class="hero-meta">Premium Asset Downloader</div>
-                        <h1 class="hero-title">Creative Asset Pipeline</h1>
-                        <p class="hero-desc">Extract, resolve, and stream high-resolution creative assets directly to your local workspace.</p>
+                        <div class="hero-meta">PREMIUM ASSET ENGINE</div>
+                        <h1 class="hero-title">Instant Asset Downloader</h1>
+                        <p class="hero-desc">Download original high-resolution assets from Freepik and Envato Elements directly.</p>
                     </div>
                     <div class="build-tag">Web v1.0.0</div>
                 </div>
@@ -1971,10 +2199,10 @@
                 <!-- Input Box -->
                 <div class="search-container">
                     <i class="fa-solid fa-link" style="color: var(--text-muted); font-size: 14px;"></i>
-                    <input type="text" id="urlInput" class="search-input" placeholder="Paste Freepik or Envato Elements asset URL here..." />
+                    <input type="text" id="urlInput" class="search-input" placeholder="Paste premium asset link (Freepik, Envato Elements)..." />
                     <button id="btnFetch" class="btn-primary" onclick="fetchAsset()">
-                        <i class="fa-solid fa-arrow-right"></i>
-                        <span>Extract</span>
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>Download</span>
                     </button>
                 </div>
 
@@ -2342,18 +2570,25 @@
 
                         <!-- Generator Configuration Card -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
-                            <div class="dot-trick-grid">
+                            <div class="dot-trick-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Primary Gmail Address</label>
-                                    <input type="email" id="fpDotBaseEmail" class="bento-input"  placeholder="username@gmail.com" />
+                                    <input type="email" id="fpDotBaseEmail" class="bento-input" placeholder="username@gmail.com" onchange="syncImapEmail(this.value)" />
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <label style="font-size: 12px; font-weight: 700; color: var(--text-heading);">Google App Password</label>
+                                        <a href="https://myaccount.google.com/apppasswords" target="_blank" style="font-size: 11px; color: #3b82f6; text-decoration: none; font-weight: 600;" title="Create a 16-char App Password on Google"><i class="fa-solid fa-circle-question"></i> Get Key</a>
+                                    </div>
+                                    <input type="password" id="fpDotAppPassword" class="bento-input" placeholder="16-character app password" onchange="saveImapAppPassword(this.value)" />
                                 </div>
                                 <div id="fpDotPassContainer" style="display: none;">
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Password</label>
-                                    <input type="text" id="fpDotBasePassword" class="bento-input"  placeholder="Account password" />
+                                    <input type="text" id="fpDotBasePassword" class="bento-input" placeholder="Account password" />
                                 </div>
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Quantity (1-20)</label>
-                                    <input type="number" id="fpDotCount" class="bento-input"  value="5" min="1" max="20" />
+                                    <input type="number" id="fpDotCount" class="bento-input" value="5" min="1" max="20" />
                                 </div>
                             </div>
 
@@ -2373,10 +2608,13 @@
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                 <div>
                                     <span style="font-size: 13.5px; font-weight: 800; color: var(--text-heading);">Generated Dot Aliases</span>
-                                    <span style="font-size: 12px; color: var(--text-muted); margin-left: 6px;">(Register &rarr; Verify & Add to Pool)</span>
+                                    <span style="font-size: 12px; color: var(--text-muted); margin-left: 6px;">(Register &rarr; Auto-Verify)</span>
                                 </div>
-                                <div style="display: flex; gap: 8px;">
-                                    <button class="action-btn-primary" onclick="batchVerifyFpDotAliases()" id="btnBatchVerifyFp" title="Verify all generated dot aliases"><i class="fa-solid fa-check-double"></i> <span>Batch Verify All & Add to Pool</span></button>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="btn-primary" onclick="autoVerifyFromGmailInbox('freepik')" id="btnImapAutoVerifyFp" title="Connects to Gmail, scans inbox, clicks all activation links, and verifies accounts in pool" style="height: 32px; font-size: 12px; font-weight: 700; padding: 0 14px; background: #10b981; border: 1px solid #10b981; color: #fff;">
+                                        <i class="fa-solid fa-bolt"></i> <span>⚡ 1-Click Auto-Verify from Gmail</span>
+                                    </button>
+                                    <button class="action-btn-primary" onclick="batchVerifyFpDotAliases()" id="btnBatchVerifyFp" title="Verify all generated dot aliases"><i class="fa-solid fa-check-double"></i> <span>Batch Verify All</span></button>
                                 </div>
                             </div>
 
@@ -2585,18 +2823,25 @@
 
                         <!-- Generator Configuration Card -->
                         <div style="background: var(--card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sub); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
-                            <div class="dot-trick-grid">
+                            <div class="dot-trick-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Primary Gmail Address</label>
-                                    <input type="email" id="envDotBaseEmail" class="bento-input"  placeholder="username@gmail.com" />
+                                    <input type="email" id="envDotBaseEmail" class="bento-input" placeholder="username@gmail.com" onchange="syncImapEmail(this.value)" />
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <label style="font-size: 12px; font-weight: 700; color: var(--text-heading);">Google App Password</label>
+                                        <a href="https://myaccount.google.com/apppasswords" target="_blank" style="font-size: 11px; color: #3b82f6; text-decoration: none; font-weight: 600;" title="Create a 16-char App Password on Google"><i class="fa-solid fa-circle-question"></i> Get Key</a>
+                                    </div>
+                                    <input type="password" id="envDotAppPassword" class="bento-input" placeholder="16-character app password" onchange="saveImapAppPassword(this.value)" />
                                 </div>
                                 <div id="envDotPassContainer" style="display: none;">
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Password</label>
-                                    <input type="text" id="envDotBasePassword" class="bento-input"  placeholder="Account password" />
+                                    <input type="text" id="envDotBasePassword" class="bento-input" placeholder="Account password" />
                                 </div>
                                 <div>
                                     <label style="font-size: 12px; font-weight: 700; color: var(--text-heading); display: block; margin-bottom: 6px;">Quantity (1-20)</label>
-                                    <input type="number" id="envDotCount" class="bento-input"  value="5" min="1" max="20" />
+                                    <input type="number" id="envDotCount" class="bento-input" value="5" min="1" max="20" />
                                 </div>
                             </div>
 
@@ -2616,10 +2861,13 @@
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                 <div>
                                     <span style="font-size: 13.5px; font-weight: 800; color: var(--text-heading);">Generated Dot Aliases</span>
-                                    <span style="font-size: 12px; color: var(--text-muted); margin-left: 6px;">(Click Register &rarr; Verify & Add to Pool)</span>
+                                    <span style="font-size: 12px; color: var(--text-muted); margin-left: 6px;">(Register &rarr; Auto-Verify)</span>
                                 </div>
-                                <div style="display: flex; gap: 8px;">
-                                    <button class="action-btn-primary" onclick="batchVerifyEnvDotAliases()" id="btnBatchVerifyEnv" title="Verify all generated dot aliases"><i class="fa-solid fa-check-double"></i> <span>Batch Verify All & Add to Pool</span></button>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="btn-primary" onclick="autoVerifyFromGmailInbox('envato')" id="btnImapAutoVerifyEnv" title="Connects to Gmail, scans inbox, clicks all activation links, and verifies accounts in pool" style="height: 32px; font-size: 12px; font-weight: 700; padding: 0 14px; background: #10b981; border: 1px solid #10b981; color: #fff;">
+                                        <i class="fa-solid fa-bolt"></i> <span>⚡ 1-Click Auto-Verify from Gmail</span>
+                                    </button>
+                                    <button class="action-btn-primary" onclick="batchVerifyEnvDotAliases()" id="btnBatchVerifyEnv" title="Verify all generated dot aliases"><i class="fa-solid fa-check-double"></i> <span>Batch Verify All</span></button>
                                 </div>
                             </div>
 
@@ -2780,8 +3028,8 @@
                 <!-- Col 1: Brand Info -->
                 <div class="footer-brand-col">
                     <div class="footer-brand">
-                        <img src="/static/logo.png" alt="ArchNodes" style="width: 40px; height: 40px; object-fit: contain; display: block;" />
-                        <span class="footer-brand-name" style="font-size: 18px;">ArchNodes</span>
+                        <img id="footerBrandLogo" src="/static/logo_black.png" alt="ArchNodes." style="width: 40px; height: 40px; object-fit: contain; display: block;" />
+                        <span class="footer-brand-name" style="font-size: 18px;">ArchNodes.</span>
                     </div>
                     <p class="footer-brand-desc">
                         High-performance creative asset downloader and multi-account pool manager for Freepik, Envato Elements, and high-demand design workflows.
@@ -2816,7 +3064,7 @@
             <!-- Bottom Row: Copyright & Status -->
             <div class="footer-bottom">
                 <div class="footer-copyright">
-                    © 2026 ARCHNODES | ARCH.
+                    © 2026 ARCHNODES. | ARCH.
                 </div>
                 <div class="footer-crafted">
                     ALL RIGHTS RESERVED
@@ -2853,7 +3101,7 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
                 <div>
                     <div class="hero-meta" style="font-size: 10px; margin-bottom: 3px;">DOCUMENTATION & GUIDE</div>
-                    <h3 style="font-size: 17px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.4px;">How to Use ArchNodes</h3>
+                    <h3 style="font-size: 17px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.4px;">How to Use ArchNodes.</h3>
                 </div>
                 <button onclick="closeTutorialModal()" class="icon-btn" style="width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;" title="Close">
                     <i class="fa-solid fa-xmark" style="font-size: 13px;"></i>
@@ -2861,12 +3109,15 @@
             </div>
 
             <!-- Subtab Switcher -->
-            <div style="display: flex; gap: 6px; background: var(--card-subtle); padding: 4px; border-radius: var(--radius-pill); border: 1px solid var(--border-color); margin-bottom: 16px; width: fit-content;">
+            <div style="display: flex; gap: 6px; background: var(--card-subtle); padding: 4px; border-radius: var(--radius-pill); border: 1px solid var(--border-color); margin-bottom: 16px; width: fit-content; flex-wrap: wrap;">
                 <button id="tutSubtabGeneralBtn" onclick="switchTutSubtab('general')" class="filter-btn active" style="font-size: 12px; padding: 5px 14px; border: none;">
                     <i class="fa-solid fa-compass"></i> General Workflow
                 </button>
                 <button id="tutSubtabAccountsBtn" onclick="switchTutSubtab('accounts')" class="filter-btn" style="font-size: 12px; padding: 5px 14px; border: none;">
                     <i class="fa-solid fa-user-gear"></i> Account Setup & Pools
+                </button>
+                <button id="tutSubtabShortcutsBtn" onclick="switchTutSubtab('shortcuts')" class="filter-btn" style="font-size: 12px; padding: 5px 14px; border: none;">
+                    <i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts
                 </button>
             </div>
 
@@ -2950,6 +3201,71 @@
                         <div style="font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px;">Local Storage & Privacy</div>
                         <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">All pool accounts and session cookies are preserved locally inside your browser runtime (<code>localStorage</code>). Credentials are never transmitted to third-party databases.</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- SUBVIEW 3: KEYBOARD SHORTCUTS -->
+            <div id="tutTabShortcuts" class="tut-tab-pane" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 18px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;">Core Extraction & Actions</div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Focus URL Input</div>
+                        <div class="shortcut-desc">Instantly jump to search bar from anywhere</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>/</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Extract / Resolve Asset</div>
+                        <div class="shortcut-desc">Trigger download and cloud resolution</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Dismiss / Close Modals</div>
+                        <div class="shortcut-desc">Close tutorial, confirmation dialogs, or mobile drawer</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Esc</kbd></div>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 8px 0 2px;">Workspace Navigation</div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Navigate to Studio</div>
+                        <div class="shortcut-desc">Main asset downloader workspace</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Alt</kbd> + <kbd>1</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Navigate to History & Cloud Vault</div>
+                        <div class="shortcut-desc">Session history and persistent vault cache</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Alt</kbd> + <kbd>2</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Navigate to Network & DNS</div>
+                        <div class="shortcut-desc">DoH ISP bypass and proxy manager</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Alt</kbd> + <kbd>3</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Navigate to Accounts & Pools</div>
+                        <div class="shortcut-desc">Multi-account pool manager and auto-verification</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Alt</kbd> + <kbd>4</kbd></div>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 8px 0 2px;">Appearance</div>
+                <div class="shortcut-item">
+                    <div>
+                        <div class="shortcut-label">Toggle Dark / Light Theme</div>
+                        <div class="shortcut-desc">Switch interface contrast mode</div>
+                    </div>
+                    <div class="shortcut-keys"><kbd>Alt</kbd> + <kbd>T</kbd></div>
                 </div>
             </div>
 
@@ -3050,8 +3366,17 @@
         function switchTutSubtab(tab) {
             const generalBox = document.getElementById('tutTabGeneral');
             const accountsBox = document.getElementById('tutTabAccounts');
+            const shortcutsBox = document.getElementById('tutTabShortcuts');
             const generalBtn = document.getElementById('tutSubtabGeneralBtn');
             const accountsBtn = document.getElementById('tutSubtabAccountsBtn');
+            const shortcutsBtn = document.getElementById('tutSubtabShortcutsBtn');
+
+            [generalBox, accountsBox, shortcutsBox].forEach(b => {
+                if (b) b.style.display = 'none';
+            });
+            [generalBtn, accountsBtn, shortcutsBtn].forEach(b => {
+                if (b) b.classList.remove('active');
+            });
 
             if (tab === 'general') {
                 if (generalBox) {
@@ -3060,19 +3385,23 @@
                     void generalBox.offsetWidth;
                     generalBox.style.animation = '';
                 }
-                if (accountsBox) accountsBox.style.display = 'none';
                 if (generalBtn) generalBtn.classList.add('active');
-                if (accountsBtn) accountsBtn.classList.remove('active');
-            } else {
-                if (generalBox) generalBox.style.display = 'none';
+            } else if (tab === 'accounts') {
                 if (accountsBox) {
                     accountsBox.style.display = 'flex';
                     accountsBox.style.animation = 'none';
                     void accountsBox.offsetWidth;
                     accountsBox.style.animation = '';
                 }
-                if (generalBtn) generalBtn.classList.remove('active');
                 if (accountsBtn) accountsBtn.classList.add('active');
+            } else if (tab === 'shortcuts') {
+                if (shortcutsBox) {
+                    shortcutsBox.style.display = 'flex';
+                    shortcutsBox.style.animation = 'none';
+                    void shortcutsBox.offsetWidth;
+                    shortcutsBox.style.animation = '';
+                }
+                if (shortcutsBtn) shortcutsBtn.classList.add('active');
             }
         }
 
@@ -3123,7 +3452,9 @@
             }
         }
 
+        // --- Global Keyboard Shortcuts Handler ---
         document.addEventListener('keydown', (e) => {
+            // 1. Esc: close any active modal / drawer
             if (e.key === 'Escape') {
                 const drawer = document.getElementById('mobileDrawer');
                 if (drawer && drawer.classList.contains('active')) {
@@ -3136,6 +3467,49 @@
                 const confOverlay = document.getElementById('confirmModalOverlay');
                 if (confOverlay && confOverlay.classList.contains('active')) {
                     closeConfirmModal(false);
+                }
+                return;
+            }
+
+            const targetTag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            const isInputField = targetTag === 'input' || targetTag === 'textarea' || targetTag === 'select' || (e.target && e.target.isContentEditable);
+
+            // 2. '/' key: Focus search input (if not already focused in an input)
+            if (e.key === '/' && !isInputField) {
+                e.preventDefault();
+                switchView('studio');
+                const inp = document.getElementById('urlInput');
+                if (inp) {
+                    inp.focus();
+                    inp.select();
+                }
+                return;
+            }
+
+            // 3. Ctrl+Enter or Cmd+Enter: Extract / Resolve Asset
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                fetchAsset();
+                return;
+            }
+
+            // 4. Alt+1/2/3/4 navigation shortcuts & Alt+T theme toggle
+            if (e.altKey && !e.ctrlKey && !e.metaKey) {
+                if (e.key === '1') {
+                    e.preventDefault();
+                    switchView('studio');
+                } else if (e.key === '2') {
+                    e.preventDefault();
+                    switchView('history');
+                } else if (e.key === '3') {
+                    e.preventDefault();
+                    switchView('network');
+                } else if (e.key === '4') {
+                    e.preventDefault();
+                    switchView('accounts');
+                } else if (e.key.toLowerCase() === 't') {
+                    e.preventDefault();
+                    toggleTheme();
                 }
             }
         });
@@ -3170,6 +3544,16 @@
             if (icon) {
                 icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
             }
+
+            // Switch logo: logo_white.png for dark mode, logo_black.png for light mode
+            const logoPath = isDark ? '/static/logo_white.png' : '/static/logo_black.png';
+            const footerLogo = document.getElementById('footerBrandLogo');
+            if (footerLogo) footerLogo.src = logoPath;
+            const favicon = document.getElementById('appFavicon');
+            if (favicon) favicon.href = logoPath;
+            const appleTouch = document.getElementById('appAppleTouchIcon');
+            if (appleTouch) appleTouch.href = logoPath;
+
             updateDrawerThemeUI();
         }
 
@@ -5193,6 +5577,117 @@ async function syncAllEnvatoReferrals() {
             }
         }
 
+        // --- Gmail IMAP Auto-Verification Engine ---
+        function getStoredImapCredentials() {
+            return {
+                email: localStorage.getItem('archnodes_imap_email') || '',
+                appPass: localStorage.getItem('archnodes_imap_app_pass') || ''
+            };
+        }
+
+        function saveImapAppPassword(val) {
+            if (val !== undefined) {
+                localStorage.setItem('archnodes_imap_app_pass', val.trim());
+                const fpInp = document.getElementById('fpDotAppPassword');
+                const envInp = document.getElementById('envDotAppPassword');
+                if (fpInp && fpInp.value !== val) fpInp.value = val;
+                if (envInp && envInp.value !== val) envInp.value = val;
+            }
+        }
+
+        function syncImapEmail(val) {
+            if (val !== undefined) {
+                localStorage.setItem('archnodes_imap_email', val.trim());
+                const fpInp = document.getElementById('fpDotBaseEmail');
+                const envInp = document.getElementById('envDotBaseEmail');
+                if (fpInp && fpInp.value !== val) fpInp.value = val;
+                if (envInp && envInp.value !== val) envInp.value = val;
+            }
+        }
+
+        function loadStoredImapCredentials() {
+            const creds = getStoredImapCredentials();
+            const fpEmail = document.getElementById('fpDotBaseEmail');
+            const envEmail = document.getElementById('envDotBaseEmail');
+            const fpPass = document.getElementById('fpDotAppPassword');
+            const envPass = document.getElementById('envDotAppPassword');
+
+            if (fpEmail && creds.email && !fpEmail.value) fpEmail.value = creds.email;
+            if (envEmail && creds.email && !envEmail.value) envEmail.value = creds.email;
+            if (fpPass && creds.appPass && !fpPass.value) fpPass.value = creds.appPass;
+            if (envPass && creds.appPass && !envPass.value) envPass.value = creds.appPass;
+        }
+
+        async function autoVerifyFromGmailInbox(platform) {
+            const isFp = platform === 'freepik';
+            const emailInp = document.getElementById(isFp ? 'fpDotBaseEmail' : 'envDotBaseEmail');
+            const passInp = document.getElementById(isFp ? 'fpDotAppPassword' : 'envDotAppPassword');
+            const btn = document.getElementById(isFp ? 'btnImapAutoVerifyFp' : 'btnImapAutoVerifyEnv');
+
+            const gmailUser = (emailInp ? emailInp.value.trim() : '') || localStorage.getItem('archnodes_imap_email') || '';
+            const appPass = (passInp ? passInp.value.trim() : '') || localStorage.getItem('archnodes_imap_app_pass') || '';
+
+            if (!gmailUser || !gmailUser.includes('@')) {
+                showToast('Please enter your primary Gmail address', 'warning');
+                if (emailInp) emailInp.focus();
+                return;
+            }
+
+            if (!appPass) {
+                showToast('Please enter your 16-character Google App Password', 'warning');
+                if (passInp) passInp.focus();
+                return;
+            }
+
+            saveImapAppPassword(appPass);
+            syncImapEmail(gmailUser);
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning Inbox...';
+            }
+
+            showToast(`Connecting to Gmail IMAP (${gmailUser})...`, 'info');
+
+            try {
+                const res = await fetch('/api/imap-batch-verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gmail_user: gmailUser,
+                        gmail_app_password: appPass,
+                        platform: platform
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const activatedCount = data.activated_count || 0;
+                    if (activatedCount > 0) {
+                        showToast(`Activated ${activatedCount} confirmation link(s) from Gmail inbox!`, 'success');
+                    } else {
+                        showToast(`Scanned ${data.scanned_count || 0} emails: No new activation links found.`, 'info');
+                    }
+
+                    // Auto-trigger batch verification to add accounts into pool
+                    if (isFp) {
+                        await batchVerifyFpDotAliases();
+                    } else {
+                        await batchVerifyEnvDotAliases();
+                    }
+                } else {
+                    showToast(data.error || 'Failed to connect to Gmail IMAP', 'error');
+                }
+            } catch (err) {
+                showToast('IMAP verification error: ' + err.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> <span>⚡ 1-Click Auto-Verify from Gmail</span>';
+                }
+            }
+        }
+
         // ==========================================
         // ENVATO DOT-TRICK GENERATOR & VERIFY FLOW
         // ==========================================
@@ -5448,7 +5943,7 @@ async function syncAllEnvatoReferrals() {
             }
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Extracting...</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Downloading...</span>`;
 
             try {
                 if (url.includes('freepik.com') || url.includes('magnific.ai') || url.includes('magnific.com')) {
@@ -5468,7 +5963,6 @@ async function syncAllEnvatoReferrals() {
                     const data = await res.json();
                     if (data.success && data.download_url) {
                         if (data.from_vault) { showToast('Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
-                        showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Creative Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
                         const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('vector') ? 'VECTOR' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : 'PREMIUM';
@@ -5477,6 +5971,9 @@ async function syncAllEnvatoReferrals() {
                         renderResults({
                             model_name: assetTitleClean,
                             count: 1,
+                            platform: 'freepik',
+                            from_vault: data.from_vault,
+                            in_vault: data.from_vault,
                             media_items: [{
                                 index: 1,
                                 type: fileType,
@@ -5515,15 +6012,17 @@ async function syncAllEnvatoReferrals() {
                     const data = await res.json();
                     if (data.success && data.download_url) {
                         if (data.from_vault) { showToast('Instant Resolution: Loaded from Cloud Vault (0 Quota Used)'); } else { showToast('Direct download link ready'); }
-                        showToast('Direct download link ready');
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Envato Asset';
-                        const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
                         const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : url.toLowerCase().includes('video') ? 'VIDEO' : 'ENVATO';
                         
                         saveHistoryItem(assetTitleClean, url, 1);
                         renderResults({
                             model_name: assetTitleClean,
                             count: 1,
+                            platform: 'envato',
+                            from_vault: data.from_vault,
+                            in_vault: data.from_vault,
                             media_items: [{
                                 index: 1,
                                 type: fileType,
@@ -5564,7 +6063,7 @@ async function syncAllEnvatoReferrals() {
                 showToast('Network or extraction error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> <span>Extract</span>`;
+                btn.innerHTML = `<i class="fa-solid fa-arrow-down"></i> <span>Download</span>`;
             }
         }
 
@@ -5576,26 +6075,85 @@ async function syncAllEnvatoReferrals() {
             const currentUrl = document.getElementById('urlInput').value.trim();
 
             container.style.display = 'block';
-            assetTitle.textContent = data.model_name || 'Resolved Asset';
+            assetTitle.textContent = data.model_name || 'Resolved Creative Asset';
             const items = data.media_items || data.media || [];
-            countBadge.textContent = `${items.length || data.count || 1} Assets`;
+            countBadge.textContent = `${items.length || data.count || 1} Asset${(items.length > 1 || data.count > 1) ? 's' : ''}`;
+
+            const isFromVault = Boolean(data.from_vault || data.in_vault);
+            const rawPlatform = (data.platform || (currentUrl.includes('freepik') ? 'freepik' : currentUrl.includes('envato') ? 'envato' : currentUrl.includes('magnific') ? 'magnific' : 'creative')).toLowerCase();
+
+            let platformBadgeHtml = '';
+            let platformName = 'Creative Platform';
+            if (rawPlatform === 'freepik') {
+                platformName = 'Freepik';
+                platformBadgeHtml = `<span class="platform-tag freepik"><img src="https://cdn.simpleicons.org/freepik/FFFFFF" style="width:12px;height:12px;display:inline-block;" /> Freepik</span>`;
+            } else if (rawPlatform === 'envato') {
+                platformName = 'Envato Elements';
+                platformBadgeHtml = `<span class="platform-tag envato"><img src="https://cdn.simpleicons.org/envato/09090B" style="width:12px;height:12px;display:inline-block;" /> Envato</span>`;
+            } else if (rawPlatform === 'magnific') {
+                platformName = 'Magnific AI';
+                platformBadgeHtml = `<span class="platform-tag magnific"><i class="fa-solid fa-wand-magic-sparkles"></i> Magnific</span>`;
+            } else {
+                platformName = 'Standard';
+                platformBadgeHtml = `<span class="platform-tag generic"><i class="fa-solid fa-cube"></i> Creative</span>`;
+            }
 
             mediaGrid.innerHTML = items.map((m, idx) => {
                 const thumb = m.poster || m.thumb || m.src || '';
                 const itemIdx = m.index || (idx + 1);
                 const dlUrl = m.download_url || `/api/download-stream?url=${encodeURIComponent(currentUrl)}&index=${itemIdx}`;
-                const label = m.type ? m.type.toUpperCase() : 'ASSET';
+                const fileType = (m.type || 'ASSET').toUpperCase();
+                const itemTitle = m.title || data.model_name || `Asset Item #${itemIdx}`;
+
+                const vaultRibbonHtml = isFromVault 
+                    ? `<div class="vault-ribbon"><i class="fa-solid fa-bolt"></i> <span>Instant Resolution · 0 Quota Used (Loaded from Cloud Vault)</span></div>`
+                    : '';
+
                 return `
-                    <div class="media-card">
-                        <img src="${thumb}" class="media-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 70\'><rect width=\'100\' height=\'70\' fill=\'%2318181b\'/><text x=\'50%\' y=\'50%\' fill=\'white\' font-size=\'10\' text-anchor=\'middle\' dominant-baseline=\'middle\'>Preview</text></svg>'" />
-                        <div class="media-info">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 11px; font-weight: 700; color: var(--text-heading);">Item #${itemIdx}</span>
-                                <span style="font-size: 9.5px; font-weight: 800; color: var(--text-muted); background: var(--border-color); padding: 2px 6px; border-radius: 4px;">${label}</span>
+                    <div class="rich-media-card">
+                        ${vaultRibbonHtml}
+                        <div class="rich-media-preview-box">
+                            <img src="${thumb}" class="rich-media-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 65\\'><rect width=\\'100\\' height=\\'65\\' fill=\\'%2318181b\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%23a1a1aa\\' font-size=\\'9\\' font-family=\\'sans-serif\\' font-weight=\\'bold\\' text-anchor=\\'middle\\' dominant-baseline=\\'middle\\'>Creative Preview</text></svg>'" />
+                            <div class="rich-media-overlay-badges">
+                                ${platformBadgeHtml}
+                                <span class="format-pill">${fileType}</span>
                             </div>
-                            <a href="${dlUrl}" target="_blank" class="btn-card">
-                                <i class="fa-solid fa-download"></i> Download
-                            </a>
+                        </div>
+                        <div class="rich-media-body">
+                            <div class="rich-media-title" title="${itemTitle}">${itemTitle}</div>
+                            <div class="rich-media-meta-grid">
+                                <div class="rich-meta-item">
+                                    <span class="rich-meta-label">Format Type</span>
+                                    <span class="rich-meta-value">${fileType} File</span>
+                                </div>
+                                <div class="rich-meta-item">
+                                    <span class="rich-meta-label">Platform</span>
+                                    <span class="rich-meta-value">${platformName}</span>
+                                </div>
+                                <div class="rich-meta-item">
+                                    <span class="rich-meta-label">Resolution Mode</span>
+                                    <span class="rich-meta-value" style="color: ${isFromVault ? '#10b981' : '#3b82f6'};">
+                                        <i class="fa-solid ${isFromVault ? 'fa-cloud-bolt' : 'fa-bolt'}"></i> ${isFromVault ? 'Cloud Vault' : 'Live Extracted'}
+                                    </span>
+                                </div>
+                                <div class="rich-meta-item">
+                                    <span class="rich-meta-label">Quota Impact</span>
+                                    <span class="rich-meta-value" style="color: ${isFromVault ? '#10b981' : 'var(--text-heading)'};">
+                                        ${isFromVault ? '0 Credits (Free)' : '1 Pool Download'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="rich-media-actions">
+                                <a href="${dlUrl}" target="_blank" class="btn-primary" style="flex: 1.4; height: 38px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; border-radius: 8px;">
+                                    <i class="fa-solid fa-download"></i> Direct Download
+                                </a>
+                                <button class="action-btn" onclick="copyHistoryUrl('${dlUrl}', event)" title="Copy Direct Download URL" style="height: 38px; padding: 0 12px; font-size: 12px; font-weight: 700; border-radius: 8px;">
+                                    <i class="fa-regular fa-copy"></i> Copy Link
+                                </button>
+                                <a href="${currentUrl}" target="_blank" class="action-btn" title="Open Source Webpage" style="height: 38px; padding: 0 12px; font-size: 12px; font-weight: 700; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -6209,11 +6767,13 @@ async function syncAllEnvatoReferrals() {
             }
         }
 
-        // Auto sync pools on page load
+        // Auto sync pools & IMAP credentials on page load
         document.addEventListener('DOMContentLoaded', () => {
             syncAccountsWithBackend();
+            loadStoredImapCredentials();
         });
         syncAccountsWithBackend();
+        loadStoredImapCredentials();
 
     </script>
 </body>
