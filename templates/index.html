@@ -2561,9 +2561,9 @@
                         <div style="padding: 14px 18px; border-radius: var(--radius-sub); background: var(--card-subtle); border: 1px solid var(--border-color); display: flex; align-items: flex-start; gap: 12px;">
                             <div style="font-size: 18px; color: var(--text-heading); margin-top: 2px;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                             <div>
-                                <div style="font-weight: 800; font-size: 14px; color: var(--text-heading); margin-bottom: 3px;">Gmail Dot-Trick for Freepik & Magnific</div>
+                                <div style="font-weight: 800; font-size: 14px; color: var(--text-heading); margin-bottom: 3px;">Gmail Dot-Trick for Freepik/Magnific</div>
                                 <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
-                                    FreepikDownloader treats each dot <code>.</code> alias as a separate account (10 daily downloads), while Gmail delivers all confirmation emails to your <b>single primary Gmail inbox</b>!
+                                    FreepikDownloader treats each dot <code>.</code> Confirmation emails delivers all to your <b>single primary Gmail inbox</b>!
                                 </div>
                             </div>
                         </div>
@@ -5966,6 +5966,7 @@ async function syncAllEnvatoReferrals() {
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Creative Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
                         const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('vector') ? 'VECTOR' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : 'PREMIUM';
+                        const thumbUrl = data.poster || data.thumbnail || getFreepikThumbnail(url);
                         
                         saveHistoryItem(assetTitleClean, url, 1);
                         renderResults({
@@ -5977,7 +5978,8 @@ async function syncAllEnvatoReferrals() {
                             media_items: [{
                                 index: 1,
                                 type: fileType,
-                                poster: '',
+                                poster: thumbUrl,
+                                thumbnail: thumbUrl,
                                 download_url: data.download_url
                             }]
                         });
@@ -6015,6 +6017,7 @@ async function syncAllEnvatoReferrals() {
                         const urlSlug = url.split('#')[0].split('?')[0].split('/').filter(Boolean).pop() || 'Envato Asset';
                         const assetTitleClean = urlSlug.replace(/[-_]/g, ' ').replace(/\.htm.*/i, '').replace(/\b\w/g, l => l.toUpperCase());
                         const fileType = url.toLowerCase().includes('psd') ? 'PSD' : url.toLowerCase().includes('mockup') ? 'MOCKUP' : url.toLowerCase().includes('template') ? 'TEMPLATE' : url.toLowerCase().includes('video') ? 'VIDEO' : 'ENVATO';
+                        const thumbUrl = data.poster || data.thumbnail || '';
                         
                         saveHistoryItem(assetTitleClean, url, 1);
                         renderResults({
@@ -6026,7 +6029,8 @@ async function syncAllEnvatoReferrals() {
                             media_items: [{
                                 index: 1,
                                 type: fileType,
-                                poster: '',
+                                poster: thumbUrl,
+                                thumbnail: thumbUrl,
                                 download_url: data.download_url
                             }]
                         });
@@ -6067,6 +6071,62 @@ async function syncAllEnvatoReferrals() {
             }
         }
 
+        function getFreepikThumbnail(url) {
+            if (!url || typeof url !== 'string') return '';
+            try {
+                const clean = url.split('#')[0].split('?')[0].replace(/\/+$/, '');
+                const match = clean.match(/freepik\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?([^/]+)\/([^/?#]+)/i);
+                if (match) {
+                    const cat = match[1];
+                    let slugId = match[2];
+                    if (slugId.toLowerCase().endsWith('.htm')) {
+                        slugId = slugId.slice(0, -4);
+                    }
+                    return `https://img.freepik.com/${cat}/${slugId}.jpg?w=740`;
+                }
+            } catch(e) {}
+            return '';
+        }
+
+        function getFallbackCardThumb(platform, fileType, title) {
+            const rawPlat = (platform || '').toLowerCase();
+            let gradStart = '#1e293b', gradEnd = '#0f172a', accent = '#38bdf8', iconName = 'ASSET';
+            let brandLabel = 'CREATIVE ASSET';
+            
+            if (rawPlat.includes('freepik')) {
+                gradStart = '#0f2942'; gradEnd = '#061325'; accent = '#0284c7'; brandLabel = 'FREEPIK'; iconName = (fileType || 'PSD').toUpperCase();
+            } else if (rawPlat.includes('envato')) {
+                gradStart = '#0f3322'; gradEnd = '#051910'; accent = '#10b981'; brandLabel = 'ENVATO'; iconName = (fileType || 'TEMPLATE').toUpperCase();
+            } else if (rawPlat.includes('magnific')) {
+                gradStart = '#2e1065'; gradEnd = '#140428'; accent = '#a855f7'; brandLabel = 'MAGNIFIC AI'; iconName = 'ENHANCED';
+            }
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${gradStart}"/>
+                        <stop offset="100%" stop-color="${gradEnd}"/>
+                    </linearGradient>
+                    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="${accent}" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
+                    </radialGradient>
+                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="600" height="380" fill="url(#bg)"/>
+                <rect width="600" height="380" fill="url(#grid)"/>
+                <circle cx="300" cy="170" r="170" fill="url(#glow)"/>
+                <rect x="230" y="105" width="140" height="90" rx="14" fill="rgba(255,255,255,0.05)" stroke="${accent}" stroke-width="1.5" stroke-opacity="0.5"/>
+                <text x="300" y="160" fill="${accent}" font-size="22" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="2">${iconName}</text>
+                <text x="300" y="238" fill="#f4f4f5" font-size="15" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="700" text-anchor="middle" letter-spacing="1.5">${brandLabel}</text>
+                <text x="300" y="262" fill="#71717a" font-size="12" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="500" text-anchor="middle">Ready for resolution</text>
+            </svg>`;
+            
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        }
+
         function renderResults(data) {
             const container = document.getElementById('resultContainer');
             const mediaGrid = document.getElementById('mediaGrid');
@@ -6099,17 +6159,23 @@ async function syncAllEnvatoReferrals() {
             }
 
             mediaGrid.innerHTML = items.map((m, idx) => {
-                const thumb = m.poster || m.thumb || m.src || '';
                 const itemIdx = m.index || (idx + 1);
                 const dlUrl = m.download_url || `/api/download-stream?url=${encodeURIComponent(currentUrl)}&index=${itemIdx}`;
                 const fileType = (m.type || 'ASSET').toUpperCase();
                 const rawTitle = (m.title || data.model_name || `Asset Item #${itemIdx}`).trim();
                 const displayTitle = rawTitle.length > 34 ? rawTitle.substring(0, 34) + '...' : rawTitle;
 
+                let thumb = m.poster || m.thumbnail || m.thumb || '';
+                if (!thumb && rawPlatform === 'freepik') {
+                    thumb = getFreepikThumbnail(currentUrl);
+                }
+                const fallbackThumb = getFallbackCardThumb(rawPlatform, fileType, rawTitle);
+                const initialSrc = thumb || fallbackThumb;
+
                 return `
                     <div class="rich-media-card">
                         <div class="rich-media-preview-box">
-                            <img src="${thumb}" class="rich-media-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 65\\'><rect width=\\'100\\' height=\\'65\\' fill=\\'%2318181b\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%23a1a1aa\\' font-size=\\'9\\' font-family=\\'sans-serif\\' font-weight=\\'bold\\' text-anchor=\\'middle\\' dominant-baseline=\\'middle\\'>Creative Preview</text></svg>'" />
+                            <img src="${initialSrc}" class="rich-media-thumb" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null; this.src='${fallbackThumb}';" />
                             <div class="rich-media-overlay-badges">
                                 ${platformBadgeHtml}
                                 <span class="format-pill">${fileType}</span>

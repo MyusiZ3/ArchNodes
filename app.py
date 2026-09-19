@@ -12,7 +12,7 @@ from flask import Flask, render_template, request, jsonify, Response, redirect
 # Ensure project root in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from core.normalizer import normalize_profile_url
+from core.normalizer import normalize_profile_url, extract_thumbnail_url
 from core.bypass import get_bypass_settings, save_bypass_settings
 from core.proxy_manager import load_proxy_settings, save_proxy_settings, test_single_proxy, test_all_proxies, get_current_ip_info
 from core.downloader import get_download_progress, stop_download
@@ -83,6 +83,7 @@ def api_check():
     if platform == "freepik":
         url_low = profile_url.lower()
         file_type = "PSD" if "psd" in url_low else "VECTOR" if "vector" in url_low else "PHOTO" if "photo" in url_low else "ZIP"
+        thumb_url = extract_thumbnail_url(profile_url, "freepik")
         return jsonify({
             "status": "success",
             "success": True,
@@ -91,6 +92,8 @@ def api_check():
             "count": 1,
             "image_count": 1,
             "video_count": 0,
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "in_vault": in_vault,
             "download_url": vault_download_url,
             "from_vault": in_vault,
@@ -98,7 +101,8 @@ def api_check():
                 "index": 1,
                 "type": file_type,
                 "src": profile_url,
-                "poster": "",
+                "poster": thumb_url,
+                "thumbnail": thumb_url,
                 "download_url": vault_download_url,
                 "download_type": "freepik"
             }],
@@ -108,6 +112,7 @@ def api_check():
     if platform == "envato":
         url_low = profile_url.lower()
         file_type = "MOCKUP" if "mockup" in url_low else "TEMPLATE" if "template" in url_low else "PSD" if "psd" in url_low else "GRAPHIC" if "graphic" in url_low else "VIDEO" if "video" in url_low else "AUDIO" if "audio" in url_low else "FONT" if "font" in url_low else "ASSET"
+        thumb_url = extract_thumbnail_url(profile_url, "envato")
         
         # Parse clean title from URL slug without triggering 403 on elements.envato.com
         slug = profile_url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
@@ -121,6 +126,8 @@ def api_check():
             "count": 1,
             "image_count": 1,
             "video_count": 0,
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "in_vault": in_vault,
             "download_url": vault_download_url,
             "from_vault": in_vault,
@@ -128,7 +135,8 @@ def api_check():
                 "index": 1,
                 "type": file_type,
                 "src": profile_url,
-                "poster": "",
+                "poster": thumb_url,
+                "thumbnail": thumb_url,
                 "download_url": vault_download_url,
                 "download_type": "envato"
             }]
@@ -148,11 +156,14 @@ def api_get_freepik_link():
 
     # 1. Check Cloud Vault Cache First (Instant 0-Quota Resolution)
     cached = find_vault_item(url)
+    thumb_url = extract_thumbnail_url(url, "freepik")
     if cached and cached.get("download_url"):
         return jsonify({
             "success": True,
             "download_url": cached["download_url"],
             "title": cached.get("title", ""),
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "from_vault": True,
             "account_status": FreepikScraper.get_account_status(custom_accounts)
         })
@@ -167,6 +178,8 @@ def api_get_freepik_link():
         return jsonify({
             "success": True,
             "download_url": gdrive_link,
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "from_vault": False,
             "account_status": FreepikScraper.get_account_status(custom_accounts)
         })
@@ -260,11 +273,14 @@ def api_get_envato_link():
 
     # Check Cloud Vault First
     cached = find_vault_item(url)
+    thumb_url = extract_thumbnail_url(url, "envato")
     if cached and cached.get("download_url"):
         return jsonify({
             "success": True,
             "download_url": cached["download_url"],
             "title": cached.get("title", ""),
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "from_vault": True
         })
 
@@ -277,6 +293,8 @@ def api_get_envato_link():
         return jsonify({
             "success": True,
             "download_url": gdrive_link,
+            "poster": thumb_url,
+            "thumbnail": thumb_url,
             "from_vault": False
         })
     except Exception as e:

@@ -66,3 +66,26 @@ def normalize_profile_url(url: str) -> Tuple[str, str, str]:
     domain_match = re.search(r'https?://(?:www\.)?([^/]+)', clean_url)
     domain = domain_match.group(1).split('.')[0] if domain_match else "asset"
     return clean_url, f"{domain}_asset", domain
+
+def extract_thumbnail_url(url: str, platform: str = "") -> str:
+    """Extract CDN thumbnail image URL for platforms like Freepik or direct images"""
+    if not url or not isinstance(url, str):
+        return ""
+    clean_url = url.strip().split('#')[0].split('?')[0].rstrip('/')
+    url_lower = clean_url.lower()
+
+    # Freepik / Magnific AI
+    if "freepik.com" in url_lower or platform == "freepik":
+        m = re.search(r'freepik\.com/(?:[a-z]{2}(?:-[a-z]{2})?/)?([^/]+)/([^/?#]+)', clean_url, re.I)
+        if m:
+            cat = m.group(1)
+            slug_id = m.group(2)
+            if slug_id.lower().endswith('.htm'):
+                slug_id = slug_id[:-4]
+            return f"https://img.freepik.com/{cat}/{slug_id}.jpg?w=740"
+
+    # Direct image URL
+    if re.search(r'\.(png|jpe?g|webp|gif|avif)$', clean_url, re.I):
+        return clean_url
+
+    return ""
