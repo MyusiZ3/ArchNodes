@@ -6091,116 +6091,62 @@ async function syncAllEnvatoReferrals() {
         function getAppIconPreviewSvg(fileType, platform, title) {
             const ft = (fileType || 'ASSET').toUpperCase();
             
-            let appTag = 'ASSET';
-            let appName = 'Creative Asset';
-            let borderColor = '#6366F1';
-            let glowColor = '#6366F1';
-            let bgStart = '#0f172a';
-            let bgEnd = '#020617';
-            let badgeLabel = 'DIGITAL CREATIVE ASSET';
+            let badgeBg = '#2563EB';
+            let tag = 'FILE';
 
             if (ft.includes('PSD') || ft.includes('MOCKUP')) {
-                appTag = 'Ps';
-                appName = 'Adobe Photoshop';
-                borderColor = '#31A8FF';
-                glowColor = '#0066FF';
-                bgStart = '#001E36';
-                bgEnd = '#000B14';
-                badgeLabel = 'PHOTOSHOP DOCUMENT (.PSD)';
-            } else if (ft.includes('AI') || ft.includes('VECTOR') || ft.includes('EPS') || ft.includes('SVG')) {
-                appTag = 'Ai';
-                appName = 'Adobe Illustrator';
-                borderColor = '#FF9A00';
-                glowColor = '#FF6600';
-                bgStart = '#2B1200';
-                bgEnd = '#0F0500';
-                badgeLabel = 'VECTOR GRAPHIC (.AI / .EPS)';
-            } else if (ft.includes('PR') || ft.includes('PRO') || ft.includes('MOV') || ft.includes('MP4') || ft.includes('VIDEO')) {
-                appTag = 'Pr';
-                appName = 'Adobe Premiere Pro';
-                borderColor = '#EA77FF';
-                glowColor = '#9999FF';
-                bgStart = '#1E0A2A';
-                bgEnd = '#0A0210';
-                badgeLabel = 'VIDEO PRODUCTION (.MOV / .MP4)';
+                badgeBg = '#2563EB';
+                tag = 'PSD';
+            } else if (ft.includes('AI') || ft.includes('VECTOR') || ft.includes('EPS')) {
+                badgeBg = '#F97316';
+                tag = ft.includes('EPS') ? 'EPS' : 'AI';
+            } else if (ft.includes('SVG')) {
+                badgeBg = '#F59E0B';
+                tag = 'SVG';
+            } else if (ft.includes('MOV') || ft.includes('MP4') || ft.includes('VIDEO') || ft.includes('PR') || ft.includes('PRO')) {
+                badgeBg = '#8B5CF6';
+                tag = ft.includes('MOV') ? 'MOV' : 'MP4';
             } else if (ft.includes('AE') || ft.includes('AFTER') || ft.includes('MOTION')) {
-                appTag = 'Ae';
-                appName = 'Adobe After Effects';
-                borderColor = '#D291FF';
-                glowColor = '#8A2BE2';
-                bgStart = '#18002E';
-                bgEnd = '#080010';
-                badgeLabel = 'MOTION TEMPLATE (.AEP)';
-            } else if (ft.includes('PHOTO') || ft.includes('JPG') || ft.includes('JPEG') || ft.includes('PNG') || ft.includes('RAW')) {
-                appTag = 'Lr';
-                appName = 'Adobe Lightroom';
-                borderColor = '#31A8FF';
-                glowColor = '#00D2FF';
-                bgStart = '#00182C';
-                bgEnd = '#000A14';
-                badgeLabel = 'HIGH RESOLUTION IMAGE';
+                badgeBg = '#9333EA';
+                tag = 'AEP';
+            } else if (ft.includes('PNG') || ft.includes('JPG') || ft.includes('JPEG') || ft.includes('PHOTO') || ft.includes('RAW') || ft.includes('IMAGE')) {
+                badgeBg = '#10B981';
+                tag = ft.includes('PNG') ? 'PNG' : 'JPG';
             } else if (ft.includes('AUDIO') || ft.includes('MUSIC') || ft.includes('SOUND') || ft.includes('MP3') || ft.includes('WAV')) {
-                appTag = 'Au';
-                appName = 'Adobe Audition';
-                borderColor = '#00E4BB';
-                glowColor = '#00BFA5';
-                bgStart = '#00241D';
-                bgEnd = '#000E0B';
-                badgeLabel = 'AUDIO MASTER (.WAV / .MP3)';
+                badgeBg = '#EC4899';
+                tag = ft.includes('WAV') ? 'WAV' : 'MP3';
             } else if (ft.includes('FONT') || ft.includes('TTF') || ft.includes('OTF') || ft.includes('WOFF')) {
-                appTag = 'Aa';
-                appName = 'Typography Studio';
-                borderColor = '#F59E0B';
-                glowColor = '#E11D48';
-                bgStart = '#261002';
-                bgEnd = '#0E0400';
-                badgeLabel = 'OPENTYPE FONT (.OTF / .TTF)';
+                badgeBg = '#D97706';
+                tag = ft.includes('OTF') ? 'OTF' : 'TTF';
             } else if (ft.includes('3D') || ft.includes('OBJ') || ft.includes('FBX') || ft.includes('BLEND') || ft.includes('C4D')) {
-                appTag = '3D';
-                appName = '3D Studio Asset';
-                borderColor = '#EC4899';
-                glowColor = '#F43F5E';
-                bgStart = '#26061B';
-                bgEnd = '#0D0109';
-                badgeLabel = '3D MODEL & TEXTURES';
-            } else if (ft.includes('TEMPLATE')) {
-                appTag = 'Tpl';
-                appName = 'Design Template';
-                borderColor = '#10B981';
-                glowColor = '#059669';
-                bgStart = '#052317';
-                bgEnd = '#020F09';
-                badgeLabel = 'READY-TO-USE TEMPLATE';
+                badgeBg = '#06B6D4';
+                tag = '3D';
+            } else if (ft.includes('ZIP') || ft.includes('RAR') || ft.includes('7Z') || ft.includes('TEMPLATE')) {
+                badgeBg = '#6366F1';
+                tag = 'ZIP';
+            } else {
+                badgeBg = '#64748B';
+                tag = ft.slice(0, 4);
             }
 
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
-  <defs>
-    <linearGradient id="bg_${appTag}" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${bgStart}"/>
-      <stop offset="100%" stop-color="${bgEnd}"/>
-    </linearGradient>
-    <radialGradient id="glow_${appTag}" cx="50%" cy="45%" r="55%">
-      <stop offset="0%" stop-color="${glowColor}" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="${glowColor}" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="grid_${appTag}" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
-    </pattern>
-    <filter id="shadow_${appTag}" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="${glowColor}" flood-opacity="0.35"/>
-    </filter>
-  </defs>
-  <rect width="600" height="360" fill="url(#bg_${appTag})"/>
-  <rect width="600" height="360" fill="url(#grid_${appTag})"/>
-  <circle cx="300" cy="155" r="155" fill="url(#glow_${appTag})"/>
+            const fontSize = tag.length <= 3 ? 28 : (tag.length <= 4 ? 24 : 18);
+            const badgeW = tag.length <= 3 ? 104 : (tag.length <= 4 ? 116 : 128);
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="100%">
+  <!-- Plain Minimal Background -->
+  <rect width="400" height="240" fill="#18181b"/>
   
-  <g filter="url(#shadow_${appTag})">
-    <rect x="235" y="70" width="130" height="130" rx="28" fill="#09090b" stroke="${borderColor}" stroke-width="3"/>
-    <text x="300" y="157" fill="${borderColor}" font-size="52" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="-1">${appTag}</text>
+  <g transform="translate(48, 2)">
+    <!-- Document Page -->
+    <path d="M 135 34 H 202 L 244 76 V 186 A 18 18 0 0 1 226 204 H 135 A 18 18 0 0 1 117 186 V 52 A 18 18 0 0 1 135 34 Z" fill="#E4E4E7"/>
+    
+    <!-- Top-Right Fold Flap -->
+    <path d="M 202 34 V 66 A 10 10 0 0 0 212 76 H 244 Z" fill="#A1A1AA"/>
+    
+    <!-- Clean File Format Badge -->
+    <rect x="88" y="116" width="${badgeW}" height="66" rx="14" fill="${badgeBg}"/>
+    <text x="${88 + Math.round(badgeW / 2)}" y="159" fill="#FFFFFF" font-size="${fontSize}" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">${tag}</text>
   </g>
-  
-  <text x="300" y="244" fill="#ffffff" font-size="15" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="800" text-anchor="middle" letter-spacing="1.5">${appName.toUpperCase()}</text>
-  <text x="300" y="270" fill="rgba(255,255,255,0.45)" font-size="12" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="600" text-anchor="middle" letter-spacing="0.5">${badgeLabel}</text>
 </svg>`;
 
             return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
