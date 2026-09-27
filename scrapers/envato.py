@@ -811,9 +811,15 @@ class EnvatoScraper:
                     
                 if dl_btn and dl_btn.get("href"):
                     href = dl_btn.get("href")
-                    # Strict match: must match target slug or relevant title
-                    if target_slug in row_text or any(w in row_text for w in target_slug.split() if len(w) > 4):
+                    # Strict match: target slug or high percentage of distinct words
+                    stop_words = {"mockup", "mockups", "template", "graphic", "design", "elements", "envato", "print", "clean"}
+                    words = [w for w in target_slug.split() if len(w) > 4 and w not in stop_words]
+                    if target_slug in row_text:
                         return href
+                    if words:
+                        matched = [w for w in words if re.search(r'\b' + re.escape(w) + r'\b', row_text)]
+                        if len(matched) >= max(2, int(len(words) * 0.7)):
+                            return href
             return None
         except Exception as e:
             print(f"[EnvatoScraper] History check error: {e}")

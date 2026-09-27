@@ -909,9 +909,16 @@ class FreepikScraper:
             if not table:
                 return None
 
+            # Extract asset ID if present (e.g., _65079622.htm)
+            id_match = re.search(r'[_-](\d{5,})(?:\.htm)?', target_url)
+            target_id = id_match.group(1) if id_match else None
+
             slug = target_url.split('#')[0].split('?')[0].rstrip('/').split('/')[-1]
             slug_clean = re.sub(r'_\d+\.htm.*', '', slug).replace('-', ' ').replace('_', ' ').lower()
-            words = list(set([w for w in slug_clean.split() if len(w) > 3]))
+            
+            # Filter generic stop words that appear across multiple assets
+            stop_words = {"mockup", "mockups", "psd", "premium", "free", "template", "design", "vector", "photo", "sticker", "card", "isolated"}
+            words = [w for w in slug_clean.split() if len(w) > 3 and w not in stop_words]
 
             for tr in table.find_all("tr"):
                 row_text = tr.get_text().lower()
@@ -919,12 +926,28 @@ class FreepikScraper:
                 if not links:
                     continue
 
-                matches = sum(1 for w in words if w in row_text)
                 is_fresh = any(t in row_text for t in ["just now", "second", "seconds ago", "1 minute ago", "2 minutes ago", "3 minutes ago", "4 minutes ago", "5 minutes ago"])
                 is_old = any(t in row_text for t in ["hour", "hours ago", "day", "days ago", "week", "month", "year"])
 
-                if matches >= min(2, len(words)) and is_fresh and not is_old:
-                    return links[0]
+                if not is_fresh or is_old:
+                    continue
+
+                # 1. Primary check: Asset ID matching
+                if target_id:
+                    if target_id in row_text or target_id in str(tr):
+                        return links[0]
+                    # If the row has a different asset ID explicitly, do not match it
+                    row_ids = re.findall(r'\b\d{5,}\b', row_text)
+                    if row_ids and target_id not in row_ids:
+                        continue
+
+                # 2. Strict word boundary matching
+                if words:
+                    matched_words = [w for w in words if re.search(r'\b' + re.escape(w) + r'\b', row_text)]
+                    threshold = max(2, int(len(words) * 0.75))
+                    if len(matched_words) >= threshold:
+                        return links[0]
+
         except Exception as e:
             print(f"[FreepikScraper] History check error: {e}")
         return None
